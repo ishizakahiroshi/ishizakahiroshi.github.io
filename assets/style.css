@@ -137,6 +137,9 @@ section.block.first { padding-top: 78px; }
 .stat .snum .sunit { font-size: 0.95rem; font-weight: 700; color: var(--ink); margin-left: 2px; }
 .stat .slabel { font-size: 0.76rem; font-weight: 700; color: var(--ink-soft); margin-top: 8px; letter-spacing: 0.02em; }
 .about-prose { max-width: 720px; }
+.core-card { background: var(--card); border: 2px solid var(--ink); border-radius: 18px; padding: 20px 24px; box-shadow: 5px 6px 0 var(--accent); margin-bottom: 26px; }
+.core-label { display: inline-block; font-family: var(--display); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; color: #fff; background: var(--accent); border: 2px solid var(--ink); border-radius: 999px; padding: 3px 13px; margin-bottom: 13px; }
+.core-body { font-family: var(--display); font-weight: 700; font-size: clamp(1.05rem, 2.6vw, 1.34rem); line-height: 1.5; letter-spacing: -0.01em; color: var(--ink); }
 .about-prose p { font-size: 1rem; color: var(--ink); margin-bottom: 18px; }
 .about-prose p.soft { color: var(--ink-soft); font-size: 0.95rem; }
 .about-prose p.philo { font-family: var(--display); font-weight: 700; font-size: clamp(1.3rem, 3vw, 1.7rem); color: var(--ink); line-height: 1.4; margin-bottom: 10px; }
