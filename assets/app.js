@@ -1,5 +1,56 @@
+// @ts-check
+/*
+ * このサイトは「ビルドレス（素のJS）」を意図的な技術選定として採用している。
+ * その上で型の恩恵だけ得るため、`// @ts-check` + JSDoc で型注釈を付与している。
+ * 配信物（この .js）はそのまま。エディタ / `tsc --noEmit --checkJs` で型検証できる。
+ */
+
+/**
+ * @typedef {"ja" | "en"} Lang  対応言語
+ * @typedef {{ ja: string, en: string }} L10n  日英の二言語テキスト
+ */
+
+/**
+ * @typedef {Object} Work  作品（カード／詳細ページ共通）
+ * @property {string} id        URLスラッグ兼表示名
+ * @property {string} initials  バッジ表示の略号
+ * @property {string} c         アクセントカラー（CSS変数 --c）
+ * @property {number} stars     GitHub Star 数（0 のとき非表示）
+ * @property {L10n} cat
+ * @property {L10n} short
+ * @property {L10n} long
+ * @property {string[]} tech
+ * @property {string} repo
+ * @property {string} [store]   任意：ストア等の外部リンク（あればボタン追加）
+ */
+
+/**
+ * @typedef {Object} Stat
+ * @property {string} num
+ * @property {L10n} unit
+ * @property {L10n} label
+ *
+ * @typedef {Object} Exp  職務経歴
+ * @property {boolean} current  現職フラグ
+ * @property {L10n} role
+ * @property {L10n} org
+ * @property {L10n} desc
+ *
+ * @typedef {Object} CanDo
+ * @property {L10n} title
+ * @property {L10n} desc
+ *
+ * @typedef {Object} SkillTier  経験年数でまとめたスキル群
+ * @property {boolean} highlight
+ * @property {L10n} years
+ * @property {string[]} items
+ *
+ * @typedef {{ emoji: string } & L10n} Persona  人となり1項目
+ */
+
 /* ===== プロフィール / 作品 / 経歴データ（日英） ===== */
 
+/** @type {{ name: string, nameEn: string, github: string, x: string, note: string, contactEmail: [string, string] | null }} */
 const PROFILE = {
   name: "ishizakahiroshi",
   nameEn: "ishizakahiroshi",
@@ -13,6 +64,7 @@ const PROFILE = {
 };
 
 /* 実績の数字（信頼バッジ） */
+/** @type {Stat[]} */
 const STATS = [
   { num: "18", unit: { ja: "年", en: "yrs" }, label: { ja: "実務経験", en: "Experience" } },
   { num: "5", unit: { ja: "年", en: "yrs" }, label: { ja: "講師経験", en: "Teaching" } },
@@ -21,6 +73,7 @@ const STATS = [
 ];
 
 /* 「こんな相談、歓迎です」 */
+/** @type {L10n[]} */
 const CONTACT_WELCOME = [
   { ja: "AI×業務自動化 — MCP・Claude を業務システムに組み込む実装", en: "AI × automation — embedding MCP/Claude into business systems" },
   { ja: "レガシー PHP の Go 移植・モダナイズ", en: "Migrating and modernizing legacy PHP to Go" },
@@ -30,6 +83,7 @@ const CONTACT_WELCOME = [
   { ja: "「これ作れる?」のラフな技術相談から", en: "Even just a casual “can you build this?” chat" },
 ];
 
+/** @type {Work[]} */
 const WORKS = [
   {
     id: "any-ai-cli",
@@ -136,6 +190,7 @@ const WORKS = [
   },
 ];
 
+/** @type {Exp[]} */
 const EXPERIENCE = [
   {
     current: true,
@@ -166,6 +221,7 @@ const EXPERIENCE = [
   },
 ];
 
+/** @type {CanDo[]} */
 const CANDO = [
   {
     title: { ja: "AI × 業務自動化", en: "AI × Workflow Automation" },
@@ -194,6 +250,7 @@ const CANDO = [
 ];
 
 /* 経験年数つきスキル（スキル一覧より） */
+/** @type {SkillTier[]} */
 const SKILLS = [
   {
     highlight: true,
@@ -217,6 +274,7 @@ const SKILLS = [
   },
 ];
 
+/** @type {Persona[]} */
 const PERSONA = [
   { emoji: "🔍", ja: "知的好奇心の塊。気になったらとことん掘る", en: "Endlessly curious — once something grabs me, I dig all the way" },
   { emoji: "🤓", ja: "ちょっとオタク気質。突き詰めるのが好き", en: "A bit of a geek — I love going deep" },
@@ -230,6 +288,7 @@ const PERSONA = [
 ];
 
 /* ===== UI 文字列（日英） ===== */
+/** @type {Record<Lang, Record<string, string>>} */
 const I18N = {
   ja: {
     "nav.works": "作品", "nav.experience": "経歴", "nav.cando": "できること", "nav.about": "About", "nav.person": "人となり", "nav.contact": "Contact",
@@ -284,39 +343,52 @@ const I18N = {
 };
 
 /* ===== 言語管理 ===== */
+/** @returns {Lang} */
 function getLang() {
   const saved = localStorage.getItem("lang");
   if (saved === "ja" || saved === "en") return saved;
   return (navigator.language || "").toLowerCase().startsWith("ja") ? "ja" : "ja";
 }
+/** @param {Lang} lang */
 function setLang(lang) {
   localStorage.setItem("lang", lang);
   document.documentElement.lang = lang;
   applyI18n(lang);
-  if (typeof window.__rerender === "function") window.__rerender(lang);
+  // __rerender は各ページの inline script が登録する再描画フック（任意）。
+  const win = /** @type {Window & { __rerender?: (l: Lang) => void }} */ (window);
+  if (typeof win.__rerender === "function") win.__rerender(lang);
   document.querySelectorAll(".lang-toggle button").forEach((b) => {
-    b.classList.toggle("active", b.dataset.lang === lang);
+    b.classList.toggle("active", /** @type {HTMLElement} */ (b).dataset.lang === lang);
   });
 }
+/**
+ * @param {string} key
+ * @param {Lang} lang
+ * @returns {string}
+ */
 function t(key, lang) { return (I18N[lang] && I18N[lang][key]) || (I18N.ja[key] || key); }
+/** @param {Lang} lang */
 function applyI18n(lang) {
   document.querySelectorAll("[data-i18n]").forEach((el) => {
-    el.textContent = t(el.getAttribute("data-i18n"), lang);
+    el.textContent = t(el.getAttribute("data-i18n") || "", lang);
   });
 }
 function initLangToggle() {
   const lang = getLang();
   document.querySelectorAll(".lang-toggle button").forEach((b) => {
-    b.addEventListener("click", () => setLang(b.dataset.lang));
+    const el = /** @type {HTMLElement} */ (b);
+    el.addEventListener("click", () => setLang(/** @type {Lang} */ (el.dataset.lang)));
   });
   setLang(lang);
 }
 
 /* ===== 描画ヘルパー ===== */
+/** @param {Work} w */
 function badgeHtml(w) {
   return `<div class="badge" style="--c:${w.c}">${w.initials}</div>`;
 }
 
+/** @param {Lang} lang */
 function renderWorks(lang) {
   const grid = document.getElementById("works-grid");
   if (!grid) return;
@@ -339,6 +411,7 @@ function renderWorks(lang) {
   });
 }
 
+/** @param {Lang} lang */
 function renderExperience(lang) {
   const list = document.getElementById("exp-list");
   if (!list) return;
@@ -355,6 +428,7 @@ function renderExperience(lang) {
   });
 }
 
+/** @param {Lang} lang */
 function renderCanDo(lang) {
   const grid = document.getElementById("cando-grid");
   if (!grid) return;
@@ -375,6 +449,7 @@ function renderCanDo(lang) {
   }
 }
 
+/** @param {Lang} lang */
 function renderStats(lang) {
   const el = document.getElementById("stats");
   if (!el) return;
@@ -383,29 +458,31 @@ function renderStats(lang) {
   ).join("");
 }
 
+/** @param {Lang} lang */
 function renderContact(lang) {
   const list = document.getElementById("welcome-list");
   if (list) {
     list.innerHTML = CONTACT_WELCOME.map((w) => `<li>${w[lang]}</li>`).join("");
   }
-  const x = document.getElementById("c-x");
-  const note = document.getElementById("c-note");
-  const gh = document.getElementById("c-github");
-  if (x) { x.href = PROFILE.x; x.querySelector(".t").textContent = t("contact.x", lang); }
-  if (note) { note.href = PROFILE.note; note.querySelector(".t").textContent = t("contact.note", lang); }
-  if (gh) { gh.href = PROFILE.github; gh.querySelector(".t").textContent = t("contact.github", lang); }
+  const x = /** @type {HTMLAnchorElement | null} */ (document.getElementById("c-x"));
+  const note = /** @type {HTMLAnchorElement | null} */ (document.getElementById("c-note"));
+  const gh = /** @type {HTMLAnchorElement | null} */ (document.getElementById("c-github"));
+  if (x) { x.href = PROFILE.x; /** @type {HTMLElement} */ (x.querySelector(".t")).textContent = t("contact.x", lang); }
+  if (note) { note.href = PROFILE.note; /** @type {HTMLElement} */ (note.querySelector(".t")).textContent = t("contact.note", lang); }
+  if (gh) { gh.href = PROFILE.github; /** @type {HTMLElement} */ (gh.querySelector(".t")).textContent = t("contact.github", lang); }
 
   // メール：生のアドレスは HTML に置かず、クリック時に JS で組み立てて表示
-  const mailBtn = document.getElementById("c-mail");
+  const mailBtn = /** @type {HTMLAnchorElement | null} */ (document.getElementById("c-mail"));
   if (mailBtn) {
     if (PROFILE.contactEmail && PROFILE.contactEmail.length === 2) {
+      const email = PROFILE.contactEmail;
       mailBtn.style.display = "";
-      mailBtn.querySelector(".t").textContent = t("contact.mail", lang);
+      /** @type {HTMLElement} */ (mailBtn.querySelector(".t")).textContent = t("contact.mail", lang);
       mailBtn.onclick = function (e) {
         e.preventDefault();
-        const addr = PROFILE.contactEmail[0] + "@" + PROFILE.contactEmail[1];
+        const addr = email[0] + "@" + email[1];
         mailBtn.href = "mailto:" + addr;
-        mailBtn.querySelector(".t").textContent = addr;
+        /** @type {HTMLElement} */ (mailBtn.querySelector(".t")).textContent = addr;
         mailBtn.onclick = null;
       };
     } else {
@@ -414,6 +491,7 @@ function renderContact(lang) {
   }
 }
 
+/** @param {Lang} lang */
 function renderPersona(lang) {
   const grid = document.getElementById("persona-grid");
   if (!grid) return;
@@ -427,6 +505,7 @@ function renderPersona(lang) {
   });
 }
 
+/** @param {Lang} lang */
 function renderDetail(lang) {
   const root = document.getElementById("detail-root");
   if (!root) return;
