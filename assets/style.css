@@ -183,3 +183,55 @@ footer a.pill:hover, .links a.pill:hover { transform: translate(-2px,-2px); box-
   .grid { grid-template-columns: 1fr; }
   footer .frow { justify-content: center; text-align: center; }
 }
+
+/* ===== レスポンシブ調整（タブレット〜スマホ） ===== */
+
+/* タブレット以下：上部の余白を詰める */
+@media (max-width: 820px) {
+  section.block { padding-top: 46px; }
+  section.block.first { padding-top: 58px; }
+  .detail { padding-top: 58px; }
+}
+
+/* スマホ（横幅 600px 以下） */
+@media (max-width: 600px) {
+  .wrap { padding: 0 18px; }
+  header.site .bar { height: 56px; }
+  header.site .brand { font-size: 1.05rem; }
+
+  .section-label { margin-bottom: 22px; font-size: 0.72rem; letter-spacing: 0.16em; }
+  section.block { padding-top: 38px; }
+  section.block.first { padding-top: 44px; }
+
+  .card { padding: 22px 20px 20px; border-radius: 18px; }
+  .card::before { width: 120px; height: 120px; right: -38px; top: -38px; }
+  .badge { width: 50px; height: 50px; font-size: 1.2rem; margin-bottom: 16px; }
+  .card h3 { font-size: 1.25rem; }
+
+  .exp { padding: 18px 18px; }
+  .exp .role { font-size: 1.08rem; }
+  .cando { padding: 18px 18px; }
+  .cando h4 { font-size: 1.06rem; }
+
+  .welcome { padding: 20px 20px; }
+  .contact-lead { font-size: 0.96rem; }
+
+  /* CTA ボタンは縦積み＆全幅でタップしやすく */
+  .cta-row .btn,
+  .detail-cta .btn { flex: 1 1 100%; justify-content: center; }
+
+  footer { padding: 32px 0 48px; margin-top: 52px; }
+
+  .detail { padding-top: 44px; }
+  .detail-head .badge { width: 68px; height: 68px; font-size: 1.7rem; }
+  .detail-body p { font-size: 0.96rem; }
+}
+
+/* 小型スマホ（横幅 380px 以下）：余白とフォントをさらに圧縮 */
+@media (max-width: 380px) {
+  .wrap { padding: 0 14px; }
+  .stats { gap: 10px; }
+  .stat { padding: 14px 10px; }
+  .stat .snum { font-size: 1.8rem; }
+  .fact { font-size: 0.86rem; padding: 10px 14px 10px 12px; }
+}
