@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ishizakahiroshi — Software Engineer Portfolio</title>
+<meta name="description" content="ishizakahiroshi のポートフォリオ。実務18年のシステムエンジニア。バックエンド・インフラ・AI連携。業務委託・受注 受付中。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23ff7a3d'/%3E%3Ctext x='32' y='45' font-family='Arial,sans-serif' font-size='32' font-weight='700' fill='%23fff' text-anchor='middle'%3EHI%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ishizakahiroshi — Software Engineer Portfolio">
+<meta property="og:description" content="実務18年のシステムエンジニア。バックエンド・インフラ・AI連携。業務委託・受注 受付中。">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap bar">
+    <a class="brand" href="index.html">ishizakahiroshi</a>
+    <nav>
+      <a class="navlink" href="#works" data-i18n="nav.works">作品</a>
+      <a class="navlink" href="#experience" data-i18n="nav.experience">経歴</a>
+      <a class="navlink" href="#cando" data-i18n="nav.cando">できること</a>
+      <a class="navlink" href="#about" data-i18n="nav.about">About</a>
+      <a class="navlink" href="#person" data-i18n="nav.person">人となり</a>
+      <a class="navlink" href="#contact" data-i18n="nav.contact">Contact</a>
+      <div class="lang-toggle">
+        <button data-lang="ja">JA</button>
+        <button data-lang="en">EN</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<section class="block first" id="works">
+  <div class="wrap">
+    <div class="section-label" data-i18n="label.works">Works</div>
+    <div class="grid" id="works-grid"></div>
+  </div>
+</section>
+
+<section class="block" id="experience">
+  <div class="wrap">
+    <div class="section-label" data-i18n="label.experience">Experience</div>
+    <div class="exp-list" id="exp-list"></div>
+  </div>
+</section>
+
+<section class="block" id="cando">
+  <div class="wrap">
+    <div class="section-label" data-i18n="label.cando">Can Do</div>
+    <div class="cando-grid" id="cando-grid"></div>
+    <div class="section-label" style="margin-top:44px" data-i18n="label.stack">主な技術スタック</div>
+    <div class="tagchips" id="stack-chips"></div>
+  </div>
+</section>
+
+<section class="block" id="about">
+  <div class="wrap">
+    <div class="section-label" data-i18n="label.about">About</div>
+    <div class="profile-head">
+      <div class="avatar" aria-hidden="true">
+        <svg viewBox="0 0 120 120" width="120" height="120">
+          <rect x="3" y="3" width="114" height="114" rx="26" fill="#ff7a3d" stroke="#241f1a" stroke-width="3"/>
+          <circle cx="60" cy="58" r="34" fill="#fffdf8" stroke="#241f1a" stroke-width="3"/>
+          <path d="M30 50 q30 -22 60 0" fill="none" stroke="#241f1a" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="46" cy="58" r="11" fill="#fffdf8" stroke="#241f1a" stroke-width="3"/>
+          <circle cx="74" cy="58" r="11" fill="#fffdf8" stroke="#241f1a" stroke-width="3"/>
+          <line x1="57" y1="56" x2="63" y2="56" stroke="#241f1a" stroke-width="3"/>
+          <circle cx="46" cy="58" r="3.5" fill="#241f1a"/>
+          <circle cx="74" cy="58" r="3.5" fill="#241f1a"/>
+          <path d="M50 76 q10 8 20 0" fill="none" stroke="#241f1a" stroke-width="3" stroke-linecap="round"/>
+          <text x="98" y="104" font-size="22" text-anchor="middle">🐱</text>
+        </svg>
+      </div>
+      <div class="profile-meta">
+        <p class="lead"><span data-i18n="hero.eyebrow">システムエンジニア｜実務18年</span> · <span data-i18n="hero.role">バックエンド・インフラ・AI連携</span></p>
+        <p class="lead-tag" data-i18n="hero.tagline">現場の業務課題を、最小限の実装で、確実に動くものにする。</p>
+        <div class="badges" style="margin-top:16px">
+          <span class="badge-pill"><span class="dot"></span><span data-i18n="hero.badge.open">業務委託・受注 受付中</span></span>
+          <span class="badge-pill"><span class="dot"></span><span data-i18n="hero.badge.remote">フルリモート</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="about-prose">
+      <p class="philo" data-i18n="about.philosophy"></p>
+      <p class="soft" data-i18n="about.philosophy.sub"></p>
+      <p data-i18n="about.p1"></p>
+      <p class="soft" data-i18n="about.p2"></p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="person">
+  <div class="wrap">
+    <div class="section-label" data-i18n="label.person">人となり</div>
+    <div class="persona-grid" id="persona-grid"></div>
+  </div>
+</section>
+
+<section class="block" id="contact">
+  <div class="wrap">
+    <div class="section-label" data-i18n="label.contact">Contact</div>
+    <p class="contact-lead" data-i18n="contact.lead"></p>
+    <div class="welcome">
+      <h4 data-i18n="contact.welcomeTitle">こんな相談、歓迎です</h4>
+      <ul id="welcome-list"></ul>
+    </div>
+    <div class="cta-row contact-cta">
+      <a class="btn primary" id="c-x" target="_blank" rel="noopener"><span class="t">X でDMする</span> <span class="arrow">→</span></a>
+      <a class="btn ghost" id="c-note" target="_blank" rel="noopener"><span class="t">note を見る</span></a>
+      <a class="btn ghost" id="c-github" target="_blank" rel="noopener"><span class="t">GitHub を見る</span></a>
+      <a class="btn ghost" id="c-mail" href="#" style="display:none"><span class="t">メールアドレスを表示</span></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="frow">
+      <div class="copy" data-i18n="footer.copy">© 2026 ishizakahiroshi</div>
+      <div class="links">
+        <a class="pill" id="link-x" href="#" target="_blank" rel="noopener">X</a>
+        <a class="pill" id="link-note" href="#" target="_blank" rel="noopener">note</a>
+        <a class="pill" id="link-github" href="#" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+<script>
+  // フッターリンク（生メールは置かない）
+  document.getElementById("link-x").href = PROFILE.x;
+  document.getElementById("link-note").href = PROFILE.note;
+  document.getElementById("link-github").href = PROFILE.github;
+
+  window.__rerender = function (lang) {
+    renderWorks(lang);
+    renderExperience(lang);
+    renderCanDo(lang);
+    renderStats(lang);
+    renderPersona(lang);
+    renderContact(lang);
+  };
+  initLangToggle();
+</script>
+</body>
+</html>
