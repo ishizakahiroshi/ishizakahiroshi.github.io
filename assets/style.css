@@ -176,7 +176,7 @@ footer a.pill:hover, .links a.pill:hover { transform: translate(-2px,-2px); box-
 .detail-body h2 { font-size: 0.76rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-soft); font-weight: 700; margin: 36px 0 14px; }
 .detail-body p { font-size: 1rem; color: var(--ink); }
 .tech-tags { display: flex; flex-wrap: wrap; gap: 9px; }
-.detail-cta { margin-top: 42px; }
+.detail-cta { margin-top: 42px; display: flex; flex-wrap: wrap; gap: 14px; }
 
 @media (max-width: 560px) {
   .detail-head { flex-direction: column; gap: 18px; }
