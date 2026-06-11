@@ -98,6 +98,7 @@ const WORKS = [
     },
     tech: ["JavaScript", "Chrome Extension API"],
     repo: "https://github.com/ishizakahiroshi/always-pinned",
+    store: "https://chromewebstore.google.com/detail/always-pinned/cpgbmadjjabkmdapeknmnpfmknbncdie",
   },
   {
     id: "setpanel",
@@ -252,7 +253,7 @@ const I18N = {
     "about.p1": "新しい技術を追うこと自体が目的ではありません。目の前の課題を解くための手段として、AI・モダンスタック・自社運用インフラまで幅広く使い分けています。製造業の業務システム設計から、人材派遣業の社内システム開発まで、立ち上げから運用まで一貫して関わってきました。",
     "about.p2": "X では、取り繕わずに思っていることをそのまま書いています。整えた発信より、実際に何を考えている人間かを見てもらった方が早い。尖って見える部分も含めて自分なので、合う方と気持ちよく組めればと思っています。",
     "footer.copy": "© 2026 ishizakahiroshi — 業務委託・受注のご相談はお気軽に。",
-    "detail.back": "一覧へ戻る", "detail.overview": "Overview", "detail.tech": "Tech Stack", "detail.viewRepo": "GitHubで見る",
+    "detail.back": "一覧へ戻る", "detail.overview": "Overview", "detail.tech": "Tech Stack", "detail.viewRepo": "GitHubで見る", "detail.viewStore": "Chrome ウェブストアで見る",
     "detail.notfound": "作品が見つかりませんでした。",
   },
   en: {
@@ -277,7 +278,7 @@ const I18N = {
     "about.p1": "Chasing new technology is not the goal. I reach for AI, modern stacks, and self-hosted infrastructure as means to solve the problem in front of me. From designing business systems in manufacturing to building in-house systems for the staffing industry, I've been involved end-to-end, from launch to operation.",
     "about.p2": "On X, I write what I actually think, unpolished. Rather than a curated feed, it's faster to just show you what kind of person I really am. The edges are part of me too — I'd rather work with people who genuinely fit.",
     "footer.copy": "© 2026 ishizakahiroshi — Open to contract work. Feel free to reach out.",
-    "detail.back": "Back to list", "detail.overview": "Overview", "detail.tech": "Tech Stack", "detail.viewRepo": "View on GitHub",
+    "detail.back": "Back to list", "detail.overview": "Overview", "detail.tech": "Tech Stack", "detail.viewRepo": "View on GitHub", "detail.viewStore": "View on Chrome Web Store",
     "detail.notfound": "Work not found.",
   },
 };
@@ -447,6 +448,8 @@ function renderDetail(lang) {
     `<div class="detail-body" style="--c:${w.c}">` +
     `<h2>${t("detail.overview", lang)}</h2><p>${w.long[lang]}</p>` +
     `<h2>${t("detail.tech", lang)}</h2><div class="tech-tags">${w.tech.map((x) => `<span class="chip">${x}</span>`).join("")}</div>` +
-    `<div class="detail-cta"><a class="btn primary" href="${w.repo}" target="_blank" rel="noopener">${t("detail.viewRepo", lang)} <span class="arrow">→</span></a></div>` +
+    `<div class="detail-cta"><a class="btn primary" href="${w.repo}" target="_blank" rel="noopener">${t("detail.viewRepo", lang)} <span class="arrow">→</span></a>` +
+    (w.store ? `<a class="btn ghost" href="${w.store}" target="_blank" rel="noopener">${t("detail.viewStore", lang)} <span class="arrow">→</span></a>` : "") +
+    `</div>` +
     `</div>`;
 }
