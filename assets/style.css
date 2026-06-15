@@ -127,7 +127,9 @@ section.block.first { padding-top: 78px; }
 
 /* ---- about ---- */
 .profile-head { display: flex; align-items: center; gap: 24px; margin-bottom: 30px; flex-wrap: wrap; }
-.avatar svg { display: block; filter: drop-shadow(5px 6px 0 rgba(36,31,26,0.12)); }
+.avatar svg,
+.avatar img { display: block; filter: drop-shadow(5px 6px 0 rgba(36,31,26,0.12)); }
+.avatar img.mascot-cats { width: min(180px, 42vw); height: auto; }
 .profile-meta { flex: 1; min-width: 240px; }
 .profile-meta .lead { margin-bottom: 8px; }
 .profile-meta .lead-tag { margin-bottom: 0; }
@@ -157,6 +159,7 @@ section.block.first { padding-top: 78px; }
   .stats { grid-template-columns: repeat(2, 1fr); }
   .profile-head { gap: 18px; }
   .avatar svg { width: 92px; height: 92px; }
+  .avatar img.mascot-cats { width: 138px; }
 }
 
 /* ---- footer ---- */
