@@ -1,9 +1,9 @@
 {
-  "title": "Claudeが `court` と言って止まる。気のせいかと思ってログを数えた",
-  "url": "https://note.com/ishizakahiroshi/n/n54943711627d",
-  "publishedAt": "2026-06-19T09:50:09.0000000+00:00",
-  "description": "Claude Code を使っていると、たまにこんなものが出てきます。 court<invoke name=\"Read\">...</invoke>",
-  "imageUrl": "https://assets.st-note.com/production/uploads/images/286849833/rectangle_large_type_2_8b113c87165e116d96f3f9eb215ef910.png?width=800",
-  "fetchedAt": "2026-06-19T10:58:06.2612773+00:00",
+  "title": "そもそもRTX4060でいけるのか。ローカルLLMでClaude Code × Ollama（各種LLM) を動かそうと挑んで全滅した話",
+  "url": "https://note.com/ishizakahiroshi/n/nd6aacc638956",
+  "publishedAt": "2026-06-19T12:53:27.0000000+00:00",
+  "description": "8GBのGPU（RTX4060）で、ローカルLLMだけでClaude Codeを動かせないか。それを試した一日の記録です。",
+  "imageUrl": "https://assets.st-note.com/production/uploads/images/286898773/rectangle_large_type_2_ad07bfe40f67b951681ad1156b1a5cb2.png?width=800",
+  "fetchedAt": "2026-06-19T15:43:36.9990516+00:00",
   "source": "https://note.com/ishizakahiroshi/rss"
 }
