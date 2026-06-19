@@ -97,10 +97,10 @@ const CONTACT_WELCOME = [
 /** @type {Work[]} */
 const WORKS = [
   {
-    id: "any-ai-cli",
-    initials: "ai",
+    id: "many-ai-cli",
+    initials: "ma",
     c: "#e2762f",
-    stars: 3,
+    stars: 4,
     cat: { ja: "AIツール / Webダッシュボード", en: "AI Tooling / Web Dashboard" },
     short: {
       ja: "複数のAIコーディングCLIセッションの承認管理・監視を行うローカルWebダッシュボード。",
@@ -111,13 +111,13 @@ const WORKS = [
       en: "A local web dashboard for managing approvals and monitoring multiple AI coding CLI sessions (e.g. Claude Code) running in parallel. Built not just as a user of AI, but as someone who embeds AI into workflows — designing the boundary between deterministic control and what is delegated to the AI.",
     },
     tech: ["JavaScript", "Node.js", "Web Dashboard"],
-    repo: "https://github.com/ishizakahiroshi/any-ai-cli",
+    repo: "https://github.com/ishizakahiroshi/many-ai-cli",
   },
   {
     id: "offline-md-editor-viewer",
     initials: "md",
     c: "#2aa6c4",
-    stars: 2,
+    stars: 9,
     cat: { ja: "エディタ / 単一HTMLアプリ", en: "Editor / Single-HTML App" },
     short: {
       ja: "オフラインで動くMarkdownエディタ／ビューア。単一HTMLとWindows用ポータブルexe。",

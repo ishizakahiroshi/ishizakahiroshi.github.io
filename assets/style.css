@@ -125,6 +125,25 @@ section.block.first { padding-top: 78px; }
 .fact:hover { transform: translate(-2px,-3px) rotate(-1deg); box-shadow: 6px 8px 0 var(--accent); }
 .fact .fe { font-size: 1.25rem; line-height: 1; filter: saturate(1.1); }
 
+/* ---- latest posts ---- */
+.latest-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+.latest-card { min-width: 0; border-radius: 22px; padding: 24px; background: var(--card); border: 2px solid var(--ink); box-shadow: 5px 6px 0 var(--line); overflow: hidden; }
+.latest-note { box-shadow: 5px 6px 0 #41c9b5; }
+.latest-x { box-shadow: 5px 6px 0 #8ea4b5; }
+.latest-card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.latest-card-head h2 { font-family: var(--display); font-size: 1.05rem; line-height: 1.3; }
+.latest-service { flex-shrink: 0; border: 2px solid var(--ink); border-radius: 999px; padding: 4px 11px; background: #fff; font-family: var(--display); font-size: 0.74rem; font-weight: 800; }
+.latest-note-body { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.latest-note-image { width: 100%; aspect-ratio: 1.91 / 1; object-fit: cover; border: 2px solid var(--ink); border-radius: 14px; background: var(--line); }
+.latest-date { color: var(--ink-soft); font-size: 0.76rem; font-weight: 700; }
+.latest-note-body h3 { font-family: var(--display); font-size: clamp(1.12rem, 2.3vw, 1.35rem); line-height: 1.45; overflow-wrap: anywhere; }
+.latest-description, .latest-fallback { color: var(--ink-soft); font-size: 0.88rem; line-height: 1.7; overflow-wrap: anywhere; }
+.latest-profile-link { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); font-family: var(--display); font-size: 0.84rem; font-weight: 700; text-underline-offset: 4px; }
+.latest-profile-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; border-radius: 3px; }
+.x-embed { width: 100%; max-width: 550px; min-height: 220px; margin: 0 auto 14px; overflow: hidden; }
+.x-embed .twitter-timeline { display: block; padding: 18px; border: 2px dashed var(--line); border-radius: 14px; color: var(--ink); text-align: center; }
+.embed-privacy { max-width: 760px; margin-top: 16px; color: var(--ink-soft); font-size: 0.75rem; line-height: 1.65; }
+
 /* ---- about ---- */
 .profile-head { display: flex; align-items: center; gap: 24px; margin-bottom: 30px; flex-wrap: wrap; }
 .avatar svg,
@@ -221,6 +240,8 @@ footer a.pill:hover, .links a.pill:hover { transform: translate(-2px,-2px); box-
 
   .welcome { padding: 20px 20px; }
   .contact-lead { font-size: 0.96rem; }
+  .latest-grid { grid-template-columns: 1fr; }
+  .latest-card { padding: 20px; border-radius: 18px; }
 
   /* CTA ボタンは縦積み＆全幅でタップしやすく */
   .cta-row .btn,
