@@ -320,7 +320,7 @@ const PERSONA = [
 /** @type {Record<Lang, Record<string, string>>} */
 const I18N = {
   ja: {
-    "nav.works": "作品", "nav.experience": "経歴", "nav.cando": "できること", "nav.about": "About", "nav.person": "人となり", "nav.contact": "Contact",
+    "nav.works": "作品", "nav.experience": "経歴", "nav.cando": "できること", "nav.about": "About", "nav.person": "人となり", "nav.contact": "Contact", "nav.stats": "数字",
     "label.person": "人となり", "label.latest": "Latest", "label.contact": "Contact",
     "latest.noteHeading": "note の最新記事", "latest.xHeading": "X の最新投稿",
     "latest.loading": "最新記事を読み込んでいます。",
@@ -354,7 +354,7 @@ const I18N = {
     "detail.notfound": "作品が見つかりませんでした。",
   },
   en: {
-    "nav.works": "Works", "nav.experience": "Experience", "nav.cando": "Can Do", "nav.about": "About", "nav.person": "Life", "nav.contact": "Contact",
+    "nav.works": "Works", "nav.experience": "Experience", "nav.cando": "Can Do", "nav.about": "About", "nav.person": "Life", "nav.contact": "Contact", "nav.stats": "Stats",
     "label.person": "Off the Clock", "label.latest": "Latest", "label.contact": "Contact",
     "latest.noteHeading": "Latest on note", "latest.xHeading": "Latest on X",
     "latest.loading": "Loading the latest article.",
