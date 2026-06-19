@@ -22,6 +22,7 @@
  * @property {string[]} tech
  * @property {string} repo
  * @property {string} [store]   任意：ストア等の外部リンク（あればボタン追加）
+ * @property {string} [live]    任意：ライブデモ等のリンク
  */
 
 /**
@@ -46,6 +47,15 @@
  * @property {string[]} items
  *
  * @typedef {{ emoji: string } & L10n} Persona  人となり1項目
+ *
+ * @typedef {Object} LatestNote
+ * @property {string} title
+ * @property {string} url
+ * @property {string} publishedAt
+ * @property {string} description
+ * @property {string} imageUrl
+ * @property {string} fetchedAt
+ * @property {string} source
  */
 
 /* ===== プロフィール / 作品 / 経歴データ（日英） ===== */
@@ -70,6 +80,7 @@ const STATS = [
   { num: "5", unit: { ja: "年", en: "yrs" }, label: { ja: "講師経験", en: "Teaching" } },
   { num: "6", unit: { ja: "", en: "" }, label: { ja: "公開OSS", en: "OSS projects" } },
   { num: "★7", unit: { ja: "", en: "" }, label: { ja: "GitHub Stars", en: "GitHub stars" } },
+  { num: "—", unit: { ja: "DL", en: "DL" }, label: { ja: "配布数（直近）", en: "Installs (recent)" } },
 ];
 
 /* 「こんな相談、歓迎です」 */
@@ -170,6 +181,24 @@ const WORKS = [
     },
     tech: ["PowerShell", "Windows Terminal"],
     repo: "https://github.com/ishizakahiroshi/setpanel",
+  },
+  {
+    id: "dl-stats",
+    initials: "dl",
+    c: "#ff7a3d",
+    stars: 0,
+    cat: { ja: "Webダッシュボード / Cloudflare Workers", en: "Web Dashboard / Cloudflare Workers" },
+    short: {
+      ja: "自作OSSの配布数・Star数をリアルタイム可視化するダッシュボード。Cloudflare無料枠で完全運用。",
+      en: "Real-time dashboard visualising my OSS download counts and stars — runs entirely on Cloudflare's free tier.",
+    },
+    long: {
+      ja: "npm・GitHub Releases・Starを自動ディスカバリで集めて1画面に表示するダッシュボードです。Cloudflare Workers（HonoベースAPI）+KV（SWRキャッシュ）+D1（日次スナップショット）+Cron Triggers で構成し、完全無料で運用しています。「無料クラウドでここまでできる」を自分で実証した実例です。",
+      en: "Auto-discovers my OSS tools and visualises npm downloads, GitHub Releases DL counts, and stars in one view. Built on Cloudflare Workers (Hono API) + KV (SWR cache) + D1 (daily snapshots) + Cron Triggers — zero cost. A living proof of how far free-tier cloud can go.",
+    },
+    tech: ["React", "TypeScript", "Hono", "Cloudflare Workers", "KV", "D1", "Vite", "Tailwind CSS"],
+    repo: "https://github.com/ishizakahiroshi/dl-stats",
+    live: "https://dl-stats.ishizakahiroshi.workers.dev",
   },
   {
     id: "ShotTTL",
@@ -292,7 +321,14 @@ const PERSONA = [
 const I18N = {
   ja: {
     "nav.works": "作品", "nav.experience": "経歴", "nav.cando": "できること", "nav.about": "About", "nav.person": "人となり", "nav.contact": "Contact",
-    "label.person": "人となり", "label.contact": "Contact",
+    "label.person": "人となり", "label.latest": "Latest", "label.contact": "Contact",
+    "latest.noteHeading": "note の最新記事", "latest.xHeading": "X の最新投稿",
+    "latest.loading": "最新記事を読み込んでいます。",
+    "latest.noteFallback": "最新記事を取得できませんでした。note のプロフィールからご覧ください。",
+    "latest.noteProfile": "note のプロフィールを開く",
+    "latest.readNote": "記事を読む",
+    "latest.xProfile": "X のプロフィールを開く",
+    "latest.privacy": "X の埋め込み表示では、閲覧情報が X に送信される場合があります。パーソナライズを抑制する設定を有効にしています。",
     "about.philosophy": "日々の小さな“不便”を、自分の手で解く。",
     "about.philosophy.sub": "公開しているツールは、ほとんどが自分や現場の困りごとから生まれたものです。「買うより作った方が早い」を素早く形にできるのが強みです。",
     "about.coreLabel": "強み（コア・コンピタンス）",
@@ -314,12 +350,19 @@ const I18N = {
     "about.p1": "新しい技術を追うこと自体が目的ではありません。目の前の課題を解くための手段として、AI・モダンスタック・自社運用インフラまで幅広く使い分けています。製造業の業務システム設計から、人材派遣業の社内システム開発まで、立ち上げから運用まで一貫して関わってきました。",
     "about.p2": "X では、取り繕わずに思っていることをそのまま書いています。整えた発信より、実際に何を考えている人間かを見てもらった方が早い。尖って見える部分も含めて自分なので、合う方と気持ちよく組めればと思っています。",
     "footer.copy": "© 2026 ishizakahiroshi — 業務委託・受注のご相談はお気軽に。",
-    "detail.back": "一覧へ戻る", "detail.overview": "Overview", "detail.tech": "Tech Stack", "detail.viewRepo": "GitHubで見る", "detail.viewStore": "Chrome ウェブストアで見る",
+    "detail.back": "一覧へ戻る", "detail.overview": "Overview", "detail.tech": "Tech Stack", "detail.viewRepo": "GitHubで見る", "detail.viewStore": "Chrome ウェブストアで見る", "detail.viewLive": "ダッシュボードを開く",
     "detail.notfound": "作品が見つかりませんでした。",
   },
   en: {
     "nav.works": "Works", "nav.experience": "Experience", "nav.cando": "Can Do", "nav.about": "About", "nav.person": "Life", "nav.contact": "Contact",
-    "label.person": "Off the Clock", "label.contact": "Contact",
+    "label.person": "Off the Clock", "label.latest": "Latest", "label.contact": "Contact",
+    "latest.noteHeading": "Latest on note", "latest.xHeading": "Latest on X",
+    "latest.loading": "Loading the latest article.",
+    "latest.noteFallback": "The latest article is unavailable. Visit the note profile instead.",
+    "latest.noteProfile": "Open note profile",
+    "latest.readNote": "Read article",
+    "latest.xProfile": "Open X profile",
+    "latest.privacy": "The embedded X timeline may send browsing information to X. Personalization-limiting settings are enabled.",
     "about.philosophy": "I solve the small daily frictions myself, by hand.",
     "about.philosophy.sub": "Almost everything I open-source grew out of a problem I (or my team) actually had. My strength is quickly turning “faster to build than to buy” into something real.",
     "about.coreLabel": "Core Competence",
@@ -341,7 +384,7 @@ const I18N = {
     "about.p1": "Chasing new technology is not the goal. I reach for AI, modern stacks, and self-hosted infrastructure as means to solve the problem in front of me. From designing business systems in manufacturing to building in-house systems for the staffing industry, I've been involved end-to-end, from launch to operation.",
     "about.p2": "On X, I write what I actually think, unpolished. Rather than a curated feed, it's faster to just show you what kind of person I really am. The edges are part of me too — I'd rather work with people who genuinely fit.",
     "footer.copy": "© 2026 ishizakahiroshi — Open to contract work. Feel free to reach out.",
-    "detail.back": "Back to list", "detail.overview": "Overview", "detail.tech": "Tech Stack", "detail.viewRepo": "View on GitHub", "detail.viewStore": "View on Chrome Web Store",
+    "detail.back": "Back to list", "detail.overview": "Overview", "detail.tech": "Tech Stack", "detail.viewRepo": "View on GitHub", "detail.viewStore": "View on Chrome Web Store", "detail.viewLive": "Open dashboard",
     "detail.notfound": "Work not found.",
   },
 };
@@ -462,6 +505,148 @@ function renderStats(lang) {
   ).join("");
 }
 
+/** @type {LatestNote | null} */
+let latestNote = null;
+/** @type {"loading" | "ready" | "error"} */
+let latestNoteState = "loading";
+
+/**
+ * @param {string} value
+ * @param {"note" | "image"} kind
+ * @returns {string | null}
+ */
+function safeLatestUrl(value, kind) {
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "https:") return null;
+    if (kind === "note" && url.hostname !== "note.com") return null;
+    return url.href;
+  } catch {
+    return null;
+  }
+}
+
+/** @param {Lang} lang */
+function renderLatestNote(lang) {
+  const root = document.getElementById("latest-note-card");
+  if (!root) return;
+  root.replaceChildren();
+
+  if (latestNoteState === "loading") {
+    const loading = document.createElement("p");
+    loading.textContent = t("latest.loading", lang);
+    root.appendChild(loading);
+    return;
+  }
+
+  const articleUrl = latestNote ? safeLatestUrl(latestNote.url, "note") : null;
+  const published = latestNote ? new Date(latestNote.publishedAt) : null;
+  if (!latestNote || !articleUrl || !published || Number.isNaN(published.getTime())) {
+    const message = document.createElement("p");
+    message.className = "latest-fallback";
+    message.textContent = t("latest.noteFallback", lang);
+    const link = document.createElement("a");
+    link.className = "latest-profile-link";
+    link.href = PROFILE.note;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = `${t("latest.noteProfile", lang)} →`;
+    root.append(message, link);
+    return;
+  }
+
+  const imageUrl = safeLatestUrl(latestNote.imageUrl, "image");
+  if (imageUrl) {
+    const image = document.createElement("img");
+    image.className = "latest-note-image";
+    image.src = imageUrl;
+    image.alt = "";
+    image.loading = "lazy";
+    image.decoding = "async";
+    root.appendChild(image);
+  }
+
+  const date = document.createElement("time");
+  date.className = "latest-date";
+  date.dateTime = latestNote.publishedAt;
+  date.textContent = new Intl.DateTimeFormat(lang === "ja" ? "ja-JP" : "en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(published);
+
+  const title = document.createElement("h3");
+  title.textContent = latestNote.title;
+  root.append(date, title);
+
+  if (latestNote.description) {
+    const description = document.createElement("p");
+    description.className = "latest-description";
+    description.textContent = latestNote.description;
+    root.appendChild(description);
+  }
+
+  const link = document.createElement("a");
+  link.className = "latest-profile-link";
+  link.href = articleUrl;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.textContent = `${t("latest.readNote", lang)} →`;
+  root.appendChild(link);
+}
+
+async function loadLatestNote() {
+  try {
+    const response = await fetch("assets/latest-note.json", { cache: "no-cache" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = /** @type {LatestNote} */ (await response.json());
+    if (!data || typeof data.title !== "string" || typeof data.url !== "string" ||
+        typeof data.publishedAt !== "string" || typeof data.description !== "string" ||
+        typeof data.imageUrl !== "string") {
+      throw new Error("Invalid latest-note.json");
+    }
+    latestNote = data;
+    latestNoteState = "ready";
+  } catch (error) {
+    console.warn("Latest note could not be loaded.", error);
+    latestNote = null;
+    latestNoteState = "error";
+  }
+  renderLatestNote(getLang());
+}
+
+async function fetchDlStats() {
+  try {
+    const res = await fetch("https://dl-stats.ishizakahiroshi.workers.dev/api/stats.json");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    /** @type {any} */
+    const data = await res.json();
+    // Update totals in STATS array
+    const starsEntry = STATS.find((s) => s.label.ja === "GitHub Stars");
+    if (starsEntry && typeof data.totals?.stars === "number") {
+      starsEntry.num = `★${data.totals.stars}`;
+    }
+    const dlEntry = STATS.find((s) => s.label.ja === "配布数（直近）");
+    if (dlEntry && typeof data.cumulativeInstalls === "number") {
+      dlEntry.num = data.cumulativeInstalls.toLocaleString();
+    }
+    // Update individual work star counts
+    if (Array.isArray(data.tools)) {
+      for (const tool of data.tools) {
+        const w = WORKS.find((x) => x.repo === `https://github.com/${tool.repo}`);
+        if (w && typeof tool.metrics?.stars === "number") {
+          w.stars = tool.metrics.stars;
+        }
+      }
+    }
+    const lang = getLang();
+    renderStats(lang);
+    renderWorks(lang);
+  } catch (e) {
+    console.warn("dl-stats fetch failed", e);
+  }
+}
+
 /** @param {Lang} lang */
 function renderContact(lang) {
   const list = document.getElementById("welcome-list");
@@ -533,6 +718,7 @@ function renderDetail(lang) {
     `<h2>${t("detail.tech", lang)}</h2><div class="tech-tags">${w.tech.map((x) => `<span class="chip">${x}</span>`).join("")}</div>` +
     `<div class="detail-cta"><a class="btn primary" href="${w.repo}" target="_blank" rel="noopener">${t("detail.viewRepo", lang)} <span class="arrow">→</span></a>` +
     (w.store ? `<a class="btn ghost" href="${w.store}" target="_blank" rel="noopener">${t("detail.viewStore", lang)} <span class="arrow">→</span></a>` : "") +
+    (w.live ? `<a class="btn ghost" href="${w.live}" target="_blank" rel="noopener">${t("detail.viewLive", lang)} <span class="arrow">→</span></a>` : "") +
     `</div>` +
     `</div>`;
 }
