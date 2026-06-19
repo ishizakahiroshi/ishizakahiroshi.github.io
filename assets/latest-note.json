@@ -1,9 +1,9 @@
 {
-  "title": "Cursorが9兆円で買われた。狙いはAIの柱を丸ごと握ることだと思う",
-  "url": "https://note.com/ishizakahiroshi/n/nf4bc4cdd62b9",
-  "publishedAt": "2026-06-18T08:45:11.0000000+00:00",
-  "description": "「VS Codeのフォークに9兆円?」が最初の感想だった",
-  "imageUrl": "https://assets.st-note.com/production/uploads/images/286546422/rectangle_large_type_2_c0939138fc45951811914553b1d785be.png?width=800",
-  "fetchedAt": "2026-06-18T11:27:06.2813252+00:00",
+  "title": "Claudeが `court` と言って止まる。気のせいかと思ってログを数えた",
+  "url": "https://note.com/ishizakahiroshi/n/n54943711627d",
+  "publishedAt": "2026-06-19T09:50:09.0000000+00:00",
+  "description": "Claude Code を使っていると、たまにこんなものが出てきます。 court<invoke name=\"Read\">...</invoke>",
+  "imageUrl": "https://assets.st-note.com/production/uploads/images/286849833/rectangle_large_type_2_8b113c87165e116d96f3f9eb215ef910.png?width=800",
+  "fetchedAt": "2026-06-19T10:58:06.2612773+00:00",
   "source": "https://note.com/ishizakahiroshi/rss"
 }
