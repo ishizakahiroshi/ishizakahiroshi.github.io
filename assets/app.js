@@ -320,7 +320,7 @@ const PERSONA = [
 /** @type {Record<Lang, Record<string, string>>} */
 const I18N = {
   ja: {
-    "nav.works": "作品", "nav.experience": "経歴", "nav.cando": "できること", "nav.about": "About", "nav.person": "人となり", "nav.contact": "Contact", "nav.stats": "数字",
+    "nav.works": "作品", "nav.experience": "経歴", "nav.cando": "できること", "nav.about": "About", "nav.person": "人となり", "nav.contact": "Contact", "nav.stats": "アプリDL数",
     "label.person": "人となり", "label.latest": "Latest", "label.contact": "Contact",
     "latest.noteHeading": "note の最新記事", "latest.xHeading": "X の最新投稿",
     "latest.loading": "最新記事を読み込んでいます。",
@@ -347,6 +347,7 @@ const I18N = {
     "label.stack": "主な技術スタック",
     "exp.current": "現職",
     "card.go": "詳細を見る",
+    "cta.stats.cat": "LIVE DASHBOARD", "cta.stats.title": "アプリDL数", "cta.stats.desc": "公開中の OSS のダウンロード数・Star 数をリアルタイム集計。", "cta.stats.go": "アプリDL数はコチラ",
     "about.p1": "新しい技術を追うこと自体が目的ではありません。目の前の課題を解くための手段として、AI・モダンスタック・自社運用インフラまで幅広く使い分けています。製造業の業務システム設計から、人材派遣業の社内システム開発まで、立ち上げから運用まで一貫して関わってきました。",
     "about.p2": "X では、取り繕わずに思っていることをそのまま書いています。整えた発信より、実際に何を考えている人間かを見てもらった方が早い。尖って見える部分も含めて自分なので、合う方と気持ちよく組めればと思っています。",
     "footer.copy": "© 2026 ishizakahiroshi — 業務委託・受注のご相談はお気軽に。",
@@ -354,7 +355,7 @@ const I18N = {
     "detail.notfound": "作品が見つかりませんでした。",
   },
   en: {
-    "nav.works": "Works", "nav.experience": "Experience", "nav.cando": "Can Do", "nav.about": "About", "nav.person": "Life", "nav.contact": "Contact", "nav.stats": "Stats",
+    "nav.works": "Works", "nav.experience": "Experience", "nav.cando": "Can Do", "nav.about": "About", "nav.person": "Life", "nav.contact": "Contact", "nav.stats": "Downloads",
     "label.person": "Off the Clock", "label.latest": "Latest", "label.contact": "Contact",
     "latest.noteHeading": "Latest on note", "latest.xHeading": "Latest on X",
     "latest.loading": "Loading the latest article.",
@@ -381,6 +382,7 @@ const I18N = {
     "label.stack": "Tech Stack",
     "exp.current": "Current",
     "card.go": "View details",
+    "cta.stats.cat": "LIVE DASHBOARD", "cta.stats.title": "App Downloads", "cta.stats.desc": "Real-time download & star counts for my OSS.", "cta.stats.go": "Open the dashboard",
     "about.p1": "Chasing new technology is not the goal. I reach for AI, modern stacks, and self-hosted infrastructure as means to solve the problem in front of me. From designing business systems in manufacturing to building in-house systems for the staffing industry, I've been involved end-to-end, from launch to operation.",
     "about.p2": "On X, I write what I actually think, unpolished. Rather than a curated feed, it's faster to just show you what kind of person I really am. The edges are part of me too — I'd rather work with people who genuinely fit.",
     "footer.copy": "© 2026 ishizakahiroshi — Open to contract work. Feel free to reach out.",
@@ -456,6 +458,23 @@ function renderWorks(lang) {
       `<span class="go">${t("card.go", lang)} <span class="arrow">→</span></span>`;
     grid.appendChild(a);
   });
+  // dl-stats ダッシュボードへの直リンク CTA カード（詳細ページではなく稼働中ダッシュボードを新タブで開く）
+  const cta = document.createElement("a");
+  cta.className = "card card-cta reveal";
+  cta.href = "https://dl-stats.ishizakahiroshi.workers.dev";
+  cta.target = "_blank";
+  cta.rel = "noopener";
+  cta.style.setProperty("--c", "#ff7a3d");
+  cta.style.animationDelay = WORKS.length * 0.06 + "s";
+  cta.setAttribute("aria-label", t("cta.stats.title", lang));
+  cta.innerHTML =
+    `<div class="badge" style="--c:#ff7a3d">DL</div>` +
+    `<div class="cat">${t("cta.stats.cat", lang)}</div>` +
+    `<h3>${t("cta.stats.title", lang)}</h3>` +
+    `<p>${t("cta.stats.desc", lang)}</p>` +
+    `<div class="meta"></div>` +
+    `<span class="go">${t("cta.stats.go", lang)} <span class="arrow">→</span></span>`;
+  grid.appendChild(cta);
 }
 
 /** @param {Lang} lang */
