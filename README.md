@@ -23,10 +23,13 @@ npx -p typescript tsc --noEmit --allowJs --checkJs --target ES2020 --lib ES2020,
 
 | ファイル | 役割 |
 |---|---|
-| `index.html` | トップ（ヒーロー / Works / Experience / Can Do / About / Footer） |
+| `index.html` | トップ（Works / Experience / Can Do / About / Latest / Contact / Footer） |
 | `work.html?id=<slug>` | 作品詳細ページ（1ファイルで全作品を表示） |
 | `assets/style.css` | 共通スタイル（ダークグラス・グラデ背景・ホバー演出） |
 | `assets/app.js` | プロフィール・作品・経歴データ ＋ 日英多言語 ＋ 描画ロジック |
+| `assets/latest-note.json` | note公式RSSから生成した最新記事1件 |
+| `scripts/update-latest-note.ps1` | note最新記事JSONの更新スクリプト |
+| `.github/workflows/update-latest-note.yml` | 6時間ごとの自動更新と手動実行 |
 | `.nojekyll` | GitHub Pages の Jekyll 処理を無効化 |
 
 ## 中身を編集する
@@ -55,6 +58,21 @@ npx -p typescript tsc --noEmit --allowJs --checkJs --target ES2020 --lib ES2020,
 python -m http.server 8000
 # → http://localhost:8000/
 ```
+
+## Latest セクション
+
+noteは公式RSS `https://note.com/ishizakahiroshi/rss` をGitHub Actionsで6時間ごとに取得し、最新1件だけを `assets/latest-note.json` に保存します。ブラウザからRSSを直接取得しないため、CORSや一時障害がトップページへ波及しません。
+
+```powershell
+# ローカルで更新
+pwsh -NoProfile -File scripts/update-latest-note.ps1
+
+# GitHub Actionsでは Actions → Update latest note → Run workflow
+```
+
+同じ内容を再取得した場合はJSONを変更しません。RSS取得・解析・検証に失敗した場合も既存JSONを保持し、Workflowだけを失敗として記録します。障害時はWorkflowログの `Fetch latest note article` を確認してください。
+
+Xは投稿データをスクレイピング・保存せず、X公式のプロフィールタイムラインを最新1件・`dnt`有効で表示します。埋め込みがブロックされた場合やJavaScriptが無効な場合でも、プロフィールへの通常リンクは利用できます。公式iframe内部の表示要素は独自CSSで変更しません。
 
 ## GitHub Pages 公開（後で）
 
