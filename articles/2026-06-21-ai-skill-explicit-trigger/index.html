@@ -13,6 +13,12 @@
 <meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026-06-21-ai-skill-explicit-trigger/">
 <meta property="og:site_name" content="ishizakahiroshi">
 <meta name="twitter:card" content="summary_large_image">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026-06-21-ai-skill-explicit-trigger/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026-06-21-ai-skill-explicit-trigger/hero.png">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
@@ -90,7 +96,10 @@
             padding:6px 14px;border-radius:999px;border:2px solid var(--ink);
             background:var(--card);color:var(--ink);text-decoration:none}
   .nav-back:hover{background:var(--accent);color:#fff}
-  @media print{ body{background:#fff} .card{box-shadow:none} }
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;
+        box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  @media print{ body{background:#fff} .card{box-shadow:none} .hero{box-shadow:none} }
 </style>
 </head>
 <body>
@@ -105,6 +114,10 @@
 </div>
 
 <h1>AI スキル取り逃しを 1 文字のトリガーで塞いだ話</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="「無い」って言われたので 1文字で塞ぐ — タイトルロゴと封筒に並ぶ S のチェック項目、看板猫 2 匹のヒーロー画像" width="1280" height="670">
+</div>
 
 <p class="lead">
 AI コーディングエージェントの「スキル」機構は便利だが、AI が手元のスキルを per-turn の通知精度に依存して判定するため、登録済みなのに「無い」と判断されることがある。本稿はその取り逃しを <b>暗黙トリガー（遅延ロード）</b> と <b>明示トリガー <code>S</code></b> の二段構えで塞いだ設計判断の記録。同じ問題に当たった人が手元の運用に転用できる形でまとめている。
