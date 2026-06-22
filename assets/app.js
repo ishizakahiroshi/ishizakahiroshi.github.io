@@ -11,6 +11,11 @@
  */
 
 /**
+ * @typedef {Object} WorkDl  作品の動的 DL 情報（dl-stats 由来）
+ * @property {number} [releases]      Releases の累計 DL 数
+ * @property {number} [npm30d]        npm 直近 30 日 DL 数
+ * @property {number[]} [sparkReleases]  30 日 sparkline 用の Releases 系列（古い順）
+ *
  * @typedef {Object} Work  作品（カード／詳細ページ共通）
  * @property {string} id        URLスラッグ兼表示名
  * @property {string} initials  バッジ表示の略号
@@ -23,6 +28,7 @@
  * @property {string} repo
  * @property {string} [store]   任意：ストア等の外部リンク（あればボタン追加）
  * @property {string} [live]    任意：ライブデモ等のリンク
+ * @property {WorkDl} [dl]      任意：dl-stats から動的に詰める DL 情報
  */
 
 /**
@@ -320,8 +326,10 @@ const PERSONA = [
 /** @type {Record<Lang, Record<string, string>>} */
 const I18N = {
   ja: {
-    "nav.works": "作品", "nav.experience": "経歴", "nav.cando": "できること", "nav.about": "About", "nav.person": "人となり", "nav.contact": "Contact", "nav.stats": "アプリDL数",
-    "label.person": "人となり", "label.latest": "Latest", "label.contact": "Contact",
+    "nav.works": "作品", "nav.experience": "経歴", "nav.cando": "できること", "nav.about": "About", "nav.person": "人となり", "nav.articles": "記事", "nav.contact": "Contact", "nav.stats": "アプリDL数",
+    "label.person": "人となり", "label.latest": "Latest", "label.articles": "Articles", "label.contact": "Contact",
+    "articles.loading": "記事を読み込んでいます。",
+    "articles.empty": "現在表示できる記事がありません。",
     "latest.noteHeading": "note の最新記事", "latest.xHeading": "X の最新投稿",
     "latest.loading": "最新記事を読み込んでいます。",
     "latest.noteFallback": "最新記事を取得できませんでした。note のプロフィールからご覧ください。",
@@ -347,7 +355,9 @@ const I18N = {
     "label.stack": "主な技術スタック",
     "exp.current": "現職",
     "card.go": "詳細を見る",
-    "cta.stats.cat": "LIVE DASHBOARD", "cta.stats.title": "アプリDL数", "cta.stats.desc": "公開中の OSS のダウンロード数・Star 数をリアルタイム集計。", "cta.stats.go": "アプリDL数はコチラ",
+    "card.dl.aria": "Releases ダウンロード数",
+    "card.npm.aria": "npm 直近 30 日 ダウンロード数",
+    "cta.stats.cat": "LIVE DASHBOARD", "cta.stats.title": "アプリDL数", "cta.stats.desc": "公開中の OSS のダウンロード数・Star 数をリアルタイム集計。", "cta.stats.descLive": "のべ {dl} DL / ★ {stars}", "cta.stats.go": "アプリDL数はコチラ",
     "about.p1": "新しい技術を追うこと自体が目的ではありません。目の前の課題を解くための手段として、AI・モダンスタック・自社運用インフラまで幅広く使い分けています。製造業の業務システム設計から、人材派遣業の社内システム開発まで、立ち上げから運用まで一貫して関わってきました。",
     "about.p2": "X では、取り繕わずに思っていることをそのまま書いています。整えた発信より、実際に何を考えている人間かを見てもらった方が早い。尖って見える部分も含めて自分なので、合う方と気持ちよく組めればと思っています。",
     "footer.copy": "© 2026 ishizakahiroshi — 業務委託・受注のご相談はお気軽に。",
@@ -355,8 +365,10 @@ const I18N = {
     "detail.notfound": "作品が見つかりませんでした。",
   },
   en: {
-    "nav.works": "Works", "nav.experience": "Experience", "nav.cando": "Can Do", "nav.about": "About", "nav.person": "Life", "nav.contact": "Contact", "nav.stats": "Downloads",
-    "label.person": "Off the Clock", "label.latest": "Latest", "label.contact": "Contact",
+    "nav.works": "Works", "nav.experience": "Experience", "nav.cando": "Can Do", "nav.about": "About", "nav.person": "Life", "nav.articles": "Articles", "nav.contact": "Contact", "nav.stats": "Downloads",
+    "label.person": "Off the Clock", "label.latest": "Latest", "label.articles": "Articles", "label.contact": "Contact",
+    "articles.loading": "Loading articles.",
+    "articles.empty": "No articles to show right now.",
     "latest.noteHeading": "Latest on note", "latest.xHeading": "Latest on X",
     "latest.loading": "Loading the latest article.",
     "latest.noteFallback": "The latest article is unavailable. Visit the note profile instead.",
@@ -382,7 +394,9 @@ const I18N = {
     "label.stack": "Tech Stack",
     "exp.current": "Current",
     "card.go": "View details",
-    "cta.stats.cat": "LIVE DASHBOARD", "cta.stats.title": "App Downloads", "cta.stats.desc": "Real-time download & star counts for my OSS.", "cta.stats.go": "Open the dashboard",
+    "card.dl.aria": "Releases downloads",
+    "card.npm.aria": "npm downloads, last 30 days",
+    "cta.stats.cat": "LIVE DASHBOARD", "cta.stats.title": "App Downloads", "cta.stats.desc": "Real-time download & star counts for my OSS.", "cta.stats.descLive": "{dl} downloads · ★ {stars}", "cta.stats.go": "Open the dashboard",
     "about.p1": "Chasing new technology is not the goal. I reach for AI, modern stacks, and self-hosted infrastructure as means to solve the problem in front of me. From designing business systems in manufacturing to building in-house systems for the staffing industry, I've been involved end-to-end, from launch to operation.",
     "about.p2": "On X, I write what I actually think, unpolished. Rather than a curated feed, it's faster to just show you what kind of person I really am. The edges are part of me too — I'd rather work with people who genuinely fit.",
     "footer.copy": "© 2026 ishizakahiroshi — Open to contract work. Feel free to reach out.",
@@ -437,6 +451,51 @@ function badgeHtml(w) {
   return `<div class="badge" style="--c:${w.c}">${w.initials}</div>`;
 }
 
+/**
+ * dl-stats から取得した合計値のキャッシュ。
+ * 同一セッション内で言語切替時に再 fetch しないため。
+ * @type {{ cumulativeInstalls: number, totalStars: number } | null}
+ */
+let dlStatsCache = null;
+
+/**
+ * 30 日 sparkline 用の軽量 SVG を生成する。
+ * @param {number[] | undefined} values  古い順の数値列
+ * @param {string} color                hex / CSS color
+ * @returns {string}                    HTML 文字列。描画不可なら ""
+ */
+function sparklineSvg(values, color) {
+  if (!Array.isArray(values) || values.length === 0) return "";
+  for (const v of values) {
+    if (typeof v !== "number" || !Number.isFinite(v)) return "";
+  }
+  const W = 80, H = 20, pad = 2;
+  const n = values.length;
+  let min = values[0], max = values[0];
+  for (const v of values) { if (v < min) min = v; if (v > max) max = v; }
+  const range = max - min;
+  const xStep = n > 1 ? (W - pad * 2) / (n - 1) : 0;
+  const points = values.map((v, i) => {
+    const x = pad + xStep * i;
+    const y = range === 0 ? H / 2 : pad + (H - pad * 2) * (1 - (v - min) / range);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
+  return `<svg class="spark-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">` +
+    `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+
+/**
+ * 単純なプレースホルダ置換（`{key}` 形式）。
+ * @param {string} template
+ * @param {Record<string, string | number>} vars
+ */
+function fillTemplate(template, vars) {
+  return template.replace(/\{(\w+)\}/g, (m, key) => {
+    const v = vars[key];
+    return v === undefined || v === null ? m : String(v);
+  });
+}
+
 /** @param {Lang} lang */
 function renderWorks(lang) {
   const grid = document.getElementById("works-grid");
@@ -448,13 +507,25 @@ function renderWorks(lang) {
     a.href = `work.html?id=${encodeURIComponent(w.id)}`;
     a.style.setProperty("--c", w.c);
     a.style.animationDelay = i * 0.06 + "s";
-    const star = w.stars > 0 ? `<span class="star">★ ${w.stars}</span>` : "";
+    /** @type {string[]} */
+    const metaParts = [];
+    if (w.stars > 0) metaParts.push(`<span class="star">★ ${w.stars}</span>`);
+    if (w.dl && typeof w.dl.releases === "number") {
+      metaParts.push(`<span class="dl" aria-label="${t("card.dl.aria", lang)}"><span class="arrow">↓</span> ${w.dl.releases}</span>`);
+    }
+    if (w.dl && typeof w.dl.npm30d === "number") {
+      metaParts.push(`<span class="dl npm" aria-label="${t("card.npm.aria", lang)}"><span class="arrow">↻</span> ${w.dl.npm30d} 30d</span>`);
+    }
+    const meta = metaParts.join(`<span class="sep">·</span>`);
+    const spark = sparklineSvg(w.dl?.sparkReleases, w.c);
+    const sparkHtml = spark ? `<div class="spark">${spark}</div>` : "";
     a.innerHTML =
       badgeHtml(w) +
       `<div class="cat">${w.cat[lang]}</div>` +
       `<h3>${w.id}</h3>` +
       `<p>${w.short[lang]}</p>` +
-      `<div class="meta">${star}</div>` +
+      `<div class="meta">${meta}</div>` +
+      sparkHtml +
       `<span class="go">${t("card.go", lang)} <span class="arrow">→</span></span>`;
     grid.appendChild(a);
   });
@@ -467,11 +538,17 @@ function renderWorks(lang) {
   cta.style.setProperty("--c", "#ff7a3d");
   cta.style.animationDelay = WORKS.length * 0.06 + "s";
   cta.setAttribute("aria-label", t("cta.stats.title", lang));
+  const ctaDesc = dlStatsCache
+    ? fillTemplate(t("cta.stats.descLive", lang), {
+        dl: dlStatsCache.cumulativeInstalls.toLocaleString(lang === "ja" ? "ja-JP" : "en-US"),
+        stars: dlStatsCache.totalStars,
+      })
+    : t("cta.stats.desc", lang);
   cta.innerHTML =
     `<div class="badge" style="--c:#ff7a3d">DL</div>` +
     `<div class="cat">${t("cta.stats.cat", lang)}</div>` +
     `<h3>${t("cta.stats.title", lang)}</h3>` +
-    `<p>${t("cta.stats.desc", lang)}</p>` +
+    `<p>${ctaDesc}</p>` +
     `<div class="meta"></div>` +
     `<span class="go">${t("cta.stats.go", lang)} <span class="arrow">→</span></span>`;
   grid.appendChild(cta);
@@ -634,6 +711,164 @@ async function loadLatestNote() {
   renderLatestNote(getLang());
 }
 
+/**
+ * @typedef {Object} ArticleLinks
+ * @property {string} [zenn]
+ * @property {string} [note]
+ * @property {string} [qiita]
+ * @property {string} [html]
+ *
+ * @typedef {Object} Article
+ * @property {string} date         YYYY-MM-DD
+ * @property {L10n} title
+ * @property {L10n} short
+ * @property {L10n} [tag]          記事タイプ（失敗談 / 設計判断 / ツール紹介 / エッセイ / 振り返り 等）
+ * @property {string} [hero]       相対パス（articles/<date>-<slug>/hero.png）
+ * @property {ArticleLinks} links  プラットフォーム別 URL（少なくとも 1 つ）
+ */
+
+/** @type {Article[]} */
+let articlesList = [];
+/** @type {"loading" | "ready" | "error"} */
+let articlesState = "loading";
+
+/**
+ * 記事の最終リンク先（HTML 版があればそれを、無ければ Zenn / note / Qiita のいずれか）
+ * @param {ArticleLinks} links
+ * @returns {string | null}
+ */
+function primaryArticleLink(links) {
+  if (links.html) return links.html;
+  if (links.zenn) return links.zenn;
+  if (links.note) return links.note;
+  if (links.qiita) return links.qiita;
+  return null;
+}
+
+/** @param {Lang} lang */
+function renderArticles(lang) {
+  const root = document.getElementById("articles-list");
+  if (!root) return;
+  root.replaceChildren();
+
+  if (articlesState === "loading") {
+    const p = document.createElement("p");
+    p.className = "articles-loading";
+    p.textContent = t("articles.loading", lang);
+    root.appendChild(p);
+    return;
+  }
+
+  if (articlesState === "error" || articlesList.length === 0) {
+    const p = document.createElement("p");
+    p.className = "articles-loading";
+    p.textContent = t("articles.empty", lang);
+    root.appendChild(p);
+    return;
+  }
+
+  for (const a of articlesList) {
+    const row = document.createElement("article");
+    row.className = "article-row";
+
+    const date = document.createElement("time");
+    date.className = "article-date";
+    date.dateTime = a.date;
+    date.textContent = a.date;
+    row.appendChild(date);
+
+    const thumb = document.createElement("div");
+    thumb.className = "article-thumb" + (a.hero ? "" : " empty");
+    if (a.hero) {
+      const img = document.createElement("img");
+      img.src = a.hero;
+      img.alt = "";
+      img.loading = "lazy";
+      img.decoding = "async";
+      thumb.appendChild(img);
+    } else {
+      thumb.textContent = lang === "ja" ? "hero なし" : "no hero";
+    }
+    row.appendChild(thumb);
+
+    const col = document.createElement("div");
+    col.className = "article-col";
+
+    const title = document.createElement("h3");
+    title.className = "article-title";
+    const titleText = a.title[lang] || a.title.ja;
+    const primary = primaryArticleLink(a.links);
+    if (primary) {
+      const titleLink = document.createElement("a");
+      titleLink.href = primary;
+      if (!primary.startsWith("articles/")) {
+        titleLink.target = "_blank";
+        titleLink.rel = "noopener noreferrer";
+      }
+      titleLink.textContent = titleText;
+      title.appendChild(titleLink);
+    } else {
+      title.textContent = titleText;
+    }
+    col.appendChild(title);
+
+    const desc = document.createElement("p");
+    desc.className = "article-desc";
+    desc.textContent = a.short[lang] || a.short.ja;
+    col.appendChild(desc);
+
+    const links = document.createElement("div");
+    links.className = "article-links";
+    const order = /** @type {const} */ (["zenn", "note", "qiita", "html"]);
+    const labels = { zenn: "Zenn", note: "note", qiita: "Qiita", html: lang === "ja" ? "HTML 版" : "HTML" };
+    for (const key of order) {
+      const url = a.links[key];
+      if (!url) continue;
+      const pill = document.createElement("a");
+      pill.className = `lpill lpill-${key}`;
+      pill.href = url;
+      if (!url.startsWith("articles/")) {
+        pill.target = "_blank";
+        pill.rel = "noopener noreferrer";
+      }
+      pill.innerHTML = `${labels[key]} <span aria-hidden="true">▶</span>`;
+      links.appendChild(pill);
+    }
+    col.appendChild(links);
+    row.appendChild(col);
+
+    if (a.tag) {
+      const tagBox = document.createElement("div");
+      tagBox.className = "article-right";
+      const tag = document.createElement("span");
+      tag.className = "article-tag";
+      tag.textContent = a.tag[lang] || a.tag.ja;
+      tagBox.appendChild(tag);
+      row.appendChild(tagBox);
+    }
+
+    root.appendChild(row);
+  }
+}
+
+async function loadArticles() {
+  try {
+    const response = await fetch("assets/articles.json", { cache: "no-cache" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    if (!data || !Array.isArray(data.articles)) {
+      throw new Error("Invalid articles.json");
+    }
+    articlesList = data.articles.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
+    articlesState = "ready";
+  } catch (error) {
+    console.warn("Articles could not be loaded.", error);
+    articlesList = [];
+    articlesState = "error";
+  }
+  renderArticles(getLang());
+}
+
 async function fetchDlStats() {
   try {
     const res = await fetch("https://dl-stats.ishizakahiroshi.workers.dev/api/stats.json");
@@ -649,12 +884,35 @@ async function fetchDlStats() {
     if (dlEntry && typeof data.cumulativeInstalls === "number") {
       dlEntry.num = data.cumulativeInstalls.toLocaleString();
     }
-    // Update individual work star counts
+    // 合計値を CTA カードの動的文言用にキャッシュ
+    if (typeof data.cumulativeInstalls === "number" && typeof data.totals?.stars === "number") {
+      dlStatsCache = {
+        cumulativeInstalls: data.cumulativeInstalls,
+        totalStars: data.totals.stars,
+      };
+    }
+    // Update individual work star counts / DL counts / sparkline
+    // dl-stats API の tool.repo は owner プレフィックス無しの末尾セグメントだけ
+    // （例: "many-ai-cli"）。WORKS[].repo は完全な GitHub URL なので、末尾
+    // セグメントどうしで突き合わせる。
     if (Array.isArray(data.tools)) {
       for (const tool of data.tools) {
-        const w = WORKS.find((x) => x.repo === `https://github.com/${tool.repo}`);
-        if (w && typeof tool.metrics?.stars === "number") {
+        if (typeof tool.repo !== "string") continue;
+        const toolSlug = tool.repo.split("/").pop();
+        const w = WORKS.find((x) => x.repo.split("/").pop() === toolSlug);
+        if (!w) continue;
+        if (typeof tool.metrics?.stars === "number") {
           w.stars = tool.metrics.stars;
+        }
+        if (!w.dl) w.dl = {};
+        if (typeof tool.metrics?.releasesTotal === "number") {
+          w.dl.releases = tool.metrics.releasesTotal;
+        }
+        if (typeof tool.metrics?.npm30d === "number") {
+          w.dl.npm30d = tool.metrics.npm30d;
+        }
+        if (Array.isArray(tool.spark?.releases)) {
+          w.dl.sparkReleases = tool.spark.releases;
         }
       }
     }
