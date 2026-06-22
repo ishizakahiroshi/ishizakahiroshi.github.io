@@ -496,6 +496,32 @@ function fillTemplate(template, vars) {
   });
 }
 
+/**
+ * カード / 詳細ページ 共通の作品メタ情報レンダリング。
+ * ★ / ↓ Releases DL / ↻ npm 30d DL（dl-stats から取得済みなら表示）と
+ * 30 日 sparkline をまとめて HTML 化する。同じクラス名（`.meta` / `.dl` /
+ * `.spark`）を返すので、両ページで同じ CSS が適用される。
+ * @param {Work} w
+ * @param {Lang} lang
+ * @returns {{ metaHtml: string, sparkHtml: string }}
+ */
+function renderWorkStats(w, lang) {
+  /** @type {string[]} */
+  const parts = [];
+  if (w.stars > 0) parts.push(`<span class="star">★ ${w.stars}</span>`);
+  if (w.dl && typeof w.dl.releases === "number") {
+    parts.push(`<span class="dl" aria-label="${t("card.dl.aria", lang)}"><span class="arrow">↓</span> ${w.dl.releases}</span>`);
+  }
+  if (w.dl && typeof w.dl.npm30d === "number") {
+    parts.push(`<span class="dl npm" aria-label="${t("card.npm.aria", lang)}"><span class="arrow">↻</span> ${w.dl.npm30d} 30d</span>`);
+  }
+  const meta = parts.join(`<span class="sep">·</span>`);
+  const metaHtml = `<div class="meta">${meta}</div>`;
+  const spark = sparklineSvg(w.dl?.sparkReleases, w.c);
+  const sparkHtml = spark ? `<div class="spark">${spark}</div>` : "";
+  return { metaHtml, sparkHtml };
+}
+
 /** @param {Lang} lang */
 function renderWorks(lang) {
   const grid = document.getElementById("works-grid");
@@ -507,24 +533,13 @@ function renderWorks(lang) {
     a.href = `work.html?id=${encodeURIComponent(w.id)}`;
     a.style.setProperty("--c", w.c);
     a.style.animationDelay = i * 0.06 + "s";
-    /** @type {string[]} */
-    const metaParts = [];
-    if (w.stars > 0) metaParts.push(`<span class="star">★ ${w.stars}</span>`);
-    if (w.dl && typeof w.dl.releases === "number") {
-      metaParts.push(`<span class="dl" aria-label="${t("card.dl.aria", lang)}"><span class="arrow">↓</span> ${w.dl.releases}</span>`);
-    }
-    if (w.dl && typeof w.dl.npm30d === "number") {
-      metaParts.push(`<span class="dl npm" aria-label="${t("card.npm.aria", lang)}"><span class="arrow">↻</span> ${w.dl.npm30d} 30d</span>`);
-    }
-    const meta = metaParts.join(`<span class="sep">·</span>`);
-    const spark = sparklineSvg(w.dl?.sparkReleases, w.c);
-    const sparkHtml = spark ? `<div class="spark">${spark}</div>` : "";
+    const { metaHtml, sparkHtml } = renderWorkStats(w, lang);
     a.innerHTML =
       badgeHtml(w) +
       `<div class="cat">${w.cat[lang]}</div>` +
       `<h3>${w.id}</h3>` +
       `<p>${w.short[lang]}</p>` +
-      `<div class="meta">${meta}</div>` +
+      metaHtml +
       sparkHtml +
       `<span class="go">${t("card.go", lang)} <span class="arrow">→</span></span>`;
     grid.appendChild(a);
@@ -919,6 +934,7 @@ async function fetchDlStats() {
     const lang = getLang();
     renderStats(lang);
     renderWorks(lang);
+    renderDetail(lang);
   } catch (e) {
     console.warn("dl-stats fetch failed", e);
   }
@@ -985,10 +1001,11 @@ function renderDetail(lang) {
   }
   document.title = `${w.id} — ${PROFILE.nameEn}`;
   root.style.setProperty("--c", w.c);
+  const { metaHtml, sparkHtml } = renderWorkStats(w, lang);
   root.innerHTML =
     `<div class="detail-head" style="--c:${w.c}">` +
     badgeHtml(w) +
-    `<div><div class="cat">${w.cat[lang]}</div><h1>${w.id}</h1></div>` +
+    `<div><div class="cat">${w.cat[lang]}</div><h1>${w.id}</h1>${metaHtml}${sparkHtml}</div>` +
     `</div>` +
     `<div class="detail-body" style="--c:${w.c}">` +
     `<h2>${t("detail.overview", lang)}</h2><p>${w.long[lang]}</p>` +
