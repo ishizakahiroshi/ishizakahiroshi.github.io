@@ -5,6 +5,22 @@
   },
   "articles": [
     {
+      "date": "2026-06-22",
+      "title": {
+        "ja": "Claude Code の常駐 context を 14% 削った話。disabledTools は存在しなかった",
+        "en": "Trimming 14% off Claude Code's resident context — disabledTools was a myth"
+      },
+      "short": {
+        "ja": "/context で見つけた 80k 常駐を CLAUDE.md 分割と settings.json で -11.2k に。disabledTools 神話と本物の公式キーの整理つき。",
+        "en": "From /context's 80k of resident tokens to -11.2k via CLAUDE.md splits and settings.json — plus the truth about disabledTools."
+      },
+      "tag": { "ja": "設計判断", "en": "Design note" },
+      "hero": "articles/2026/2026-06-22_claude-code-context-diet/hero.png",
+      "links": {
+        "html": "articles/2026/2026-06-22_claude-code-context-diet/"
+      }
+    },
+    {
       "date": "2026-06-21",
       "title": {
         "ja": "AI スキル取り逃しを 1 文字のトリガーで塞いだ話",
@@ -15,9 +31,9 @@
         "en": "A design pattern that closes AI skill misses without depending on per-turn notification accuracy."
       },
       "tag": { "ja": "設計判断", "en": "Design note" },
-      "hero": "articles/2026-06-21-ai-skill-explicit-trigger/hero.png",
+      "hero": "articles/2026/2026-06-21_ai-skill-explicit-trigger/hero.png",
       "links": {
-        "html": "articles/2026-06-21-ai-skill-explicit-trigger/"
+        "html": "articles/2026/2026-06-21_ai-skill-explicit-trigger/"
       }
     },
     {

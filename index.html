@@ -105,40 +105,6 @@
   </div>
 </section>
 
-<section class="block" id="latest">
-  <div class="wrap">
-    <div class="section-label" data-i18n="label.latest">Latest</div>
-    <div class="latest-grid">
-      <article class="latest-card latest-note" aria-labelledby="latest-note-heading">
-        <div class="latest-card-head">
-          <span class="latest-service">note</span>
-          <h2 id="latest-note-heading" data-i18n="latest.noteHeading">note の最新記事</h2>
-        </div>
-        <div id="latest-note-card" class="latest-note-body" aria-live="polite">
-          <p data-i18n="latest.loading">最新記事を読み込んでいます。</p>
-        </div>
-      </article>
-
-      <article class="latest-card latest-x" aria-labelledby="latest-x-heading">
-        <div class="latest-card-head">
-          <span class="latest-service">X</span>
-          <h2 id="latest-x-heading" data-i18n="latest.xHeading">X の最新投稿</h2>
-        </div>
-        <div class="x-embed">
-          <a class="twitter-timeline"
-             data-tweet-limit="1"
-             data-dnt="true"
-             href="https://x.com/ishizakahiroshi">Posts by ishizakahiroshi</a>
-        </div>
-        <a class="latest-profile-link" href="https://x.com/ishizakahiroshi" target="_blank" rel="noopener noreferrer">
-          <span data-i18n="latest.xProfile">X のプロフィールを開く</span> <span aria-hidden="true">→</span>
-        </a>
-      </article>
-    </div>
-    <p class="embed-privacy" data-i18n="latest.privacy">X の埋め込み表示では、閲覧情報が X に送信される場合があります。パーソナライズを抑制する設定を有効にしています。</p>
-  </div>
-</section>
-
 <section class="block" id="articles">
   <div class="wrap">
     <div class="section-label" data-i18n="label.articles">Articles</div>
@@ -191,16 +157,13 @@
     renderCanDo(lang);
     renderStats(lang);
     renderPersona(lang);
-    renderLatestNote(lang);
     renderArticles(lang);
     renderContact(lang);
   };
   initLangToggle();
-  loadLatestNote();
   loadArticles();
   fetchDlStats();
 </script>
-<script async src="https://platform.x.com/widgets.js" charset="utf-8"></script>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b17fba99b7794695bff268ab90824f71"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

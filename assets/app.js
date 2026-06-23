@@ -53,15 +53,6 @@
  * @property {string[]} items
  *
  * @typedef {{ emoji: string } & L10n} Persona  人となり1項目
- *
- * @typedef {Object} LatestNote
- * @property {string} title
- * @property {string} url
- * @property {string} publishedAt
- * @property {string} description
- * @property {string} imageUrl
- * @property {string} fetchedAt
- * @property {string} source
  */
 
 /* ===== プロフィール / 作品 / 経歴データ（日英） ===== */
@@ -616,116 +607,6 @@ function renderStats(lang) {
   ).join("");
 }
 
-/** @type {LatestNote | null} */
-let latestNote = null;
-/** @type {"loading" | "ready" | "error"} */
-let latestNoteState = "loading";
-
-/**
- * @param {string} value
- * @param {"note" | "image"} kind
- * @returns {string | null}
- */
-function safeLatestUrl(value, kind) {
-  try {
-    const url = new URL(value);
-    if (url.protocol !== "https:") return null;
-    if (kind === "note" && url.hostname !== "note.com") return null;
-    return url.href;
-  } catch {
-    return null;
-  }
-}
-
-/** @param {Lang} lang */
-function renderLatestNote(lang) {
-  const root = document.getElementById("latest-note-card");
-  if (!root) return;
-  root.replaceChildren();
-
-  if (latestNoteState === "loading") {
-    const loading = document.createElement("p");
-    loading.textContent = t("latest.loading", lang);
-    root.appendChild(loading);
-    return;
-  }
-
-  const articleUrl = latestNote ? safeLatestUrl(latestNote.url, "note") : null;
-  const published = latestNote ? new Date(latestNote.publishedAt) : null;
-  if (!latestNote || !articleUrl || !published || Number.isNaN(published.getTime())) {
-    const message = document.createElement("p");
-    message.className = "latest-fallback";
-    message.textContent = t("latest.noteFallback", lang);
-    const link = document.createElement("a");
-    link.className = "latest-profile-link";
-    link.href = PROFILE.note;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = `${t("latest.noteProfile", lang)} →`;
-    root.append(message, link);
-    return;
-  }
-
-  const imageUrl = safeLatestUrl(latestNote.imageUrl, "image");
-  if (imageUrl) {
-    const image = document.createElement("img");
-    image.className = "latest-note-image";
-    image.src = imageUrl;
-    image.alt = "";
-    image.loading = "lazy";
-    image.decoding = "async";
-    root.appendChild(image);
-  }
-
-  const date = document.createElement("time");
-  date.className = "latest-date";
-  date.dateTime = latestNote.publishedAt;
-  date.textContent = new Intl.DateTimeFormat(lang === "ja" ? "ja-JP" : "en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  }).format(published);
-
-  const title = document.createElement("h3");
-  title.textContent = latestNote.title;
-  root.append(date, title);
-
-  if (latestNote.description) {
-    const description = document.createElement("p");
-    description.className = "latest-description";
-    description.textContent = latestNote.description;
-    root.appendChild(description);
-  }
-
-  const link = document.createElement("a");
-  link.className = "latest-profile-link";
-  link.href = articleUrl;
-  link.target = "_blank";
-  link.rel = "noopener noreferrer";
-  link.textContent = `${t("latest.readNote", lang)} →`;
-  root.appendChild(link);
-}
-
-async function loadLatestNote() {
-  try {
-    const response = await fetch("assets/latest-note.json", { cache: "no-cache" });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = /** @type {LatestNote} */ (await response.json());
-    if (!data || typeof data.title !== "string" || typeof data.url !== "string" ||
-        typeof data.publishedAt !== "string" || typeof data.description !== "string" ||
-        typeof data.imageUrl !== "string") {
-      throw new Error("Invalid latest-note.json");
-    }
-    latestNote = data;
-    latestNoteState = "ready";
-  } catch (error) {
-    console.warn("Latest note could not be loaded.", error);
-    latestNote = null;
-    latestNoteState = "error";
-  }
-  renderLatestNote(getLang());
-}
-
 /**
  * @typedef {Object} ArticleLinks
  * @property {string} [zenn]
@@ -747,6 +628,38 @@ let articlesList = [];
 /** @type {"loading" | "ready" | "error"} */
 let articlesState = "loading";
 
+/* ---------- 記事一覧のフィルタ状態 ----------
+ * 媒体タブ + タグフィルタは記事 5 件未満では非表示にし、純粋なリスト表示にする
+ * （UX 簡素化）。5 件以上のときだけフィルタ UI を articles-list の直前に挿入する。
+ * 状態は module-level 変数に保持し、再描画時に維持する。
+ */
+/** @type {"all" | "zenn" | "note" | "qiita" | "html"} */
+let activePlatform = "all";
+/** @type {Set<string>} */
+const activeTags = new Set();
+/** 記事数がこの本数未満ならフィルタ UI を出さない */
+const FILTER_MIN_ARTICLES = 5;
+
+/* ---------- 「もっと見る」ページング状態 ----------
+ * 初期 PAGE_SIZE 件だけ描画し、「もっと見る」ボタンで +PAGE_SIZE ずつ追加表示する。
+ * 100 件あっても 1 クリックで全展開せず、段階的に増える。
+ * タブ・タグフィルタの変更時は visibleCount を PAGE_SIZE にリセット（絞り込み結果を上から見せる）。
+ * 言語切替時はリセットしない（同じ位置を維持）。
+ */
+const PAGE_SIZE = 5;
+let visibleCount = PAGE_SIZE;
+function resetArticleVisibleCount() {
+  visibleCount = PAGE_SIZE;
+}
+
+/* ---------- 検索フィルタ ----------
+ * タイトル / 概要 / タグ（ja + en 両方）に対する部分一致（大文字小文字無視）。
+ * タブ・タグフィルタと AND で重ねがける（全条件パスした記事のみ表示）。
+ * 入力ごとに visibleCount をリセット（絞り込み結果を上から見せる）。
+ * 再描画でフォーカスが外れないよう、renderArticles で input フォーカスと caret を退避・復元する。
+ */
+let searchQuery = "";
+
 /**
  * 記事の最終リンク先（HTML 版があればそれを、無ければ Zenn / note / Qiita のいずれか）
  * @param {ArticleLinks} links
@@ -760,11 +673,154 @@ function primaryArticleLink(links) {
   return null;
 }
 
+/**
+ * 記事が持つプラットフォーム集合（バッジ / タブ判定用）。
+ * @param {ArticleLinks} links
+ * @returns {Array<"zenn" | "note" | "qiita" | "html">}
+ */
+function articlePlatforms(links) {
+  /** @type {Array<"zenn" | "note" | "qiita" | "html">} */
+  const out = [];
+  if (links.zenn) out.push("zenn");
+  if (links.note) out.push("note");
+  if (links.qiita) out.push("qiita");
+  if (links.html) out.push("html");
+  return out;
+}
+
+/**
+ * フィルタ UI を articles-list の直前に差し込む。記事数が FILTER_MIN_ARTICLES 未満なら何もしない。
+ * 既存の filter bar があれば削除してから作り直す（言語切替・状態変更時に再生成）。
+ * @param {Lang} lang
+ */
+function renderArticleFilters(lang) {
+  const listEl = document.getElementById("articles-list");
+  if (!listEl || !listEl.parentNode) return;
+
+  // 既存 bar を撤去
+  const existing = document.getElementById("articles-filters");
+  if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+
+  if (articlesState !== "ready") return;
+  if (articlesList.length < FILTER_MIN_ARTICLES) return;
+
+  // プラットフォーム件数を集計
+  /** @type {Record<string, number>} */
+  const platformCounts = { all: articlesList.length, zenn: 0, note: 0, qiita: 0, html: 0 };
+  for (const a of articlesList) {
+    for (const p of articlePlatforms(a.links)) platformCounts[p] = (platformCounts[p] || 0) + 1;
+  }
+
+  // タグ一覧（出現順 = articlesList の順）
+  /** @type {Map<string, string>} */
+  const tagMap = new Map(); // ja key → display label（現言語）
+  for (const a of articlesList) {
+    if (!a.tag) continue;
+    const keyJa = a.tag.ja;
+    const display = a.tag[lang] || a.tag.ja;
+    if (!tagMap.has(keyJa)) tagMap.set(keyJa, display);
+  }
+
+  const bar = document.createElement("div");
+  bar.id = "articles-filters";
+  bar.className = "articles-filters";
+
+  // 検索 input（タブ・タグと AND で重ねがけ）
+  const searchRow = document.createElement("div");
+  searchRow.className = "articles-search";
+  const searchInput = document.createElement("input");
+  searchInput.type = "search";
+  searchInput.id = "articles-search-input";
+  searchInput.value = searchQuery;
+  searchInput.placeholder = lang === "ja"
+    ? "記事を検索 (タイトル / 概要 / タグ)"
+    : "Search articles (title / summary / tag)";
+  searchInput.addEventListener("input", () => {
+    searchQuery = searchInput.value;
+    resetArticleVisibleCount();
+    renderArticles(getLang());
+  });
+  searchRow.appendChild(searchInput);
+  bar.appendChild(searchRow);
+
+  // 媒体タブ
+  const tabsRow = document.createElement("div");
+  tabsRow.className = "articles-tabs";
+  const tabLabels = lang === "ja"
+    ? { all: "全件", zenn: "Zenn", note: "note", qiita: "Qiita", html: "HTML 版" }
+    : { all: "All", zenn: "Zenn", note: "note", qiita: "Qiita", html: "HTML" };
+  /** @type {Array<"all" | "zenn" | "note" | "qiita" | "html">} */
+  const tabOrder = ["all", "zenn", "note", "qiita", "html"];
+  for (const key of tabOrder) {
+    if (key !== "all" && !platformCounts[key]) continue; // 該当 0 件のタブは出さない
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "atab" + (activePlatform === key ? " active" : "");
+    btn.dataset.platform = key;
+    btn.textContent = `${tabLabels[key]} (${platformCounts[key] || 0})`;
+    btn.addEventListener("click", () => {
+      activePlatform = key;
+      resetArticleVisibleCount();
+      renderArticles(getLang());
+    });
+    tabsRow.appendChild(btn);
+  }
+  bar.appendChild(tabsRow);
+
+  // タグ chip（複数選択 = OR フィルタ）
+  if (tagMap.size > 0) {
+    const tagsRow = document.createElement("div");
+    tagsRow.className = "articles-tagchips";
+    for (const [keyJa, display] of tagMap) {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "atagchip" + (activeTags.has(keyJa) ? " active" : "");
+      chip.dataset.tag = keyJa;
+      chip.textContent = display;
+      chip.addEventListener("click", () => {
+        if (activeTags.has(keyJa)) activeTags.delete(keyJa);
+        else activeTags.add(keyJa);
+        resetArticleVisibleCount();
+        renderArticles(getLang());
+      });
+      tagsRow.appendChild(chip);
+    }
+    // クリアボタン（任意 1 個でも選択中なら表示）
+    if (activeTags.size > 0) {
+      const clear = document.createElement("button");
+      clear.type = "button";
+      clear.className = "atagchip atagchip-clear";
+      clear.textContent = lang === "ja" ? "解除" : "Clear";
+      clear.addEventListener("click", () => {
+        activeTags.clear();
+        resetArticleVisibleCount();
+        renderArticles(getLang());
+      });
+      tagsRow.appendChild(clear);
+    }
+    bar.appendChild(tagsRow);
+  }
+
+  listEl.parentNode.insertBefore(bar, listEl);
+}
+
 /** @param {Lang} lang */
 function renderArticles(lang) {
   const root = document.getElementById("articles-list");
   if (!root) return;
+
+  // 再描画で検索 input のフォーカスと caret が消えるのを防ぐため退避
+  const focused = /** @type {HTMLInputElement | null} */ (
+    /** @type {unknown} */ (document.activeElement)
+  );
+  const wasSearchInput = focused !== null && focused.id === "articles-search-input";
+  const selStart = wasSearchInput ? focused.selectionStart : null;
+  const selEnd = wasSearchInput ? focused.selectionEnd : null;
+
   root.replaceChildren();
+
+  // フィルタ UI を更新（再描画ごとに作り直す。lang 切替・カウント表示・active 状態に追従）
+  renderArticleFilters(lang);
 
   if (articlesState === "loading") {
     const p = document.createElement("p");
@@ -782,9 +838,50 @@ function renderArticles(lang) {
     return;
   }
 
-  for (const a of articlesList) {
+  // 5 件以上のときだけフィルタが効く。少ない時は active 状態を無視してそのまま出す
+  const filtersActive = articlesList.length >= FILTER_MIN_ARTICLES;
+  const filtered = filtersActive
+    ? articlesList.filter((a) => {
+        const plats = articlePlatforms(a.links);
+        if (activePlatform !== "all" && !plats.includes(activePlatform)) return false;
+        if (activeTags.size > 0) {
+          const tagJa = a.tag ? a.tag.ja : "";
+          if (!activeTags.has(tagJa)) return false;
+        }
+        const q = searchQuery.trim().toLowerCase();
+        if (q) {
+          const haystack = [
+            a.title.ja || "", a.title.en || "",
+            a.short.ja || "", a.short.en || "",
+            a.tag ? a.tag.ja : "", a.tag ? a.tag.en : "",
+          ].join(" ").toLowerCase();
+          if (!haystack.includes(q)) return false;
+        }
+        return true;
+      })
+    : articlesList;
+
+  // ページング: 初期 PAGE_SIZE 件 + 「もっと見る」で +PAGE_SIZE ずつ追加
+  // （filtered = 絞り込み後の全件 / visible = 今回描画する分。残数判定は filtered.length で行う）
+  const visible = filtered.slice(0, visibleCount);
+
+  if (filtered.length === 0) {
+    const p = document.createElement("p");
+    p.className = "articles-loading";
+    p.textContent = lang === "ja"
+      ? "条件に合う記事がありません。フィルタを解除してください。"
+      : "No articles match the current filters.";
+    root.appendChild(p);
+    return;
+  }
+
+  for (const a of visible) {
     const row = document.createElement("article");
     row.className = "article-row";
+    // 媒体タブの絞り込みを CSS 側でも利用できるよう dataset に書き出す
+    // （現状は JS 側で filter しているので必須ではないが、後段で「タブ切替を CSS だけで処理」
+    // にしたくなった時のフック）。
+    row.dataset.platforms = articlePlatforms(a.links).join(" ");
 
     const date = document.createElement("time");
     date.className = "article-date";
@@ -864,6 +961,37 @@ function renderArticles(lang) {
 
     root.appendChild(row);
   }
+
+  // 「もっと見る」ボタン: 残り件数があれば描画（無ければ非表示）
+  if (filtered.length > visibleCount) {
+    const remaining = filtered.length - visibleCount;
+    const nextChunk = Math.min(PAGE_SIZE, remaining);
+    const wrap = document.createElement("div");
+    wrap.className = "articles-loadmore";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "loadmore-btn";
+    btn.textContent = lang === "ja"
+      ? `もっと見る (+${nextChunk} / 残り ${remaining} 件)`
+      : `Show more (+${nextChunk} / ${remaining} remaining)`;
+    btn.addEventListener("click", () => {
+      visibleCount += PAGE_SIZE;
+      renderArticles(getLang());
+    });
+    wrap.appendChild(btn);
+    root.appendChild(wrap);
+  }
+
+  // 検索 input のフォーカス + caret 復元（再生成で消えるのを防ぐ）
+  if (wasSearchInput) {
+    const newInput = /** @type {HTMLInputElement | null} */ (
+      /** @type {unknown} */ (document.getElementById("articles-search-input"))
+    );
+    if (newInput) {
+      newInput.focus();
+      if (selStart !== null && selEnd !== null) newInput.setSelectionRange(selStart, selEnd);
+    }
+  }
 }
 
 async function loadArticles() {
@@ -874,7 +1002,8 @@ async function loadArticles() {
     if (!data || !Array.isArray(data.articles)) {
       throw new Error("Invalid articles.json");
     }
-    articlesList = data.articles.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
+    const arr = /** @type {Article[]} */ (data.articles);
+    articlesList = arr.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
     articlesState = "ready";
   } catch (error) {
     console.warn("Articles could not be loaded.", error);
