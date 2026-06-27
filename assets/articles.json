@@ -5,6 +5,22 @@
   },
   "articles": [
     {
+      "date": "2026-06-27",
+      "title": {
+        "ja": "年金月74万円のデンマーク、月17万円の日本。世界の年金を比べたら「崩壊論」の解像度が上がった",
+        "en": "Pensions across the world — sharpening the resolution of Japan's collapse narrative"
+      },
+      "short": {
+        "ja": "テレ東の番組で見たデンマーク月74万円vs日本月17万円。3段の補正（パワーカップル・OECD公平比較・物価差）でほぐすと実質月3〜4万円差まで縮む。日本の崩壊論を冷静に読むための補助線になった調べもの記事。",
+        "en": "Triggered by a TV scene showing Danish couples receiving 740k JPY each. Three corrections shrink the gap to ~30-40k JPY; Japan won't collapse, but quietly erodes."
+      },
+      "tag": { "ja": "エッセイ", "en": "Essay" },
+      "hero": "articles/2026/2026-06-27_pension-comparison-denmark-japan/hero.png",
+      "links": {
+        "html": "articles/2026/2026-06-27_pension-comparison-denmark-japan/"
+      }
+    },
+    {
       "date": "2026-06-24",
       "title": {
         "ja": "BIGLOBE を解約します。漏洩そのものより、事後対応で残念な気持ちになりました",
