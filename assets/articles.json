@@ -7,6 +7,23 @@
     {
       "date": "2026-06-28",
       "title": {
+        "ja": "株主の手紙はなぜ、まだ封書のままなのか",
+        "en": "Why shareholder mail still arrives in paper envelopes"
+      },
+      "short": {
+        "ja": "2 銘柄しか持っていないのに、同じ信託銀行から別の封筒で 2 通届く。封筒を出している主体が銘柄ごとの発行会社で、信託銀行は株主名簿管理人として代行しているだけ、という構造的理由。電子提供制度・議決権電子行使プラットフォーム・マイナポータルが受け取りハブになる未来までを辿ったエッセイ。",
+        "en": "Why the same trust bank sends two separate envelopes for two stocks. The issuer is the legal sender, the bank only acts as the registrar — a structural reason why dividend notices and AGM letters cannot be merged. An essay reaching toward a Mynaportal-as-hub future."
+      },
+      "tag": { "ja": "エッセイ", "en": "Essay" },
+      "hero": "articles/2026/2026-06-28_why-no-shareholder-mail-hub/hero.png",
+      "links": {
+        "html": "articles/2026/2026-06-28_why-no-shareholder-mail-hub/",
+        "note": "https://note.com/ishizakahiroshi/n/n3ada3429fae6"
+      }
+    },
+    {
+      "date": "2026-06-28",
+      "title": {
         "ja": "第二弾・「商品がない」キャンセルのその後 — 問い合わせ結果と消費生活センター相談の記録",
         "en": "Follow-up — what came after the unilateral Mercari cancel: ticket logs and a consumer-center filing"
       },
