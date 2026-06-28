@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claudeが court と言って止まる。気のせいかと思ってログを数えた — 2026-06-19 — ishizakahiroshi</title>
+<meta name="description" content="Claude Code がときどき court という文字列を出して止まる。体感ではなく ~/.claude/projects/ の .jsonl ログを数え、92 件→58 件→30 件と絞り込んで実態を確かめた記録。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_claude-stops-on-court-word/">
+
+<meta property="og:title" content="Claudeが court と言って止まる。気のせいかと思ってログを数えた">
+<meta property="og:description" content="Claude Code が court で止まる現象を、生ログ 1.3GB を数えて実測した話。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_claude-stops-on-court-word/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_claude-stops-on-court-word/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_claude-stops-on-court-word/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Claudeが court と言って止まる。気のせいかと思ってログを数えた",
+  "description": "Claude Code が court で止まる現象を、生ログ 1.3GB を数えて実測した話。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-19_claude-stops-on-court-word/hero.png",
+  "datePublished": "2026-06-19",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-19_claude-stops-on-court-word/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">失敗談</span>
+  <span class="stamp">2026-06-19</span>
+</div>
+
+<h1>Claudeが court と言って止まる。気のせいかと思ってログを数えた</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="court と書かれた紙片の上で止まっている AI エージェントのイメージ" width="1280" height="670">
+</div>
+
+<p class="lead">
+Claude Code を使っていると、たまに <code>court</code> という文字列だけ画面に出して、ツールが何も実行されないまま止まることがあります。「気のせいかも」で済ませず、ローカルに残っている会話ログを数えてみました。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/n54943711627d" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>会話ログはローカルに全部残っている</h2>
+
+<p>意外と知られていないと思うのですが、Claude Code は会話の全記録をローカルに残しています。場所はここです。</p>
+
+<ul>
+  <li>Windows: <code>%USERPROFILE%\.claude\projects\</code></li>
+  <li>macOS / Linux: <code>~/.claude/projects/</code></li>
+</ul>
+
+<p>プロジェクトフォルダごとに分かれていて、セッションひとつにつき <code>.jsonl</code> ファイルが積まれます。中身は JSON 行形式で、assistant が出した文章・ツール呼び出しの内容と結果・停止理由（<code>stop_reason</code>）まで全部入っています。<code>rg</code>（ripgrep）で横断検索できます。</p>
+
+<pre><code>rg -i 'court' ~/.claude/projects/</code></pre>
+
+<p>手元では <strong>4,758 ファイル、合計 1.3GB</strong> ありました。全部 Claude との会話です。多めの方だとは思います。</p>
+
+<h2>92 件 → 58 件 → 30 件 と絞り込む</h2>
+
+<p>最初の単純一致は 92 件でした。「やっぱり大量に起きてる」と思いかけて、止まりました。<code>court</code> は普通の英語にも混ざります。<code>courtesy</code>、<code>courts</code>、人名の <code>Delcourt</code>、画像データや署名の中に偶然入っているもの。そのまま「92 回フリーズした」と読むのは雑すぎます。</p>
+
+<p>JSON としてパースし直して、見るポイントをこう決めました。</p>
+
+<ul>
+  <li><code>court</code> が単独の単語として出ているか</li>
+  <li>直後に <code>&lt;invoke name="..."&gt;</code> が続いているか</li>
+  <li><code>stop_reason=end_turn</code> でターンが終わっていないか</li>
+  <li>そのツール実行の結果が次のターンに存在するか</li>
+</ul>
+
+<p>この基準で絞ると、問題の形に近いものは <strong>58 件 / 7 セッション</strong>。うち <code>court &lt;invoke ...&gt;</code> の形式は <strong>30 件</strong>。直後に「ツール呼び出しが壊れています」とエラーが返ったもの、または生テキストで漏れた文脈があるものは 29 件。</p>
+
+<p>気のせい、ではありませんでした。</p>
+
+<h2>壊れ方は 2 種類ある</h2>
+
+<p>正直に書いておくと、<code>court</code> が出ても必ず完全フリーズするわけではありません。ログ上、そのあとも会話が続いているものは多い。malformed と判定されて Claude が自動リトライして復帰するケースもあります。</p>
+
+<p>壊れ方には 2 つあります。</p>
+
+<ol>
+  <li><strong>検知される壊れ方</strong>: Claude Code 側が「壊れたツール呼び出し」と判断して <code>Your tool call was malformed and could not be parsed</code> と返すパターン。エラーが出るので気づけます。</li>
+  <li><strong>静かに終わる壊れ方</strong>: <code>court &lt;invoke ...&gt;</code> がただの文章として画面に出て、エラーも返らないままターンが終わる。<code>stop_reason=end_turn</code>。Read も Edit も Bash も実行されていない。でも見た目だけだと「何か作業しようとしている途中」に見える。</li>
+</ol>
+
+<p>厄介なのは後者です。</p>
+
+<h2>「止まってますよ」と声を掛けられたログ</h2>
+
+<p>手元のログに、はっきりした例がありました。Claude が画像を読もうとしていて、本来 <code>Read</code> ツールが呼ばれるはずの場面でこれが出ています。</p>
+
+<pre><code>court
+&lt;invoke name="Read"&gt;
+...
+&lt;/invoke&gt;</code></pre>
+
+<p>停止理由は <code>end_turn</code>。Claude Code 側はこれをツール呼び出しとして扱っていません。ただの返答として出して終えています。Read は実行されていない。</p>
+
+<p>その約 1 分後、ユーザーはこう送りました。</p>
+
+<blockquote>大丈夫ですか？止まってますよ。</blockquote>
+
+<p>Claude は「ツール呼び出しをミスして止まっていました。確認します」と返しました。ここまではいい。ところがその直後に、また同じ <code>court &lt;invoke name="Read"&gt;</code> が通常テキストとして出て、またツールは実行されないまま終わっています。体感どおり、止まっていました。</p>
+
+<h2>外部の報告とも一致した</h2>
+
+<p>自分のログだけかと思って、外も確認しました。</p>
+
+<p>GitHub の Claude Code issues には同種の報告が複数あります。<code>court &lt;invoke&gt;</code> が通常テキストとして出てツールが実行されない、本来必要な <code>antml:</code> prefix が落ちている、<code>function_calls</code> wrapper が無い、など。</p>
+
+<p>Zenn には「一度壊れた出力が会話履歴に残ると、モデルがそれを正しい形と覚えて同じ壊れ方を繰り返す」という説明が出ていました。retry や「続けて」で同じ場所でまた壊れる理由が、おそらくここにあります。</p>
+
+<p>手元ログでは発生が Opus 4.8 に集中、Claude Code のバージョンは複数の 2.1.x にまたがっていました。特定バージョン固有ではなさそうです。</p>
+
+<h2>本当に怖いのは「やったことになること」</h2>
+
+<p>止まるだけならまだいい。気づけるから。本当に怖いのは、<strong>ツールが実行されていないのに会話だけが先に進むこと</strong>です。</p>
+
+<p>Claude が「ファイルを書き換えます」と言って <code>court &lt;invoke name="Write"&gt;</code> が本文として出る。Write は実行されていない。でも Claude は書き換えたつもりで次の説明に進む。<code>git diff</code> を見なければ、実ファイルが変わっていないことに気づけません。</p>
+
+<p>「失敗しました」より、「成功した顔で失敗している」のが怖い。<code>court</code> 問題はそこに刺さります。</p>
+
+<h2>court が出たらやること</h2>
+
+<p>根本修正は Claude Code 側の仕事で、ユーザーが完全に直すことはできません。ただ、被害は減らせます。</p>
+
+<ul>
+  <li><code>court &lt;invoke&gt;</code> が出たら、そのターンのツールは実行されていない前提で扱う</li>
+  <li>Read なら読めていない / Edit なら書けていない / Bash なら走っていない</li>
+  <li>すぐ <code>git diff</code> または <code>git status</code> を確認する</li>
+  <li>同じセッションで「もう一回やって」と連続して言わない。壊れた形式が会話履歴に残ると、モデルがそれを正しい形と覚えて繰り返す</li>
+  <li>繰り返し出るようなら、早めに <code>/clear</code> か新規セッションへ移す</li>
+</ul>
+
+<p>自分の運用としては、長時間セッションを引っ張りすぎない、大量の読み込みや調査のあとに Write/Edit を続けるときは要約して新セッションへ移す、重要な変更の前後では必ず diff を見る、を意識しています。</p>
+
+<div class="info">
+数えるとピントが合います。単純一致は 92 件、問題の形は 58 件、<code>court &lt;invoke&gt;</code> は 30 件、ユーザー介入後も同じ壊れ方をした強い証拠は 1 セッション。多い。けれど、全部がフリーズではない。<code>court</code> を見たら慌てるのではなく、「このターンのツールは実行されていないかもしれない」と考えて差分を見る。それだけで、事故はかなり減らせるはずです。
+</div>
+
+<h2>関連リンク</h2>
+<ul>
+  <li><a href="https://zenn.dev/shotakada/articles/claude-code-opus48-court-loop" target="_blank" rel="noopener">Zenn: Opus 4.8 で起きる court ループの解説</a></li>
+  <li><a href="https://qiita.com/sutaminajing40/items/0f07e9c280ad7ed38cd7" target="_blank" rel="noopener">Qiita: court が出てツールが実行されない事例</a></li>
+  <li><a href="https://github.com/anthropics/claude-code/issues/64108" target="_blank" rel="noopener">claude-code issue #64108</a></li>
+  <li><a href="https://github.com/anthropics/claude-code/issues/66153" target="_blank" rel="noopener">claude-code issue #66153</a></li>
+</ul>
+
+<div class="footer">
+  公開: 2026-06-19 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

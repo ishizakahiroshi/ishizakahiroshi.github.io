@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ダウンロード数が見たいだけだったのに、「勝手に課金」が怖くて無料クラウドを3つ比べた — 2026-06-17 — ishizakahiroshi</title>
+<meta name="description" content="自分の公開ツールのダウンロード数を1画面で見たいだけだったのに、Cloudflare の無料枠に寄り道し、勝手に課金が怖くて Cloudflare / Azure / AWS の「使いすぎたとき何が起きるか」だけを並べて比べた記録。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-17_free-cloud-no-surprise-billing/">
+
+<meta property="og:title" content="ダウンロード数が見たいだけだったのに、「勝手に課金」が怖くて無料クラウドを3つ比べた">
+<meta property="og:description" content="無料枠ありでも「止まる」か「流れる」かで安心感が全然違う。Cloudflare / Azure / AWS を課金の怖さ視点で比べた。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-17_free-cloud-no-surprise-billing/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-17_free-cloud-no-surprise-billing/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-17_free-cloud-no-surprise-billing/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "ダウンロード数が見たいだけだったのに、「勝手に課金」が怖くて無料クラウドを3つ比べた",
+  "description": "無料枠ありでも「止まる」か「流れる」かで安心感が全然違う。Cloudflare / Azure / AWS を課金の怖さ視点で比べた。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-17_free-cloud-no-surprise-billing/hero.png",
+  "datePublished": "2026-06-17",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-17_free-cloud-no-surprise-billing/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag">設計判断</span>
+  <span class="stamp">2026-06-17</span>
+</div>
+
+<h1>ダウンロード数が見たいだけだったのに、「勝手に課金」が怖くて無料クラウドを3つ比べた</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="無料クラウドの「課金が止まるか流れるか」を比較するヒーロー画像。Cloudflare / Azure / AWS の3つを並べた構図。" width="1280" height="670">
+</div>
+
+<p class="lead">
+自分の公開ツールのダウンロード数を1画面で集計したいだけだった。なのに途中で Cloudflare の無料枠に寄り道してしまい、最後は「勝手に課金される怖さ」を軸に Cloudflare / Azure / AWS を並べて比べる話になった。機能ではなく「使いすぎたとき何が起きるか」だけを見た記録。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/n7cac773ccb67" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>出発点は「DL数を1画面で見たい」だけだった</h2>
+
+<p>npm のパッケージページに出る週間ダウンロード、GitHub Releases の添付ファイルごとのダウンロード数、Homebrew の公式集計ページ。どれも単体では確認できるけれど、自分の公開物をぜんぶ合計して「今いくつ?」を一目で見られる場所はない。</p>
+
+<p>野良 tap は Homebrew の公式集計に乗らないので、その分は GitHub の数字に合算するしかない。確認のたびに3つのタブを行き来していて、地味に面倒だった。ないなら作ればいい、というだけの軽い動機だった。</p>
+
+<h2>置き場所は github.io、データは JSON で足りる</h2>
+
+<p>プロフィールサイトはすでに GitHub Pages にある。そこに1ページ足せばいい話だ。最初は「取得して保存するなら DB が要るのかな」と身構えたけれど、要件を整理し直して気が変わった。</p>
+
+<ul>
+  <li>取得頻度は1日1回のスナップショットでいい</li>
+  <li>リポジトリ数十個ぶんでも1日に数キロバイト程度</li>
+  <li>過去ぶんも JSON を日付ごとに積めば十分追える</li>
+  <li>トークンは定期実行ジョブの中に閉じ込めれば外に出ない</li>
+</ul>
+
+<p>つまり DB は要らず、JSON をリポにコミットして、ページはそれを読むだけで完結する。完結する <em>はず</em> だった。</p>
+
+<h2>そこで Cloudflare の無料枠に寄り道してしまう</h2>
+
+<p>ちょうど界隈で、Cloudflare の無料枠で軽量フレームワークの Hono と Workers、SQLite ベースの D1、静的配信までを1つの中に詰め込めるという話をよく目にしていた。フロントも API もデータベースも一箇所で、しかも無料枠で丸ごと試せる。</p>
+
+<p>DL数を数えるだけの用途には明らかにオーバースペックで、定期ジョブと JSON で済む話にサーバーレスと DB を持ち出す理由はない。ただ「無料で最新構成を素振りできる教材」として見ると急に魅力的に見えてきて、手が止まった。</p>
+
+<h2>怖いのは機能差じゃない。「勝手に課金」だ</h2>
+
+<p>ここで素直な本音が出る。クラウドはこわい。何が怖いかというと、寝ている間に課金がふくらむやつだ。設定をひとつ間違える、あるいは外から叩かれる。気づいたら請求が、みたいな話を何度も見てきた。</p>
+
+<p>実験のつもりが請求書で終わるのは本末転倒で、「無料枠がある」ことと「使いすぎても請求が来ない」ことは、よく考えると全然違う約束だ。そこを軸に Cloudflare / Azure / AWS の3社を、機能ではなく「使いすぎたとき何が起きるか」だけで並べた。</p>
+
+<h2>同じ「無料枠」でも、止まるものと流れるものがある</h2>
+
+<p>調べていくと3社できれいに性格が分かれた。</p>
+
+<ul>
+  <li><strong>AWS</strong>: 無料枠はあくまで割引で、超えたぶんは自動で課金へ流れる。請求を強制的に止める標準の仕組みがなく、アラートで気づいて自分で止める前提。いちばん怖いタイプ。</li>
+  <li><strong>Azure</strong>: 無料アカウントだと「支出の上限ゼロ」が最初から効いていて、超えると止まる。ただし従量課金に自分で切り替えると、その安全装置は外れる。</li>
+  <li><strong>Cloudflare</strong>: クレジットカードの登録すら要らないまま使えて、無料枠を超えたら止まるだけ。請求の入口にそもそも立っていない。自分で有料プランに上げない限り青天井になりようがない。</li>
+</ul>
+
+<div class="info">
+同じ「無料枠あり」でも、止まるか流れるか。この一点で安心感がまるで違う。機能比較表より、この1軸の方が今の自分には効いた。
+</div>
+
+<h2>選んだのは、いちばん夜よく眠れるやつ</h2>
+
+<p>結論、Cloudflare の無料プランにした。怖さ最優先という今の自分の前提だと AWS は思想からして逆を向いている。Azure は安全だけど、今回は構成が重くて設定の理解も要る。Cloudflare はクレカを登録しないという一点だけで課金の不安がほぼ消えるし、作りたかったモダンな構成も無料枠でちゃんと試せる。</p>
+
+<p>我慢して機能をケチるのではなく、無料の範囲で最新を全部触れる。これがいちばん腑に落ちた。</p>
+
+<h2>結局わかったこと</h2>
+
+<ul>
+  <li>怖いのは機能の差じゃなく、課金が「止まる」か「流れる」かという設計の差だった</li>
+  <li>「無料枠がある」と「使いすぎても課金されない」は、別の約束として読む</li>
+  <li>クレジットカードを登録しないで済む、というだけで気が楽になる</li>
+  <li>実験したいだけなら、上限のないドアは最初から開けない</li>
+</ul>
+
+<p>比べて、選んで、安心したところでいったん止まっている。次の休みに無料枠の中だけで少し遊んでみるつもりだ。怖いものは根性でなんとかするより、そもそも踏み込まない構造のほうを選んでおく。小さく、課金されない側に立っておく。それくらいの慎重さは、これからも持っていたい。</p>
+
+<div class="footer">
+  公開: 2026-06-17 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

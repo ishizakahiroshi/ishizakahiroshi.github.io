@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>リリースのたびに思い出していた手順を、台帳とスキルに寄せた — 2026-06-16 — ishizakahiroshi</title>
+<meta name="description" content="個人 OSS が 8 つに増えて、リリースのたびに「この子は何で配ってたっけ」を思い出すのが限界になった。台帳 1 ファイルとリリーススキルに集約し、壊れたチャネルだけ後から出し直せる導線を作るまでの設計判断と、本物のリリースで踏んだ 5 つの地雷の記録。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_release-to-registry-and-skill/">
+
+<meta property="og:title" content="リリースのたびに思い出していた手順を、台帳とスキルに寄せた">
+<meta property="og:description" content="個人 OSS のリリース手順を台帳 1 ファイルとスキルに集約し、壊れたチャネルだけ出し直せるようにした設計判断の記録。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_release-to-registry-and-skill/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_release-to-registry-and-skill/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_release-to-registry-and-skill/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "リリースのたびに思い出していた手順を、台帳とスキルに寄せた",
+  "description": "個人 OSS のリリース手順を台帳 1 ファイルとスキルに集約し、壊れたチャネルだけ出し直せるようにした設計判断の記録。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-16_release-to-registry-and-skill/hero.png",
+  "datePublished": "2026-06-16",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-16_release-to-registry-and-skill/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag">設計判断</span>
+  <span class="stamp">2026-06-16</span>
+</div>
+
+<h1>リリースのたびに思い出していた手順を、台帳とスキルに寄せた</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="台帳 1 ファイルと release スキルへ各リポのリリース手順が集約されていく図のヒーロー" width="1280" height="670">
+</div>
+
+<p class="lead">
+個人で OSS を複数抱えていると、リリースのたびに「あれ、この子の npm って何で配ってたっけ」を毎回思い出す羽目になる。今回は AI エージェントと一緒に、その「思い出し作業」を台帳 1 枚に押し込んだ話。設計が終わってから本物のリリースで踏んだ小さな地雷も含めて記録する。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/ndfe474251647" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>困っていたこと: どのリポで何をどう配ってたっけ</h2>
+
+<p>公開している小さなツールが、気づいたら 8 個あった。Go の CLI、Tauri のデスクトップアプリ、Chrome 拡張、ブラウザ単一 HTML、プロンプト集まで、種類がバラバラ。リリース手順も全部違う。</p>
+
+<ul>
+  <li>GoReleaser で multi-OS を出す子</li>
+  <li>npm にだけ配る子</li>
+  <li>GitHub Release に zip を添えるだけの子</li>
+  <li>Chrome ウェブストアに出す子</li>
+</ul>
+
+<p>secrets の要否も違う。困るのは、リリースしたいタイミングで「この子は homebrew も更新するんだっけ」「<code>PUBLISH_GITHUB_TOKEN</code> って必要だったっけ」を、毎回そのリポの中だけを見て思い出していたこと。リポを跨ぐと、自分の頭の中の地図が役に立たない。</p>
+
+<p>深夜にひとつリリースして「あれ、なんで通らないんだ」とログを見て、結局「このリポでは secret の名前を別にしていた」だった、みたいな夜が何度かあった。</p>
+
+<h2>初回 npm 公開で 429 を連発した夜</h2>
+
+<p>一番派手にやらかしたのが、Go の CLI を npm 経由でも配ろうとしたとき。<code>bunx &lt;tool&gt;</code> のように呼べると便利だから、というだけの動機で、root パッケージ＋ platform 別の optional 4 本を新規作成して公開しに行った。</p>
+
+<p>新規パッケージの作成は、npm レジストリのレート制限に当たる。E429。「Too Many Requests、しばらく待って」。ここでよくやる失敗が、「えっもう一回」を連続で叩くこと。やったらどうなるか。窓がリセットされず、待ち時間がさらに伸びる。完全に逆効果。やった。</p>
+
+<div class="info">
+  このとき決めたのが、「壊れたチャネルだけ、後で自己回復させる仕組み」を入れること。連続手動 retry はしない、というのが家のルールになった。
+</div>
+
+<h2>欲しかったのは「名前で頼める 1 つの入口」だけだった</h2>
+
+<p>一度立ち止まって、自分が何に困っているかを書き出した。</p>
+
+<ul>
+  <li>どこにいても <code>&lt;project&gt; をリリースして</code> で動いてほしい</li>
+  <li>設定は 1 か所にまとめたい（どこに何を書いたか思い出したくない）</li>
+  <li>実行は今のまま、各リポの GitHub Actions で走ってよい</li>
+</ul>
+
+<p>実行まで集約する必要はない。GHA はリポ単位で動く設計なので、そこを統合しようとすると無理が出る。集約したかったのは「設定」と「手順」だけだった。</p>
+
+<h2>台帳を「単一の真実」にした</h2>
+
+<p>寄せ先は JSON 1 ファイル。<code>release-registry.json</code> という名前にした。中身はこんな構造。</p>
+
+<ul>
+  <li>各プロジェクトの <code>channels</code>（github-release / npm / goreleaser / homebrew / winget …）</li>
+  <li><code>npmName</code>、必要な <code>secrets</code>、<code>workflows</code> の一覧</li>
+  <li>現在の <code>status</code>（published / planned / repo-only など）</li>
+</ul>
+
+<p>これを「単一の真実」と決めて、AI エージェント側のスキル（リリース手順をまとめた <code>release</code> スキル）はここを読んで動く。版数だけは別で、これはタグを単一ソースにした。<code>v0.3.2</code> を打つだけが版を変える行為で、md やコードに二重に書かない。</p>
+
+<p>新しい子を増やしたら、台帳に 1 ブロック追記する。これだけ。「次のリリースで思い出さなくて済むこと」が 1 つ増えるのが、地味に嬉しい。</p>
+
+<h2>壊れたチャネルだけ、出し直せるようにした</h2>
+
+<p>E429 の話に戻る。新方式では、リリースのワークフローに <code>npm_only=true</code> の入口を 1 つ作った。やることはこう。</p>
+
+<ol>
+  <li>もう公開済みの GitHub Release から zip を取ってくる</li>
+  <li>SHA256SUMS と照合する（正本との同一性を担保）</li>
+  <li>stage して、npm にだけバックオフ付きで publish する</li>
+</ol>
+
+<p>バックオフは指数で伸ばして、idempotent に作ってある。同じ版を二度叩いても壊れない。</p>
+
+<h2>本物のリリースで踏んだ 5 つの地雷</h2>
+
+<p>台帳とスキルが揃ったところで、設計の話としては綺麗に閉じる。ただ v0.3.2 のリリースで実際に通してみると、台帳では吸えない小さな地雷が次々出てきた。並べてみると、似た顔つきの問題が多い。</p>
+
+<h3>1. ブランチごとに CI のスキャン範囲が違う</h3>
+
+<p><code>develop</code> の push 時には「前回 push 以降の差分」だけが secret-scan の対象。<code>main</code> に着弾した瞬間、前回リリースから今までの全 commit が一気にスキャンされ、過去 commit の問題が初検出される。<code>develop</code> の緑だけ見ていると、ここで足止めを食う。次回からは「main の Validate と secret-scan が緑」をタグ前の必須条件にする、という当たり前の運用に直した。</p>
+
+<h3>2. gitleaks のモグラ叩き</h3>
+
+<p><code>MaskSecrets()</code> のテストには <code>PASSWORD=topsecretvalue</code> のような故意の偽秘密が入っていて、これを gitleaks が generic-api-key として拾ってくる。最初は該当ファイルだけ allowlist したが、別のテストファイルでも次々に同じことが起きた。ピンポイントで足していくと終わらない。最後は「テストファイル全般を信頼する」と一段広げて allowlist に <code>_test.go</code> を入れて止まった。<code>_test.go</code> はビルド成果物に入らないので流出経路もない、と納得した上で。</p>
+
+<h3>3. filepath.ToSlash の罠</h3>
+
+<p>Windows パスを <code>\</code> から <code>/</code> に変換しているつもりで、Linux ランタイムだと何も変換されない（<code>os.PathSeparator</code> が <code>/</code> なので）。POSIX シェル用の文字列を組むのにこれを使うと、CI で初めて落ちる。<code>strings.ReplaceAll(p, "\\", "/")</code> に書き換えて閉幕。古い Go コードに紛れがちな落とし穴。</p>
+
+<h3>4. npm の zombie バージョン deprecate と 2FA</h3>
+
+<p>「初回 publish の枠取りで出した 0.0.1 が、正式版を出した後も残る」のはよくある話で、<code>npm deprecate</code> で塞ぐ。ところが 2FA を有効にしている個人アカウントは、<code>npm deprecate</code> のたびにブラウザ web auth が走る。OTP 投入ではなく Authorize ボタンを押すフロー。バージョン × パッケージの件数分、URL を開いて Authorize、ターミナルに戻って Enter を繰り返す。CI から長期 token で済ませる手はあるが、個人 2FA アカウントは「手で押す前提」と腹を括った方が早い。</p>
+
+<h3>5. コミットと push の間に時間を空けない</h3>
+
+<p>2 日前にローカルで作った大きめのコミットが、push を忘れたまま放置され、間に積み重なった新しい作業の下で孤立化していた。<code>git log</code> で見ても枝のどこにもいない、unreachable 状態。リポを壊したわけではないので <code>git gc</code> で消えるだけだが、本来そこに乗せたかった変更を後から拾い直す手数が発生する。コミットしたら同じセッション内で push する、それだけのルール。</p>
+
+<div class="info">
+  どれも台帳には書きようがないし、スキルでも吸えない。リリース runbook の「踏み続けた地雷」節に、再発しそうなものだけ選んで書き足した。次の自分が引き受ける。
+</div>
+
+<h2>作ってどうなったか</h2>
+
+<p>before は、リポを開いて README を読み直して、過去の自分の手順メモを引っ張り出して、secret 名を確認して、ようやくタグを打っていた。after は、対象リポで AI エージェントを開いて「リリースして」と頼むと、台帳から channels と secrets を引いて、前提を確認して、ダメならどこで止まるかを言ってくれる。</p>
+
+<p>タグを打つ前の前提チェックも、台帳に書いた <code>secrets</code> の存在確認まで含まれる。Validate ワークフローが赤なら、タグは打たない。これは自分が忘れがちな前提だった。</p>
+
+<p>全部解決したかというと、まだ取りこぼしはある。Chrome ウェブストアは GitHub Actions の管轄外なので、ここだけは別の手で出す。winget は別軸の問題で、v0.3.0 / v0.3.1 / v0.3.2 の 3 件とも <code>microsoft/winget-pkgs</code> 側でモデレータ承認待ちのまま放置されていて、まだ一度も merge されていない。配布告知のページからは winget の行を一旦外して、<code>npm</code> / Homebrew / GitHub Release 直 DL の 3 経路に絞った。merge されたら戻す。</p>
+
+<p>派手な自動化を一発で組むより、「覚えておかなくて済むこと」を 1 個ずつ増やしていく。今回もそれだけのことだった。台帳 1 ファイルから始めれば、たぶん同じことを誰でもできる。</p>
+
+<h2>関連リンク</h2>
+<ul>
+  <li><a href="https://github.com/ishizakahiroshi/many-ai-cli" target="_blank" rel="noopener">ishizakahiroshi/many-ai-cli</a> — GoReleaser + npm 連携まで通した実例</li>
+  <li><a href="https://note.com/ishizakahiroshi/n/ndfe474251647" target="_blank" rel="noopener">note 版（本文・体験談寄り）</a></li>
+</ul>
+
+<div class="footer">
+  公開: 2026-06-16 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

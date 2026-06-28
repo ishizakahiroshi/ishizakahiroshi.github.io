@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>同じバージョンなら、同じ中身 — だと思っていた。自作アプリを4か所に配って5時間溶かした話 — 2026-06-14 — ishizakahiroshi</title>
+<meta name="description" content="自作 CLI を GitHub Releases / winget / Homebrew / npm の 4 か所に配って気づいた「同じバージョン番号 ≠ 同じ中身」問題。npm だけが再梱包する窓口だった経緯と、同一性と再実行を別々に解いた設計の整理。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-14_same-version-different-binary-4-channels/">
+
+<meta property="og:title" content="同じバージョンなら、同じ中身 — だと思っていた。自作アプリを4か所に配って5時間溶かした話">
+<meta property="og:description" content="自作 CLI を 4 チャネルに配って気づいた「同じ番号でも中身は別物になり得る」話。同一性と再実行は別の問題として別々に解く。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-14_same-version-different-binary-4-channels/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-14_same-version-different-binary-4-channels/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-14_same-version-different-binary-4-channels/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "同じバージョンなら、同じ中身 — だと思っていた。自作アプリを4か所に配って5時間溶かした話",
+  "description": "自作 CLI を 4 チャネルに配って気づいた「同じ番号でも中身は別物になり得る」話。同一性と再実行は別の問題として別々に解く。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-14_same-version-different-binary-4-channels/hero.png",
+  "datePublished": "2026-06-14",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-14_same-version-different-binary-4-channels/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">失敗談</span>
+  <span class="stamp">2026-06-14</span>
+</div>
+
+<h1>同じバージョンなら、同じ中身 — だと思っていた。自作アプリを4か所に配って5時間溶かした話</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="4 つの配布チャネル（GitHub Releases / winget / Homebrew / npm）に同じバージョンのバイナリを並べる構図のヒーロー画像" width="1280" height="670">
+</div>
+
+<p class="lead">
+小さな CLI を 4 か所に配るだけのつもりが、5 時間溶けた。溶けたのは全部 npm だった。そして溶かしている途中で「この 4 か所、本当に同じものを配れているのか？」というぞっとする問いに足を止められた——という記事の、設計側の整理メモ。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/nc4197147560b" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>4 つの配り先と、つまずいたのは 1 つだけだった話</h2>
+
+<p>配り先は GitHub Releases、winget、Homebrew、npm の 4 つ。利用者の入口に合わせて並べる発想で、タグを 1 つ打てば自動で揃うはずだった。実際には 3 つは綺麗に通り、最後の npm だけが何度も赤く止まった。原因はレート制限（429 Too Many Requests）。焦って間隔を詰めると窓がリセットされてむしろ悪化する。</p>
+
+<p>そして詰みかけだったのは、レート制限よりも「やり直しが効かない」構造のほうだった。最後の npm だけ直して流し直したいのに、流れ作業の頭から走るので、もう公開済みの GitHub Release に「それはもう在るよ」と弾かれて全体が止まる。3 つは公開、npm だけ宙ぶらりん、しかも素直にやり直せない。</p>
+
+<h2>最初の答え「npm を先に出す」は、自分の足を撃つ案だった</h2>
+
+<p>最初に思いついたのは順番の入れ替えだった。一番こけやすく不可逆な npm を「先に」出せば、こけても他は何も公開していないからやり直しが効く。発想自体は悪くない（不可逆なものを先に確定させる、はリリース設計の定石）。</p>
+
+<p>でも、ここで手が止まった。「npm を先に出す」には、ほかの 3 つより先に npm 用のバイナリが要る。つまり <strong>正本ができる前にもう一回ビルドして、それを npm に詰めることになる</strong>。npm の中身は「1 回目のビルド」、GitHub たちの中身は「2 回目のビルド」。二度焼いたパンは別のパンだ。やり直しを楽にしたくて入れた案が、いちばん守りたかった「全部が一組から出ている」を壊していた。</p>
+
+<h2>「同じバージョン」って、同じ中身なんだっけ？</h2>
+
+<p>ここで根本の問いに行き当たる。4 か所に v0.3.1 として並べる。番号は同じ。でも番号が同じだからって、配っているバイナリまで同じだと、誰が保証しているんだろう。</p>
+
+<p>調べてみると、配り先ごとに「同じであることの担保のされ方」がまるで違った。整理するとこうなる。</p>
+
+<ul>
+  <li><strong>GitHub Releases</strong>：1 回だけビルドした zip を並べる。これが <strong>正本</strong>。</li>
+  <li><strong>winget / Homebrew</strong>：zip を再ビルドしない。「あの住所のこの指紋（ハッシュ値）の箱を持ってこい」という案内札を更新するだけ。利用者が入れるときに指紋を照合する。中身は原理的に正本と同じ。これが <strong>ポインタ</strong>。</li>
+  <li><strong>npm</strong>：zip を指すのではなく、<strong>中のバイナリを取り出して npm 用の別の箱に詰め替えて出す</strong>。唯一、再梱包する窓口だった。</li>
+</ul>
+
+<p>再梱包する以上、「どこから取り出したバイナリを詰めたか」次第で、同じ番号なのに違う中身を配れてしまう。これが急所だった。</p>
+
+<div class="info">
+怖くなって、出そうとしていた npm 用バイナリと、GitHub 上の正本 zip の中身を指紋で突き合わせた。結果は 4 つとも完全一致。良かった——と一瞬思って、すぐ冷めた。一致していたのは「正本の zip から取り出して詰め直す」という手順を <strong>たまたま</strong> 踏んでいたからで、仕組みとして保証されていたわけじゃない。人が気をつけていたから、ギリギリ揃っていただけだった。
+</div>
+
+<h2>同一性と、やり直しは、別々の問題として別々に解く</h2>
+
+<p>ここでようやく、ごちゃ混ぜにしていた 2 つの問題が分かれて見えた。</p>
+
+<ol>
+  <li><strong>全部が同じ中身であること（同一性）</strong>：正本を先に作って、npm はその正本から取り出して詰める。順番はむしろ「正本が先、npm が後」でなければ成立しない。最初の直感とは逆。</li>
+  <li><strong>npm だけこけたとき、やり直せること（再実行）</strong>：順番では解かない。<strong>npm だけを、公開済みの正本から取り直して出し直す専用の小さな入口</strong> を別に用意する。流れ作業の頭から走らせないから「それは在る」と弾かれず、取り直す先は正本そのものなので中身も揃う。</li>
+</ol>
+
+<p>1 個の打ち手で 2 つ片付けようとすると、だいたいどこかに無理が出る。同一性は「ビルドは 1 回だけ・正本から取り出す」で、再実行は「チャネル別の専用入口」で、別の道具で解くのが正しかった。</p>
+
+<h2>ついでに、WSL 経由をやめられた話</h2>
+
+<p>もうひとつ引っかかっていた違和感。npm に出すときだけ、わざわざ Linux 環境（WSL）を経由して箱詰めしていた。Windows で完結しないのが気持ち悪かった。</p>
+
+<p>掘ると理由はたった一点。Linux と Mac ではファイルに「実行していい」という小さな印（実行ビット）が要る。Windows で箱詰めするとこの印を付けられない。印のない実行ファイルは相手の環境で「権限がない」と弾かれる。だから印を付けられる Linux 環境を経由していた、というだけだった。</p>
+
+<p>気づきはここ。<strong>印は箱詰めのときに焼き込まなくても、ツールを起動する瞬間に付け直せばいい</strong>。起動役の小さなスクリプトが、実行ファイルを呼ぶ直前に「実行していい」と付けてから呼ぶ。そうすれば、どこで箱詰めしようと関係ない。WSL を経由する理由そのものが消える。回避策をひとつ覚えるより、回避する必要をなくすほうがいい。</p>
+
+<h2>結局ぜんぶ「手で踏む手順」が腐っていた</h2>
+
+<p>並べてみて、はっとした。WSL を経由していたのも、レート制限を手で待って何度も叩いていたのも、リリースノートが空なら手で貼り直していたのも、認証トークンを 2 か所に書き写していたのも——ぜんぶ「人がその場で踏む手順」だった。</p>
+
+<p>事故は、賢い手順を覚えていないから起きるんじゃない。手順が人の手に残っている限り、いつか誰かが（だいたい自分が）踏み外す。本当の直しは、手順をうまくすることじゃなくて、<strong>手順から人を抜くこと</strong> だった。</p>
+
+<p>トークンの話も根は同じで、固定の鍵を 2 か所で手管理している限りいつかズレる。だったら鍵そのものを置かず、その場で発行する仕組み（OIDC / trusted publishing 系）に寄せる。<strong>置き場所が増えるほどズレる</strong> という当たり前に、遅れて気づいた。</p>
+
+<h2>持ち帰り：次のプロジェクトに最初から敷く 6 行</h2>
+
+<p>この記事の打ち手は、このツール 1 本の話で終わらせないことにした。次に作るどのプロジェクトでも初期設定として敷く基準として、別ファイルに書き起こしてある。</p>
+
+<ul>
+  <li><strong>1 回だけ焼く</strong>：ビルドは 1 回。全チャネルがその 1 セットから出る。</li>
+  <li><strong>正本から取り出して指紋で照らす</strong>：再梱包する窓口は正本 zip から取り出し、ハッシュ照合してから詰める。</li>
+  <li><strong>順序は「正本 → repackager」</strong>：不可逆な npm を先に出す案を採用しない。同一性が先、再実行は別解。</li>
+  <li><strong>チャネル別の専用入口</strong>：npm だけ・winget だけ、を流れ作業の頭から走らせず単独で再実行できる小さな入口を持つ。</li>
+  <li><strong>手で踏む手順を残さない</strong>：人がやるのは「タグを打って push する」まで。後は機械の仕事。</li>
+  <li><strong>鍵もバージョンも置き場所は 1 つ</strong>：トークンは固定で持たず OIDC で都度発行。版数はタグを単一ソースに。</li>
+</ul>
+
+<h2>関連リンク</h2>
+<ul>
+  <li><a href="https://note.com/ishizakahiroshi/n/nc4197147560b" target="_blank" rel="noopener">note 本文（やわらかい体験談版）</a></li>
+  <li><a href="/" >ishizakahiroshi.github.io トップ</a></li>
+</ul>
+
+<div class="footer">
+  公開: 2026-06-14 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

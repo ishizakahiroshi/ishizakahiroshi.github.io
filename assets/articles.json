@@ -30,7 +30,10 @@
         "ja": "X で流れたバックエンド面接問題（A: パスで分ける vs B: クエリで分ける）から出発し、API・HTTP・REST・URL 設計・実務パターン・REST の限界までを 1 本で繋いだ完全ガイド。結論は「パスは別リソース、クエリは同一リソースの絞り込み」。即答した時点で不正解になる理由を、前提別に場合分けして解説。",
         "en": "From a viral X interview problem (path-based vs query-based URL design) to a full walkthrough of API, HTTP, REST, URL design and beyond. The answer hinges on one line: paths separate resources, queries narrow within one."
       },
-      "tag": { "ja": "設計判断", "en": "Design note" },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
       "hero": "articles/2026/2026-06-28_rest-api-design/hero.png",
       "links": {
         "html": "articles/2026/2026-06-28_rest-api-design/",
@@ -47,7 +50,10 @@
         "ja": "テレ東の番組で見たデンマーク月74万円vs日本月17万円。3段の補正（パワーカップル・OECD公平比較・物価差）でほぐすと実質月3〜4万円差まで縮む。日本の崩壊論を冷静に読むための補助線になった調べもの記事。",
         "en": "Triggered by a TV scene showing Danish couples receiving 740k JPY each. Three corrections shrink the gap to ~30-40k JPY; Japan won't collapse, but quietly erodes."
       },
-      "tag": { "ja": "エッセイ", "en": "Essay" },
+      "tag": {
+        "ja": "エッセイ",
+        "en": "Essay"
+      },
       "hero": "articles/2026/2026-06-27_pension-comparison-denmark-japan/hero.png",
       "links": {
         "html": "articles/2026/2026-06-27_pension-comparison-denmark-japan/",
@@ -64,7 +70,10 @@
         "ja": "1422 万件のメアド／パスワード漏洩で BIGLOBE が対象に。半日で解約を決めた。事故そのものより、登録アドレス宛の案内が来ない／サーバー増強がない／個別連絡もない、という事後対応の積み重ねで気持ちが切り替わった話。",
         "en": "BIGLOBE was hit in the 14.22M-record KDDI breach. Within half a day I decided to cancel — not for the leak, but for how it was handled afterward."
       },
-      "tag": { "ja": "エッセイ", "en": "Essay" },
+      "tag": {
+        "ja": "エッセイ",
+        "en": "Essay"
+      },
       "hero": "articles/2026/2026-06-24_biglobe-kaiyaku-koukantai/hero.png",
       "links": {
         "html": "articles/2026/2026-06-24_biglobe-kaiyaku-koukantai/",
@@ -81,7 +90,10 @@
         "ja": "/context で見つけた 80k 常駐を CLAUDE.md 分割と settings.json で -11.2k に。disabledTools 神話と本物の公式キーの整理つき。",
         "en": "From /context's 80k of resident tokens to -11.2k via CLAUDE.md splits and settings.json — plus the truth about disabledTools."
       },
-      "tag": { "ja": "設計判断", "en": "Design note" },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
       "hero": "articles/2026/2026-06-22_claude-code-context-diet/hero.png",
       "links": {
         "html": "articles/2026/2026-06-22_claude-code-context-diet/"
@@ -97,7 +109,10 @@
         "ja": "per-turn の通知精度に依存しない遅延ロード＋明示トリガー S の設計判断。",
         "en": "A design pattern that closes AI skill misses without depending on per-turn notification accuracy."
       },
-      "tag": { "ja": "設計判断", "en": "Design note" },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
       "hero": "articles/2026/2026-06-21_ai-skill-explicit-trigger/hero.png",
       "links": {
         "html": "articles/2026/2026-06-21_ai-skill-explicit-trigger/"
@@ -105,178 +120,503 @@
     },
     {
       "date": "2026-06-21",
-      "title": { "ja": "3度目の作話で、Claude Opus 4.8 をやめた話", "en": "3度目の作話で、Claude Opus 4.8 をやめた話" },
-      "short": { "ja": "3回目で、ようやく決めました。", "en": "3回目で、ようやく決めました。" },
-      "tag": { "ja": "振り返り", "en": "Retro" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/n020cff07baf0" }
+      "title": {
+        "ja": "3度目の作話で、Claude Opus 4.8 をやめた話",
+        "en": "3度目の作話で、Claude Opus 4.8 をやめた話"
+      },
+      "short": {
+        "ja": "3回目で、ようやく決めました。",
+        "en": "3回目で、ようやく決めました。"
+      },
+      "tag": {
+        "ja": "振り返り",
+        "en": "Retro"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-21_opus48-third-confabulation-stop/",
+        "note": "https://note.com/ishizakahiroshi/n/n020cff07baf0"
+      },
+      "hero": "assets/hero-note/n020cff07baf0.png"
     },
     {
       "date": "2026-06-20",
-      "title": { "ja": "「実質1円」をやめて、定価でiPhoneを買った話", "en": "「実質1円」をやめて、定価でiPhoneを買った話" },
-      "short": { "ja": "設定画面に、赤い文字で「バッテリーは著しく劣化しています」と出ていました。最大容量は75%。", "en": "設定画面に、赤い文字で「バッテリーは著しく劣化しています」と出ていました。最大容量は75%。" },
-      "tag": { "ja": "エッセイ", "en": "Essay" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/na8b82d0399bd" }
+      "title": {
+        "ja": "「実質1円」をやめて、定価でiPhoneを買った話",
+        "en": "「実質1円」をやめて、定価でiPhoneを買った話"
+      },
+      "short": {
+        "ja": "設定画面に、赤い文字で「バッテリーは著しく劣化しています」と出ていました。最大容量は75%。",
+        "en": "設定画面に、赤い文字で「バッテリーは著しく劣化しています」と出ていました。最大容量は75%。"
+      },
+      "tag": {
+        "ja": "エッセイ",
+        "en": "Essay"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-20_bought-iphone-at-list-price/",
+        "note": "https://note.com/ishizakahiroshi/n/na8b82d0399bd"
+      },
+      "hero": "assets/hero-note/na8b82d0399bd.png"
     },
     {
       "date": "2026-06-19",
-      "title": { "ja": "そもそもRTX4060でいけるのか。ローカルLLMでClaude Code × Ollama を動かそうと挑んで全滅した話", "en": "そもそもRTX4060でいけるのか。ローカルLLMでClaude Code × Ollama を動かそうと挑んで全滅した話" },
-      "short": { "ja": "8GBのGPU（RTX4060）で、ローカルLLMだけでClaude Codeを動かせないか試行錯誤した記録。", "en": "8GBのGPU（RTX4060）で、ローカルLLMだけでClaude Codeを動かせないか試行錯誤した記録。" },
-      "tag": { "ja": "失敗談", "en": "Postmortem" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/nd6aacc638956" }
+      "title": {
+        "ja": "そもそもRTX4060でいけるのか。ローカルLLMでClaude Code × Ollama を動かそうと挑んで全滅した話",
+        "en": "そもそもRTX4060でいけるのか。ローカルLLMでClaude Code × Ollama を動かそうと挑んで全滅した話"
+      },
+      "short": {
+        "ja": "8GBのGPU（RTX4060）で、ローカルLLMだけでClaude Codeを動かせないか試行錯誤した記録。",
+        "en": "8GBのGPU（RTX4060）で、ローカルLLMだけでClaude Codeを動かせないか試行錯誤した記録。"
+      },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Postmortem"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-19_rtx4060-claude-code-ollama-fail/",
+        "note": "https://note.com/ishizakahiroshi/n/nd6aacc638956"
+      },
+      "hero": "assets/hero-note/nd6aacc638956.png"
     },
     {
       "date": "2026-06-19",
-      "title": { "ja": "Hyper-VゲストでローカルLLMを4回失敗して、ホストWindowsのOllamaに逃がした話", "en": "Hyper-VゲストでローカルLLMを4回失敗して、ホストWindowsのOllamaに逃がした話" },
-      "short": { "ja": "Hyper-V のゲスト Windows でローカルLLMを回したかった。Ollama を入れて試した経緯。", "en": "Hyper-V のゲスト Windows でローカルLLMを回したかった。Ollama を入れて試した経緯。" },
-      "tag": { "ja": "失敗談", "en": "Postmortem" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/nede177d389ed" }
+      "title": {
+        "ja": "Hyper-VゲストでローカルLLMを4回失敗して、ホストWindowsのOllamaに逃がした話",
+        "en": "Hyper-VゲストでローカルLLMを4回失敗して、ホストWindowsのOllamaに逃がした話"
+      },
+      "short": {
+        "ja": "Hyper-V のゲスト Windows でローカルLLMを回したかった。Ollama を入れて試した経緯。",
+        "en": "Hyper-V のゲスト Windows でローカルLLMを回したかった。Ollama を入れて試した経緯。"
+      },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Postmortem"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/",
+        "note": "https://note.com/ishizakahiroshi/n/nede177d389ed"
+      },
+      "hero": "assets/hero-note/nede177d389ed.png"
     },
     {
       "date": "2026-06-19",
-      "title": { "ja": "Claudeが court と言って止まる。気のせいかと思ってログを数えた", "en": "Claudeが court と言って止まる。気のせいかと思ってログを数えた" },
-      "short": { "ja": "Claude Code を使っていると、たまにこんなものが出てきます。", "en": "Claude Code を使っていると、たまにこんなものが出てきます。" },
-      "tag": { "ja": "失敗談", "en": "Postmortem" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/n54943711627d" }
+      "title": {
+        "ja": "Claudeが court と言って止まる。気のせいかと思ってログを数えた",
+        "en": "Claudeが court と言って止まる。気のせいかと思ってログを数えた"
+      },
+      "short": {
+        "ja": "Claude Code を使っていると、たまにこんなものが出てきます。",
+        "en": "Claude Code を使っていると、たまにこんなものが出てきます。"
+      },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Postmortem"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-19_claude-stops-on-court-word/",
+        "note": "https://note.com/ishizakahiroshi/n/n54943711627d"
+      },
+      "hero": "assets/hero-note/n54943711627d.png"
     },
     {
       "date": "2026-06-19",
-      "title": { "ja": "自作ツールのダウンロード数を、全部1画面にまとめた", "en": "自作ツールのダウンロード数を、全部1画面にまとめた" },
-      "short": { "ja": "自作アプリの公開場所について、タブが何個必要なのか確認していたら…という話。", "en": "自作アプリの公開場所について、タブが何個必要なのか確認していたら…という話。" },
-      "tag": { "ja": "ツール紹介", "en": "Tool" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/n9b7d1e17849e" }
+      "title": {
+        "ja": "自作ツールのダウンロード数を、全部1画面にまとめた",
+        "en": "自作ツールのダウンロード数を、全部1画面にまとめた"
+      },
+      "short": {
+        "ja": "自作アプリの公開場所について、タブが何個必要なのか確認していたら…という話。",
+        "en": "自作アプリの公開場所について、タブが何個必要なのか確認していたら…という話。"
+      },
+      "tag": {
+        "ja": "ツール紹介",
+        "en": "Tool"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-19_tool-download-stats-one-screen/",
+        "note": "https://note.com/ishizakahiroshi/n/n9b7d1e17849e"
+      },
+      "hero": "assets/hero-note/n9b7d1e17849e.png"
     },
     {
       "date": "2026-06-19",
-      "title": { "ja": "11日で10回、Claudeは「攻撃された」と言った。犯人は自作ツールではなかった", "en": "11日で10回、Claudeは「攻撃された」と言った。犯人は自作ツールではなかった" },
-      "short": { "ja": "Claude Code がプロンプトインジェクション攻撃だと言って作業を止める場面が多かったため、ログで集計した話。", "en": "Claude Code がプロンプトインジェクション攻撃だと言って作業を止める場面が多かったため、ログで集計した話。" },
-      "tag": { "ja": "失敗談", "en": "Postmortem" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/n28780c58672d" }
+      "title": {
+        "ja": "11日で10回、Claudeは「攻撃された」と言った。犯人は自作ツールではなかった",
+        "en": "11日で10回、Claudeは「攻撃された」と言った。犯人は自作ツールではなかった"
+      },
+      "short": {
+        "ja": "Claude Code がプロンプトインジェクション攻撃だと言って作業を止める場面が多かったため、ログで集計した話。",
+        "en": "Claude Code がプロンプトインジェクション攻撃だと言って作業を止める場面が多かったため、ログで集計した話。"
+      },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Postmortem"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-19_claude-attack-false-alarm-culprit/",
+        "note": "https://note.com/ishizakahiroshi/n/n28780c58672d"
+      },
+      "hero": "assets/hero-note/n28780c58672d.png"
     },
     {
       "date": "2026-06-19",
-      "title": { "ja": "AI（Claude Code）に調べてもらったら、何年も前の同僚のファイルが出てきて、ぞっとした", "en": "AI（Claude Code）に調べてもらったら、何年も前の同僚のファイルが出てきて、ぞっとした" },
-      "short": { "ja": "Claude Code がありもしない攻撃を幻覚して仕事を拒否した前回記事の続編。", "en": "Claude Code がありもしない攻撃を幻覚して仕事を拒否した前回記事の続編。" },
-      "tag": { "ja": "失敗談", "en": "Postmortem" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/nb3c7b65666a0" }
+      "title": {
+        "ja": "AI（Claude Code）に調べてもらったら、何年も前の同僚のファイルが出てきて、ぞっとした",
+        "en": "AI（Claude Code）に調べてもらったら、何年も前の同僚のファイルが出てきて、ぞっとした"
+      },
+      "short": {
+        "ja": "Claude Code がありもしない攻撃を幻覚して仕事を拒否した前回記事の続編。",
+        "en": "Claude Code がありもしない攻撃を幻覚して仕事を拒否した前回記事の続編。"
+      },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Postmortem"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-19_ai-saw-entire-drive-old-files/",
+        "note": "https://note.com/ishizakahiroshi/n/nb3c7b65666a0"
+      },
+      "hero": "assets/hero-note/nb3c7b65666a0.png"
     },
     {
       "date": "2026-06-19",
-      "title": { "ja": "「これは攻撃です」とClaudeは言った。でも、攻撃なんてなかった", "en": "「これは攻撃です」とClaudeは言った。でも、攻撃なんてなかった" },
-      "short": { "ja": "別セッションの Claude Code が「これは攻撃です」と言って仕事を拒否し、長い拒否文が表示された話。", "en": "別セッションの Claude Code が「これは攻撃です」と言って仕事を拒否し、長い拒否文が表示された話。" },
-      "tag": { "ja": "失敗談", "en": "Postmortem" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/n8cc133704d95" }
+      "title": {
+        "ja": "「これは攻撃です」とClaudeは言った。でも、攻撃なんてなかった",
+        "en": "「これは攻撃です」とClaudeは言った。でも、攻撃なんてなかった"
+      },
+      "short": {
+        "ja": "別セッションの Claude Code が「これは攻撃です」と言って仕事を拒否し、長い拒否文が表示された話。",
+        "en": "別セッションの Claude Code が「これは攻撃です」と言って仕事を拒否し、長い拒否文が表示された話。"
+      },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Postmortem"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-19_braced-for-attack-that-never-came/",
+        "note": "https://note.com/ishizakahiroshi/n/n8cc133704d95"
+      },
+      "hero": "assets/hero-note/n8cc133704d95.png"
     },
     {
       "date": "2026-06-18",
-      "title": { "ja": "自前サーバーを立てる直前で、何やってるんだ俺、と気づいた", "en": "自前サーバーを立てる直前で、何やってるんだ俺、と気づいた" },
-      "short": { "ja": "家族の基本情報を、スマホのAIからも見たかった、という出発点から軌道修正した話。", "en": "家族の基本情報を、スマホのAIからも見たかった、という出発点から軌道修正した話。" },
-      "tag": { "ja": "振り返り", "en": "Retro" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/n56dd58344cad" }
+      "title": {
+        "ja": "自前サーバーを立てる直前で、何やってるんだ俺、と気づいた",
+        "en": "自前サーバーを立てる直前で、何やってるんだ俺、と気づいた"
+      },
+      "short": {
+        "ja": "家族の基本情報を、スマホのAIからも見たかった、という出発点から軌道修正した話。",
+        "en": "家族の基本情報を、スマホのAIからも見たかった、という出発点から軌道修正した話。"
+      },
+      "tag": {
+        "ja": "振り返り",
+        "en": "Retro"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-18_stopped-just-before-self-hosting/",
+        "note": "https://note.com/ishizakahiroshi/n/n56dd58344cad"
+      },
+      "hero": "assets/hero-note/n56dd58344cad.png"
     },
     {
       "date": "2026-06-18",
-      "title": { "ja": "Cursorが9兆円で買われた。狙いはAIの柱を丸ごと握ることだと思う", "en": "Cursorが9兆円で買われた。狙いはAIの柱を丸ごと握ることだと思う" },
-      "short": { "ja": "「VS Code のフォークに9兆円?」が最初の感想だった。買収の意味を考えた話。", "en": "「VS Code のフォークに9兆円?」が最初の感想だった。買収の意味を考えた話。" },
-      "tag": { "ja": "エッセイ", "en": "Essay" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/nf4bc4cdd62b9" }
+      "title": {
+        "ja": "Cursorが9兆円で買われた。狙いはAIの柱を丸ごと握ることだと思う",
+        "en": "Cursorが9兆円で買われた。狙いはAIの柱を丸ごと握ることだと思う"
+      },
+      "short": {
+        "ja": "「VS Code のフォークに9兆円?」が最初の感想だった。買収の意味を考えた話。",
+        "en": "「VS Code のフォークに9兆円?」が最初の感想だった。買収の意味を考えた話。"
+      },
+      "tag": {
+        "ja": "エッセイ",
+        "en": "Essay"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-18_cursor-9-trillion-yen-chicken-race/",
+        "note": "https://note.com/ishizakahiroshi/n/nf4bc4cdd62b9"
+      },
+      "hero": "assets/hero-note/nf4bc4cdd62b9.png"
     },
     {
       "date": "2026-06-18",
-      "title": { "ja": "「IPv4のログ、見ますか？」 AIが、言ってもいない指示をでっち上げた日", "en": "「IPv4のログ、見ますか？」 AIが、言ってもいない指示をでっち上げた日" },
-      "short": { "ja": "AIが架空の指示をでっち上げ、指摘したら今度は架空の引用で正当化してきた、という一件の記録。", "en": "AIが架空の指示をでっち上げ、指摘したら今度は架空の引用で正当化してきた、という一件の記録。" },
-      "tag": { "ja": "失敗談", "en": "Postmortem" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/n69239d033cfb" }
+      "title": {
+        "ja": "「IPv4のログ、見ますか？」 AIが、言ってもいない指示をでっち上げた日",
+        "en": "「IPv4のログ、見ますか？」 AIが、言ってもいない指示をでっち上げた日"
+      },
+      "short": {
+        "ja": "AIが架空の指示をでっち上げ、指摘したら今度は架空の引用で正当化してきた、という一件の記録。",
+        "en": "AIが架空の指示をでっち上げ、指摘したら今度は架空の引用で正当化してきた、という一件の記録。"
+      },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Postmortem"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-18_ai-fabricated-ipv4-log-request/",
+        "note": "https://note.com/ishizakahiroshi/n/n69239d033cfb"
+      },
+      "hero": "assets/hero-note/n69239d033cfb.png"
     },
     {
       "date": "2026-06-17",
-      "title": { "ja": "CodexのリセットはWebにはなくて、アプリにだけあった", "en": "CodexのリセットはWebにはなくて、アプリにだけあった" },
-      "short": { "ja": "残りクレジット 0、できることは「追加」か「アップグレード」だけ。の状況での発見。", "en": "残りクレジット 0、できることは「追加」か「アップグレード」だけ。の状況での発見。" },
-      "tag": { "ja": "ツール紹介", "en": "Tool" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/n8ce2a025eb2f" }
+      "title": {
+        "ja": "CodexのリセットはWebにはなくて、アプリにだけあった",
+        "en": "CodexのリセットはWebにはなくて、アプリにだけあった"
+      },
+      "short": {
+        "ja": "残りクレジット 0、できることは「追加」か「アップグレード」だけ。の状況での発見。",
+        "en": "残りクレジット 0、できることは「追加」か「アップグレード」だけ。の状況での発見。"
+      },
+      "tag": {
+        "ja": "ツール紹介",
+        "en": "Tool"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-17_codex-reset-only-in-app/",
+        "note": "https://note.com/ishizakahiroshi/n/n8ce2a025eb2f"
+      },
+      "hero": "assets/hero-note/n8ce2a025eb2f.png"
     },
     {
       "date": "2026-06-17",
-      "title": { "ja": "ダウンロード数が見たいだけだったのに、「勝手に課金」が怖くて無料クラウドを3つ比べた", "en": "ダウンロード数が見たいだけだったのに、「勝手に課金」が怖くて無料クラウドを3つ比べた" },
-      "short": { "ja": "公開ツールのDL数が npm・GitHub Releases・Homebrew に散らばっていて、1画面で見たかった話。", "en": "公開ツールのDL数が npm・GitHub Releases・Homebrew に散らばっていて、1画面で見たかった話。" },
-      "tag": { "ja": "設計判断", "en": "Design note" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/n7cac773ccb67" }
+      "title": {
+        "ja": "ダウンロード数が見たいだけだったのに、「勝手に課金」が怖くて無料クラウドを3つ比べた",
+        "en": "ダウンロード数が見たいだけだったのに、「勝手に課金」が怖くて無料クラウドを3つ比べた"
+      },
+      "short": {
+        "ja": "公開ツールのDL数が npm・GitHub Releases・Homebrew に散らばっていて、1画面で見たかった話。",
+        "en": "公開ツールのDL数が npm・GitHub Releases・Homebrew に散らばっていて、1画面で見たかった話。"
+      },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-17_free-cloud-no-surprise-billing/",
+        "note": "https://note.com/ishizakahiroshi/n/n7cac773ccb67"
+      },
+      "hero": "assets/hero-note/n7cac773ccb67.png"
     },
     {
       "date": "2026-06-16",
-      "title": { "ja": "監査結果の先頭に、通知表をつけた", "en": "監査結果の先頭に、通知表をつけた" },
-      "short": { "ja": "レポートを開いた瞬間に、感触がほしかった。設計の話。", "en": "レポートを開いた瞬間に、感触がほしかった。設計の話。" },
-      "tag": { "ja": "設計判断", "en": "Design note" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/nc5bc2e807f2c" }
+      "title": {
+        "ja": "監査結果の先頭に、通知表をつけた",
+        "en": "監査結果の先頭に、通知表をつけた"
+      },
+      "short": {
+        "ja": "レポートを開いた瞬間に、感触がほしかった。設計の話。",
+        "en": "レポートを開いた瞬間に、感触がほしかった。設計の話。"
+      },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-16_audit-result-report-card/",
+        "note": "https://note.com/ishizakahiroshi/n/nc5bc2e807f2c"
+      },
+      "hero": "assets/hero-note/nc5bc2e807f2c.png"
     },
     {
       "date": "2026-06-16",
-      "title": { "ja": "Claude も Codex も Copilot も Cursor も、ぜんぶ 1 画面で承認する — many-ai-cli v0.3.2", "en": "Claude も Codex も Copilot も Cursor も、ぜんぶ 1 画面で承認する — many-ai-cli v0.3.2" },
-      "short": { "ja": "複数 AI コーディング CLI の承認待ちを 1 画面に集約する many-ai-cli の紹介。", "en": "複数 AI コーディング CLI の承認待ちを 1 画面に集約する many-ai-cli の紹介。" },
-      "tag": { "ja": "ツール紹介", "en": "Tool" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/nfaf2ab0bdb9c" }
+      "title": {
+        "ja": "Claude も Codex も Copilot も Cursor も、ぜんぶ 1 画面で承認する — many-ai-cli v0.3.2",
+        "en": "Claude も Codex も Copilot も Cursor も、ぜんぶ 1 画面で承認する — many-ai-cli v0.3.2"
+      },
+      "short": {
+        "ja": "複数 AI コーディング CLI の承認待ちを 1 画面に集約する many-ai-cli の紹介。",
+        "en": "複数 AI コーディング CLI の承認待ちを 1 画面に集約する many-ai-cli の紹介。"
+      },
+      "tag": {
+        "ja": "ツール紹介",
+        "en": "Tool"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-16_approve-4-ai-clis-one-screen/",
+        "note": "https://note.com/ishizakahiroshi/n/nfaf2ab0bdb9c"
+      },
+      "hero": "assets/hero-note/nfaf2ab0bdb9c.png"
     },
     {
       "date": "2026-06-16",
-      "title": { "ja": "リリースのたびに思い出していた手順を、台帳とスキルに寄せた", "en": "リリースのたびに思い出していた手順を、台帳とスキルに寄せた" },
-      "short": { "ja": "個人 OSS のリリース手順を台帳に集約した話。", "en": "個人 OSS のリリース手順を台帳に集約した話。" },
-      "tag": { "ja": "設計判断", "en": "Design note" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/ndfe474251647" }
+      "title": {
+        "ja": "リリースのたびに思い出していた手順を、台帳とスキルに寄せた",
+        "en": "リリースのたびに思い出していた手順を、台帳とスキルに寄せた"
+      },
+      "short": {
+        "ja": "個人 OSS のリリース手順を台帳に集約した話。",
+        "en": "個人 OSS のリリース手順を台帳に集約した話。"
+      },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-16_release-to-registry-and-skill/",
+        "note": "https://note.com/ishizakahiroshi/n/ndfe474251647"
+      },
+      "hero": "assets/hero-note/ndfe474251647.png"
     },
     {
       "date": "2026-06-16",
-      "title": { "ja": "会話アプリじゃなくて、ダッシュボードだった。many-ai-cli のスマホを v0.4.0 で作り直す話", "en": "会話アプリじゃなくて、ダッシュボードだった。many-ai-cli のスマホを v0.4.0 で作り直す話" },
-      "short": { "ja": "v0.3.2 はそのまま出すけれど、スマホは作り直すことにしました。", "en": "v0.3.2 はそのまま出すけれど、スマホは作り直すことにしました。" },
-      "tag": { "ja": "設計判断", "en": "Design note" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/n66981b2e2d55" }
+      "title": {
+        "ja": "会話アプリじゃなくて、ダッシュボードだった。many-ai-cli のスマホを v0.4.0 で作り直す話",
+        "en": "会話アプリじゃなくて、ダッシュボードだった。many-ai-cli のスマホを v0.4.0 で作り直す話"
+      },
+      "short": {
+        "ja": "v0.3.2 はそのまま出すけれど、スマホは作り直すことにしました。",
+        "en": "v0.3.2 はそのまま出すけれど、スマホは作り直すことにしました。"
+      },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-16_many-ai-cli-mobile-as-dashboard-v040/",
+        "note": "https://note.com/ishizakahiroshi/n/n66981b2e2d55"
+      },
+      "hero": "assets/hero-note/n66981b2e2d55.png"
     },
     {
       "date": "2026-06-15",
-      "title": { "ja": "電子レンジで温めながら、Claude Fableのことを考えた", "en": "電子レンジで温めながら、Claude Fableのことを考えた" },
-      "short": { "ja": "電子レンジも、そういえば軍事技術のお下がりだった。考えごとの話。", "en": "電子レンジも、そういえば軍事技術のお下がりだった。考えごとの話。" },
-      "tag": { "ja": "エッセイ", "en": "Essay" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/nd43a3b6a855d" }
+      "title": {
+        "ja": "電子レンジで温めながら、Claude Fableのことを考えた",
+        "en": "電子レンジで温めながら、Claude Fableのことを考えた"
+      },
+      "short": {
+        "ja": "電子レンジも、そういえば軍事技術のお下がりだった。考えごとの話。",
+        "en": "電子レンジも、そういえば軍事技術のお下がりだった。考えごとの話。"
+      },
+      "tag": {
+        "ja": "エッセイ",
+        "en": "Essay"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-15_thinking-about-claude-fable-at-microwave/",
+        "note": "https://note.com/ishizakahiroshi/n/nd43a3b6a855d"
+      },
+      "hero": "assets/hero-note/nd43a3b6a855d.png"
     },
     {
       "date": "2026-06-15",
-      "title": { "ja": "本番サーバーには、触らせない。SSHで脆弱性を診断させて、直すのは人間にした話", "en": "本番サーバーには、触らせない。SSHで脆弱性を診断させて、直すのは人間にした話" },
-      "short": { "ja": "AI に任せる監査を、コードからサーバーへ広げた。境界線の設計。", "en": "AI に任せる監査を、コードからサーバーへ広げた。境界線の設計。" },
-      "tag": { "ja": "設計判断", "en": "Design note" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/n62816dee7159" }
+      "title": {
+        "ja": "本番サーバーには、触らせない。SSHで脆弱性を診断させて、直すのは人間にした話",
+        "en": "本番サーバーには、触らせない。SSHで脆弱性を診断させて、直すのは人間にした話"
+      },
+      "short": {
+        "ja": "AI に任せる監査を、コードからサーバーへ広げた。境界線の設計。",
+        "en": "AI に任せる監査を、コードからサーバーへ広げた。境界線の設計。"
+      },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-15_ssh-vuln-scan-no-prod-write/",
+        "note": "https://note.com/ishizakahiroshi/n/n62816dee7159"
+      },
+      "hero": "assets/hero-note/n62816dee7159.png"
     },
     {
       "date": "2026-06-14",
-      "title": { "ja": "同じバージョンなら、同じ中身 — だと思っていた。自作アプリを4か所に配って5時間溶かした話", "en": "同じバージョンなら、同じ中身 — だと思っていた。自作アプリを4か所に配って5時間溶かした話" },
-      "short": { "ja": "自作 CLI を GitHub Releases、winget、Homebrew、npm の 4 か所に配布した話。", "en": "自作 CLI を GitHub Releases、winget、Homebrew、npm の 4 か所に配布した話。" },
-      "tag": { "ja": "失敗談", "en": "Postmortem" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/nc4197147560b" }
+      "title": {
+        "ja": "同じバージョンなら、同じ中身 — だと思っていた。自作アプリを4か所に配って5時間溶かした話",
+        "en": "同じバージョンなら、同じ中身 — だと思っていた。自作アプリを4か所に配って5時間溶かした話"
+      },
+      "short": {
+        "ja": "自作 CLI を GitHub Releases、winget、Homebrew、npm の 4 か所に配布した話。",
+        "en": "自作 CLI を GitHub Releases、winget、Homebrew、npm の 4 か所に配布した話。"
+      },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Postmortem"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-14_same-version-different-binary-4-channels/",
+        "note": "https://note.com/ishizakahiroshi/n/nc4197147560b"
+      },
+      "hero": "assets/hero-note/nc4197147560b.png"
     },
     {
       "date": "2026-06-14",
-      "title": { "ja": "まだ何も実装してないのに、MCPサーバーから作ろうと思った話", "en": "まだ何も実装してないのに、MCPサーバーから作ろうと思った話" },
-      "short": { "ja": "AI コーディングツールで作業メモが何十個も溜まっていく問題について。", "en": "AI コーディングツールで作業メモが何十個も溜まっていく問題について。" },
-      "tag": { "ja": "設計判断", "en": "Design note" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/n4649c02097ef" }
+      "title": {
+        "ja": "まだ何も実装してないのに、MCPサーバーから作ろうと思った話",
+        "en": "まだ何も実装してないのに、MCPサーバーから作ろうと思った話"
+      },
+      "short": {
+        "ja": "AI コーディングツールで作業メモが何十個も溜まっていく問題について。",
+        "en": "AI コーディングツールで作業メモが何十個も溜まっていく問題について。"
+      },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-14_start-with-mcp-server-before-impl/",
+        "note": "https://note.com/ishizakahiroshi/n/n4649c02097ef"
+      },
+      "hero": "assets/hero-note/n4649c02097ef.png"
     },
     {
       "date": "2026-06-14",
-      "title": { "ja": "同じ exe なのに、ブラウザで落としたときだけ SmartScreen に怒られる理由", "en": "同じ exe なのに、ブラウザで落としたときだけ SmartScreen に怒られる理由" },
-      "short": { "ja": "自作 many-ai-cli を Windows 向けに配る際、未署名 exe の SmartScreen 警告に関する話。", "en": "自作 many-ai-cli を Windows 向けに配る際、未署名 exe の SmartScreen 警告に関する話。" },
-      "tag": { "ja": "失敗談", "en": "Postmortem" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/ne59309868808" }
+      "title": {
+        "ja": "同じ exe なのに、ブラウザで落としたときだけ SmartScreen に怒られる理由",
+        "en": "同じ exe なのに、ブラウザで落としたときだけ SmartScreen に怒られる理由"
+      },
+      "short": {
+        "ja": "自作 many-ai-cli を Windows 向けに配る際、未署名 exe の SmartScreen 警告に関する話。",
+        "en": "自作 many-ai-cli を Windows 向けに配る際、未署名 exe の SmartScreen 警告に関する話。"
+      },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Postmortem"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-14_same-exe-smartscreen-motw/",
+        "note": "https://note.com/ishizakahiroshi/n/ne59309868808"
+      },
+      "hero": "assets/hero-note/ne59309868808.png"
     },
     {
       "date": "2026-06-13",
-      "title": { "ja": "「publish するだけ」だと思っていた — 初めての npm 公開でハマった全部", "en": "「publish するだけ」だと思っていた — 初めての npm 公開でハマった全部" },
-      "short": { "ja": "小さなツールの名前を npm で押さえようとした際に直面した問題。", "en": "小さなツールの名前を npm で押さえようとした際に直面した問題。" },
-      "tag": { "ja": "失敗談", "en": "Postmortem" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/n401963ee4fea" }
+      "title": {
+        "ja": "「publish するだけ」だと思っていた — 初めての npm 公開でハマった全部",
+        "en": "「publish するだけ」だと思っていた — 初めての npm 公開でハマった全部"
+      },
+      "short": {
+        "ja": "小さなツールの名前を npm で押さえようとした際に直面した問題。",
+        "en": "小さなツールの名前を npm で押さえようとした際に直面した問題。"
+      },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Postmortem"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-13_first-npm-publish-pitfalls/",
+        "note": "https://note.com/ishizakahiroshi/n/n401963ee4fea"
+      },
+      "hero": "assets/hero-note/n401963ee4fea.png"
     },
     {
       "date": "2026-06-13",
-      "title": { "ja": "指示を、書きすぎていた。AIコード監査プロンプトを「ループ設計」でやり直した話", "en": "指示を、書きすぎていた。AIコード監査プロンプトを「ループ設計」でやり直した話" },
-      "short": { "ja": "AI にコード監査をさせるプロンプト集を Claude Fable 5 向けに書き直した話。", "en": "AI にコード監査をさせるプロンプト集を Claude Fable 5 向けに書き直した話。" },
-      "tag": { "ja": "設計判断", "en": "Design note" },
-      "links": { "note": "https://note.com/ishizakahiroshi/n/nf1d065eb6804" }
+      "title": {
+        "ja": "指示を、書きすぎていた。AIコード監査プロンプトを「ループ設計」でやり直した話",
+        "en": "指示を、書きすぎていた。AIコード監査プロンプトを「ループ設計」でやり直した話"
+      },
+      "short": {
+        "ja": "AI にコード監査をさせるプロンプト集を Claude Fable 5 向けに書き直した話。",
+        "en": "AI にコード監査をさせるプロンプト集を Claude Fable 5 向けに書き直した話。"
+      },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
+      "links": {
+        "html": "articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/",
+        "note": "https://note.com/ishizakahiroshi/n/nf1d065eb6804"
+      },
+      "hero": "assets/hero-note/nf1d065eb6804.png"
     }
   ]
 }

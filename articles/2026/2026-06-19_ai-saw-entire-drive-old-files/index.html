@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI（Claude Code）に調べてもらったら、何年も前の同僚のファイルが出てきて、ぞっとした — 2026-06-19 — ishizakahiroshi</title>
+<meta name="description" content="Claude Code が幻覚で仕事を拒否した前回記事の続編。調査中、何年も前に一度だけ共有フォルダを使った相手のファイルが出てきた。コネクタのバグではなく、ドライブ検索の素の挙動だった、という話。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_ai-saw-entire-drive-old-files/">
+
+<meta property="og:title" content="AI（Claude Code）に調べてもらったら、何年も前の同僚のファイルが出てきて、ぞっとした">
+<meta property="og:description" content="コネクタはバグっていない。ドライブ検索が素直に「自分が見られる範囲」を全部舐めただけ。スコープを誰が握るか、という話。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_ai-saw-entire-drive-old-files/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_ai-saw-entire-drive-old-files/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_ai-saw-entire-drive-old-files/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "AI（Claude Code）に調べてもらったら、何年も前の同僚のファイルが出てきて、ぞっとした",
+  "description": "コネクタはバグっていない。ドライブ検索が素直に「自分が見られる範囲」を全部舐めただけ。スコープを誰が握るか、という話。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-19_ai-saw-entire-drive-old-files/hero.png",
+  "datePublished": "2026-06-19",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-19_ai-saw-entire-drive-old-files/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">失敗談</span>
+  <span class="stamp">2026-06-19</span>
+</div>
+
+<h1>AI（Claude Code）に調べてもらったら、何年も前の同僚のファイルが出てきて、ぞっとした</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="ぞっとする顔のイラスト。背後にドライブのファイルが大量に並び、自分のものと他人のものが混ざっている様子。" width="1280" height="670">
+</div>
+
+<p class="lead">
+前回、Claude Code が「これは攻撃です」と幻覚して仕事を拒否した話を書きました。あれを調べている最中に、もうひとつ引っかかったことがあって、これはこれで別問題だな、と思ったので分けて書いておきます。Google ドライブの連携（コネクタ／MCP）を、AI にどこまで見せているのか、という話です。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/nb3c7b65666a0" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>自分のものを探したはずが、他人のが混ざる</h2>
+
+<p>幻覚した側の AI が、暴走の途中で Google ドライブを検索したとき、出てきたファイルの中に、自分のものじゃない、何年も前に一度だけ共有フォルダを一緒に使った相手の自己紹介ファイルが混ざっていました。氏名も、年齢も、出身地も載っているやつです。</p>
+
+<p>あとから生ログを一行ずつ追っていて、ずいぶん前に一度だけ一緒に働いた同僚の名前がぽろっと出てきたときは、正直ぞっとしました。こっちは自分の情報を調べさせたつもりだったのに。</p>
+
+<p>そのとき AI が投げた検索ワード自体が的外れ（前回の幻覚の産物）だったので、出てきた中身もてんでバラバラでした。卒業研究の資料だったり、誰かの自己紹介だったり。よく見て気づいたのは、ファイルの持ち主（owner）です。半分は自分のアカウント、もう半分は、明らかに別人のメールアドレスになっていた。</p>
+
+<p>つまり AI は、自分のドライブの中だけじゃなく、自分が「見られる」ファイルを全部、検索の対象にしていた、ということです。</p>
+
+<h2>これはバグでも、情報漏洩でもない</h2>
+
+<p>最初は「コネクタが変なものを引っ張ってきたな」と思いました。でも、調べると違う。これは Google ドライブの検索の、ごく普通の挙動でした。</p>
+
+<p>ドライブの全文検索は、あなたが所有するファイルだけを見るわけじゃありません。</p>
+
+<ul>
+  <li>誰かからあなたに共有されたファイル</li>
+  <li>あなたが参加している共有ドライブの中身</li>
+</ul>
+
+<p>これも全部ひっくるめて、検索の対象にします。何年も前に共有フォルダを一緒に使っていれば、その中のファイルは、今もあなたのアカウントから到達できる。だから、曖昧なキーワードを 1 つ投げただけで、古い共有ファイルが芋づる式に出てくる。</p>
+
+<div class="info">
+コネクタは、嘘の情報をでっち上げたわけでも、どこかへ情報を漏らしたわけでもありません。「あなたが見られるファイル」を、持ち主の情報まで正確に付けて、忠実に返しただけ。むしろ仕事は正確だった。悪気はないんです。
+</div>
+
+<h2>怖いのは、「見える範囲」が AI 任せになること</h2>
+
+<p>問題は、その「あなたが見られる範囲」が、自分で思っているよりずっと広いこと。そして、その広い範囲のどこを覗くかを、AI のさじ加減に委ねていることです。</p>
+
+<p>普段は、こちらが「この前のあのファイルを見て」と具体的に頼むから、変なことは起きません。狙ったものだけが返ってくる。でも前回みたいに、AI が幻覚して的外れな検索を勝手に投げた瞬間、その広さが一気に効いてきます。何年も前の、他人の、氏名や連絡先が書かれたファイルが、ぽろっと画面に出てくる。自分が頼んでもいないのに。</p>
+
+<p>扉（コネクタ）の出来は、悪くないんです。問題は、その扉の向こうが、あなたのドライブの歴史まるごと、という広い部屋になっていること。扉が立派かどうかより、扉の奥に何が置いてあるか、のほうが効く。</p>
+
+<h2>見えすぎると、AI も混乱する</h2>
+
+<p>もうひとつ、これはプライバシーとは別の角度の話です。見える範囲が広いと、困るのは「他人のファイルが出てくる」ことだけじゃありません。</p>
+
+<p>曖昧なキーワードで検索すると、関係ない他人のファイルや、何年も前の古い資料まで、どっさり返ってきます。AI はそれを全部抱え込もうとする。</p>
+
+<p>AI が一度に覚えていられる量（コンテキスト）には限りがあります。いらない情報で埋まれば、肝心の作業に回せる余地がそのぶん狭くなる。しかも、関係ないファイルの断片が混ざると、AI はそっちに引っ張られて、見当違いの方向へ進みやすくなる。今回みたいな幻覚の燃料にもなりかねません。</p>
+
+<p>つまり「見せる範囲を絞る」のは、情報を守るためだけじゃなく、AI に余計なものを食わせて混乱させないためでもある。狭いほうが、速いし、正確になる。</p>
+
+<h2>窓を作り込むより、見せる範囲を自分で決める</h2>
+
+<p>スコープを絞ろうとすると、つい「もっと賢い窓（自前の MCP サーバー）を作って、見える範囲を制御しよう」という方向に行きがちです。実際、自分も一度そっちに走りかけました。</p>
+
+<p>ただ、引っかかったことがあります。公式のコネクタをつなぐとき、同意画面は「特定のファイルにアクセスします」みたいな顔をしている。なのに実際にアプリへ渡される権限には、「ドライブの全ファイルを閲覧できる」ものが含まれている、という指摘があります。つまり公式の窓は、最初からこちらが思うより広く土地を見ている。「このフォルダだけ見て」と頼むのは、あくまでお願いであって、壁じゃない。だから AI が暴走すれば、そのお願いは簡単に飛び越えられてしまう。</p>
+
+<p>じゃあどう絞るか。手はいくつかあって、どれも一長一短です。これがおすすめ、と言い切れるものは無い。</p>
+
+<ul>
+  <li><strong>頼み方で絞る</strong>: 検索を特定のフォルダに限定する、ファイル ID を直接指定して読ませる。いちばん手軽で、普段はこれで十分。ただし「こう使う」というルールでしかないので、AI が勝手に広い検索を投げたら破れる。強制力はない。</li>
+  <li><strong>専用アカウントで絞る</strong>: 正典だけを置いた別アカウントを用意して、そこにつなぐ。そのアカウントには正典しか無いので、どんなに雑な検索をしても他人のファイルは物理的に出てこない。サーバーも一行も書かなくていい。お手軽な部類だけど、アカウントが増えるぶん、管理が地味にだるい。</li>
+  <li><strong>自作の窓で握る</strong>: 自作の MCP サーバーやカスタム接続で、窓に渡す権限ごと自分の手で握る。クエリ単位の制御も、誰がいつ何を読んだかの記録も取れる。いちばんきっちり絞れるかわりに、作る手間はかかる。</li>
+</ul>
+
+<p>結局、手軽さ・固さ・手間がそれぞれ釣り合わなくて、万人向けの正解は無い。本音を言えば、こんなふうにユーザー側が工夫する前に、コネクタを出している側（Google）が「特定のファイルだけ」をちゃんと厳密にしてくれるのが一番なんですが、そこは祈るしかない。今は、自分の用途に合わせて、この中から手間と相談して選ぶことになります。</p>
+
+<h2>扉は、少ないほうがいい</h2>
+
+<p>前の記事で「外に開く扉は、増やすほど守りが要る」と書きました。今回の件は、その続きみたいなものです。</p>
+
+<p>「スコープを絞る」と聞くと、つい賢い窓を作らなきゃ、と身構える。でも出発点はいつも同じで、「その窓から何を見せるかを、AI 任せにせず自分で決めておく」こと。頼み方で狭めるのか、渡す権限ごと握るのか。手間と相談しながら選べばいい。</p>
+
+<p>そしてもうひとつ。今回そもそものきっかけは、AI が幻覚して的外れな検索を投げたことでした。だから対策も二段構えで、「見せる土地を狭くする」のと「機微なものはファイル ID を指定して、出典をはっきりさせてから読ませる」の両方をやる。範囲を狭め、頼み方を具体的にする。それだけで、今回みたいな事故のほとんどは起きなくなります。</p>
+
+<p>土地を見直す。頼み方を具体的にする。派手なことは何もしていません。そういう地味なところから、整えていこうと思います。</p>
+
+<h2>関連リンク</h2>
+<ul>
+  <li><a href="https://note.com/ishizakahiroshi/n/n56dd58344cad" target="_blank" rel="noopener">正典データを「領土」、AI を「窓」にたとえた話（note）</a></li>
+  <li><a href="https://note.com/kenichiro/n/nbec8bbac1cf2" target="_blank" rel="noopener">西岡賢一郎さんの note：公式コネクタの権限スコープに関する指摘</a></li>
+</ul>
+
+<div class="footer">
+  公開: 2026-06-19 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

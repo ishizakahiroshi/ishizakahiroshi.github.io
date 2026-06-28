@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>指示を、書きすぎていた。AIコード監査プロンプトを「ループ設計」でやり直した話 — 2026-06-13 — ishizakahiroshi</title>
+<meta name="description" content="Claude Fable 5 向けのAIコード監査プロンプトを、手取り足取り型から「ループ設計」へ全面書き直した記録。検証役を別エージェントに分離し、完了条件を採点表化し、作業メモを学ぶ記憶に変えた、引き算の設計判断の話。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/">
+
+<meta property="og:title" content="指示を、書きすぎていた。AIコード監査プロンプトを「ループ設計」でやり直した話">
+<meta property="og:description" content="手順を丁寧に書き込むほど、賢いモデルは縛られる。検証役の分離・採点表ゲート・学ぶメモの3点で、Fable 5 向け監査プロンプトを書き直した記録。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "指示を、書きすぎていた。AIコード監査プロンプトを「ループ設計」でやり直した話",
+  "description": "手順を丁寧に書き込むほど、賢いモデルは縛られる。検証役の分離・採点表ゲート・学ぶメモの3点で、Fable 5 向け監査プロンプトを書き直した記録。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/hero.png",
+  "datePublished": "2026-06-13",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag">設計判断</span>
+  <span class="stamp">2026-06-13</span>
+</div>
+
+<h1>指示を、書きすぎていた。AIコード監査プロンプトを「ループ設計」でやり直した話</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="AIコード監査プロンプトを手取り足取り型からループ設計へ書き直す、引き算の設計判断のヒーロー画像" width="1280" height="670">
+</div>
+
+<p class="lead">
+直近の開発はほぼAIエージェント任せで、その流れでAIにコード監査をさせるプロンプト集を公開しています。その中の Claude Fable 5 向け 1 本を、今回ごっそり書き直しました。きっかけは「自分の作りが間違っていた」と気づいたこと。ひとことで言うと、指示を書きすぎていたんです。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/nf1d065eb6804" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>前の版は、なぜ「手取り足取り」だったのか</h2>
+
+<p>監査プロンプトというのは、AIに「このコードをこういう観点で調べて、見つけた問題をこう確かめて、こう直して」とお願いする長い文章です。前の Fable 5 版は、その手順をかなり細かく書き込んでいました。</p>
+
+<ul>
+  <li>調べる観点を列挙する</li>
+  <li>確かめ方を列挙する</li>
+  <li>注意点を列挙する</li>
+</ul>
+
+<p>丁寧に書けば書くほど精度が上がる、と素朴に信じていた構成です。実際それで動くし、悪くはなかった。ただ、もっと良くできる余地が残っていることに、あとから気づきました。</p>
+
+<div class="info">
+  決定的だったのは、Fable 5 を作っている側が公開していたモデルの使い方の文書を読んだことです。「手取り足取り指示するより、自分で間違いに気づいて直せる<strong>ループ</strong>を用意した方が、良い結果を出す」。自分がやっていたのは、まさにその逆でした。
+</div>
+
+<p>細かい手順を渡すほど、モデルは「言われた通り」に動こうとして、自分で深く考える余地が減る。良かれと思った丁寧さが、たぶん足を引っ張っていた——ここから、直し方の方針が決まりました。手順で縛るのをやめて、自分で気づいて直せる仕組みの方を作る、と。</p>
+
+<h2>直しの 3 本柱：検証役の分離・採点表ゲート・学ぶメモ</h2>
+
+<h3>1. 検証役を別エージェントに分離した（一番効いた）</h3>
+
+<p>手応えが一番大きかったのはここでした。前の版では、コードを調べたエージェントが自分の見つけた問題を自分で「これは本当に正しいか?」と確かめていた。一人二役です。</p>
+
+<p>でも、自分が出した答えのアラは、自分ではなかなか見えません。テスト前に自分で答え合わせをして間違いに気づけないのと同じ構図です。そこで、確かめる作業だけを別エージェントに渡しました。</p>
+
+<ul>
+  <li>調査エージェント: コードを読み、問題候補と根拠を出す</li>
+  <li>検証エージェント: 問題の中身と根拠だけを受け取り、まっさらな状態で「これ、本当に成立する?」と疑う</li>
+</ul>
+
+<p>調べた本人の思い込みが入らない分、あやしいものがちゃんとふるい落とされる。これは効きました。</p>
+
+<h3>2. 完了条件を「チェックリスト」から「採点表」に</h3>
+
+<p>2つ目は、「どうなったら完了か」の決め方です。前は、完了条件を箇条書きで並べていただけ。AIは、だいたいできたところで「終わりました」と言いがちです。</p>
+
+<p>今回は完了条件を採点表の形にして、<strong>全項目が満たされたと別エージェントが判定するまで終われない</strong>、というループにしました。中途半端なところで切り上げさせない仕掛けです。</p>
+
+<h3>3. 作業メモを「ログ」から「学ぶ記憶」に</h3>
+
+<p>3つ目は、作業中のメモの取り方です。前は、やったことを書き留めるだけのログでした。今回は、流れをこう変えました。</p>
+
+<ul>
+  <li>間違えたら理由も残す</li>
+  <li>原因を調べたら、推測のままにせず事実として確定させる</li>
+  <li>それを「このコードではこういう決まりだ」という一般ルールに昇華して、次に同じことを調べ直さない</li>
+</ul>
+
+<p>失敗を、ちゃんと次に活かす形にした、という感じです。そして最後に、引き算もしました。細かい手順は削って、ゴールと「やってはいけないこと」だけを渡す。進め方そのものは、モデルに任せる。書きすぎを、やめました。</p>
+
+<h2>ついでにやった小さな整理：ファイル名から「5」を外した</h2>
+
+<p>これは小さな話ですが、前はファイル名を <code>claude_fable5</code> のように「5」付きにしていました。Fable はこの先 6, 7 と上がっていくはずなので、そのたびに名前が古びて、新しいモデルが対象外だと誤解されるのも嫌だなと。</p>
+
+<p>なので、バージョン番号を外して <code>claude_fable</code> に統一しました。次のモデルが出ても、名前はそのまま使い続けられます。中身に「例: Fable 5」とだけ添えておく形に。</p>
+
+<h2>使い方と、変えなかった約束ごと</h2>
+
+<p>使い方は、変わらず簡単です。Claude Code でモデルを Fable に切り替えて、リポジトリに置いたプロンプトを「これで監査して」と頼むだけ。強度やスコープ、調べる観点を引数で絞ることもできますが、全部省略してもデフォルトで動きます。</p>
+
+<p>そして、前の版から変えなかった約束ごとが3つあります。</p>
+
+<ul>
+  <li>ビルドもコミットも本番DBへの操作もしない</li>
+  <li>止まらず最後まで走り切る</li>
+  <li>迷ったら記録して次へ進む</li>
+</ul>
+
+<p>安心して任せられる範囲は守ったまま、中身の賢さだけ上げたつもりです。</p>
+
+<h2>同じ直しを、他のプロンプトにはやらなかった理由</h2>
+
+<p>ここまで読むと「じゃあ他のも全部そうやって削ればいい」と思うかもしれません。でも、やりませんでした。このプロンプト集には、Fable 以外にも複数AIを並列で走らせる版や、別ツール向けの版があります。そっちは、わざと細かく指示を書いたまま残しています。</p>
+
+<ul>
+  <li><strong>並列で走らせる版</strong>: 観点や手がかりを具体的に並べておかないと、各AIの担当があいまいになって取りこぼす</li>
+  <li><strong>別ツール向けの版</strong>: 細かく列挙した方が素直に動く</li>
+</ul>
+
+<p>細かさが効くかどうかは、相手のモデルや動かし方で変わるんです。「指示は削るのが正解」と一般化したくなったけど、それは Fable に限った話でした。相手によって、ちょうどいい伝え方は変わる。</p>
+
+<p>ただ、どの版にも共通で1つだけ足したルールがあります。「<strong>自分で確かめていないことを、できたことにして報告しない</strong>」。これはモデルを問わず効くはずです。</p>
+
+<h2>追記：直した矢先に、Fable 5 が止まった</h2>
+
+<p>ここまで書き終えた、まさにその日のことです。Fable 5 が止まりました。アメリカ政府の輸出管理の指示で、外国籍の利用が一律ストップ。日本にいる自分も、いまは Fable 5 を呼べません。</p>
+
+<p>Fable 5 のために気合いを入れて作り直したプロンプトが、肝心の Fable 5 を呼べない。タイミングが良すぎて、思わず笑ってしまいました。</p>
+
+<p>ただ、今回直した中身——<strong>検証を別の役に任せる、終わりを採点表で決める、メモを学ぶ記憶にする</strong>——は、どのモデルでも効く「ループの設計」の話です。当面は手元の別のモデルで同じ考え方を使いながら、Fable が戻ってきたら、このプロンプトをそのまま投げるつもりです。戻ってきますように。</p>
+
+<h2>関連リンク</h2>
+<ul>
+  <li><a href="https://github.com/ishizakahiroshi/ai-audit-prompts" target="_blank" rel="noopener">ishizakahiroshi/ai-audit-prompts（リポジトリ）</a></li>
+  <li><a href="https://note.com/ishizakahiroshi/n/nf1d065eb6804" target="_blank" rel="noopener">note: 指示を、書きすぎていた。AIコード監査プロンプトを「ループ設計」でやり直した話</a></li>
+</ul>
+
+<div class="footer">
+  公開: 2026-06-13 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>
