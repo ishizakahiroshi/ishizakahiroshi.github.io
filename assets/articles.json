@@ -5,6 +5,23 @@
   },
   "articles": [
     {
+      "date": "2026-06-28",
+      "title": {
+        "ja": "パスかクエリか。1問の面接問題から学ぶ、API設計とRESTの完全ガイド",
+        "en": "Path or query — a single interview problem unpacks API design and REST from the ground up"
+      },
+      "short": {
+        "ja": "X で流れたバックエンド面接問題（A: パスで分ける vs B: クエリで分ける）から出発し、API・HTTP・REST・URL 設計・実務パターン・REST の限界までを 1 本で繋いだ完全ガイド。結論は「パスは別リソース、クエリは同一リソースの絞り込み」。即答した時点で不正解になる理由を、前提別に場合分けして解説。",
+        "en": "From a viral X interview problem (path-based vs query-based URL design) to a full walkthrough of API, HTTP, REST, URL design and beyond. The answer hinges on one line: paths separate resources, queries narrow within one."
+      },
+      "tag": { "ja": "設計判断", "en": "Design note" },
+      "hero": "articles/2026/2026-06-28_rest-api-design/hero.png",
+      "links": {
+        "html": "articles/2026/2026-06-28_rest-api-design/",
+        "zenn": "https://zenn.dev/ishizakahiroshi/articles/20260628-rest-api-design"
+      }
+    },
+    {
       "date": "2026-06-27",
       "title": {
         "ja": "年金月74万円のデンマーク、月17万円の日本。世界の年金を比べたら「崩壊論」の解像度が上がった",
