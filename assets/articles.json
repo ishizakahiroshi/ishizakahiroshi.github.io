@@ -7,6 +7,22 @@
     {
       "date": "2026-06-28",
       "title": {
+        "ja": "第二弾・「商品がない」キャンセルのその後 — 問い合わせ結果と消費生活センター相談の記録",
+        "en": "Follow-up — what came after the unilateral Mercari cancel: ticket logs and a consumer-center filing"
+      },
+      "short": {
+        "ja": "前回（メルカリで約9.6万円の取引が購入者の同意なくキャンセル成立）の続編。事務局問い合わせで7項目に整理し直してようやく見えた運用、ブロック・評価・利用枠拘束に救済がないこと、群馬県の消費生活センターへ「求めなかったこと／求めたこと」に分けて送った相談内容の記録。",
+        "en": "Sequel to the unilateral Mercari cancel post. After seven structured questions to support, the shape of buyer-side options emerged — none. Includes the filing sent to Gunma's consumer affairs center, split into 'what I did not ask for' and 'what I did'."
+      },
+      "tag": { "ja": "振り返り", "en": "Retro" },
+      "hero": "articles/2026/2026-06-28_mercari-unilateral-cancel-followup/hero.png",
+      "links": {
+        "html": "articles/2026/2026-06-28_mercari-unilateral-cancel-followup/"
+      }
+    },
+    {
+      "date": "2026-06-28",
+      "title": {
         "ja": "パスかクエリか。1問の面接問題から学ぶ、API設計とRESTの完全ガイド",
         "en": "Path or query — a single interview problem unpacks API design and REST from the ground up"
       },
