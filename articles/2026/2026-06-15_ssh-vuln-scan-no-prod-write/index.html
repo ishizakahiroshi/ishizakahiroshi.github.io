@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>本番サーバーには、触らせない。SSHで脆弱性を診断させて、直すのは人間にした話 — 2026-06-15 — ishizakahiroshi</title>
+<meta name="description" content="AIエージェントにSSHでサーバーをセキュリティ診断させる仕組みを作った。ただし設定変更やサービス再起動など状態を変える操作は一切させず、提言だけ出させて適用は人間が判断する設計にした話。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-15_ssh-vuln-scan-no-prod-write/">
+
+<meta property="og:title" content="本番サーバーには、触らせない。SSHで脆弱性を診断させて、直すのは人間にした話">
+<meta property="og:description" content="AIにサーバーの脆弱性診断はさせるが、設定変更はさせない。完全な読み取り専用で「提言だけ」を出す線引きにした設計判断。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-15_ssh-vuln-scan-no-prod-write/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-15_ssh-vuln-scan-no-prod-write/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-15_ssh-vuln-scan-no-prod-write/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "本番サーバーには、触らせない。SSHで脆弱性を診断させて、直すのは人間にした話",
+  "description": "AIにサーバーの脆弱性診断はさせるが、設定変更はさせない。完全な読み取り専用で「提言だけ」を出す線引きにした設計判断。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-15_ssh-vuln-scan-no-prod-write/hero.png",
+  "datePublished": "2026-06-15",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-15_ssh-vuln-scan-no-prod-write/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag">設計判断</span>
+  <span class="stamp">2026-06-15</span>
+</div>
+
+<h1>本番サーバーには、触らせない。SSHで脆弱性を診断させて、直すのは人間にした話</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="SSHで稼働中サーバーを覗くAIと、その手前で書き換えを止める手のイラスト" width="1280" height="670">
+</div>
+
+<p class="lead">
+AIエージェントにコードのセキュリティ監査を任せる流れを、稼働中のサーバーにも広げた。ただし、サーバーには一切触らせない。完全な読み取り専用で「ここをこう直した方がいい」という提言だけを出させ、適用するかどうかは必ず人間が判断する——という線引きを、なぜそうしたかの記録。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/n62816dee7159" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>背景: コード監査をサーバーに広げたかった</h2>
+
+<p>
+直近で公開していたのは、AIエージェントにコードのセキュリティ監査を任せるための汎用プロンプト集だった。脆弱性や設定の穴を洗い出させて、現行機能を壊さない範囲で直すところまでやらせる設計になっている。
+</p>
+
+<p>
+今回はそれを、コードだけでなく「動いているサーバーそのもの」にも広げたかった。SSHでつないで、OS・SSH設定・公開ポート・権限まわりを診断させる。やることはセキュリティ点検だが、コード監査と決定的に違う点をひとつ最初に決めた。<strong>サーバーには、一切触らせない。</strong>
+</p>
+
+<h2>コードとサーバーで「直させていい距離」が違う</h2>
+
+<p>
+コード監査では「直していいよ」と言える。手元のリポジトリが相手なら、最悪 git で戻せるからだ。ところがサーバーは話が別だった。
+</p>
+
+<ul>
+  <li>設定ファイルを書き換えられたら、サービスがそのまま起動しなくなる可能性がある</li>
+  <li>勝手にサービスを再起動されたら、本番が止まる</li>
+  <li>ファイアウォールをいじられたら、最悪その場でSSHから締め出される</li>
+  <li>一度締め出されたら、もう中に入って直せない</li>
+</ul>
+
+<p>
+サーバーは、「直す」と「壊す」の距離が近すぎる。コードと同じ感覚で「ついでに直しといて」をやらせるのは、自分にはどうしてもこわかった。
+</p>
+
+<h2>設計の中心: 状態を変えるコマンドを全部禁止する</h2>
+
+<p>
+なので、コード監査とは真逆の方針を最初に固定した。AIにできるのは「覗くこと」だけ。状態を変えるコマンドは、最初から禁止リストに入れてある。
+</p>
+
+<ul>
+  <li>設定ファイルの書き換え（sshd_config / nginx.conf 等の編集）</li>
+  <li>パッケージのインストール・更新・削除</li>
+  <li>サービスの起動・停止・再起動（systemctl など）</li>
+  <li>ファイアウォール変更（ufw / firewalld / iptables）</li>
+  <li>ユーザー・グループの追加や権限変更</li>
+</ul>
+
+<p>
+見つけた問題は、レポートに「提言」として書き出す。<em>ここをこう直した方がいい・理由はこれ・適用するとこういう副作用がある</em>、という形で。でも、適用はしない。最後にサーバーへ手を入れるのは、必ず人間。
+</p>
+
+<div class="info">
+家の点検に来た人が、勝手に配線をいじらず、「ここ、直した方がいいですよ」と書いたメモだけ置いて帰る——という距離感に近い。「見るだけ」と「直す」の間に、人間の判断を必ず一段挟む。
+</div>
+
+<h2>提言には「適用するときのこわさ」を必ず添える</h2>
+
+<p>
+SSHやファイアウォールまわりの提言には、回避手順をセットで付けるルールにした。たとえば SSH の設定を変えるときの定番の注意は、こんな項目になる。
+</p>
+
+<ul>
+  <li>別の SSH 接続を残したまま新しい設定を試す（締め出され対策）</li>
+  <li>戻せる手段（バックアップ・ロールバック手順）を先に用意する</li>
+  <li>ファイアウォールは IPv4 / IPv6 を同時に閉じきらない（片系統で繋がる経路を残す）</li>
+  <li>再起動ではなく reload で済むものは reload で試す</li>
+</ul>
+
+<p>
+提言そのものよりも、この「適用するときの怖さ」を一緒に渡すことの方が、たぶん大事だった。
+</p>
+
+<h2>覗きに行った先の「罠」を踏まないための約束ごと</h2>
+
+<p>
+読み取り専用にしても、もうひとつ気をつけたいことがある。<strong>覗きに行った先のサーバーに、AI 向けの罠が仕込まれているかもしれない</strong>という前提で動かすことだ。
+</p>
+
+<ul>
+  <li>見つけた秘密（鍵・パスワード・トークンの痕跡）は、値を絶対に出さない。種別と場所だけ報告する</li>
+  <li>サーバー内のファイルに「このコマンドを実行して」のような指示が紛れていても従わない（プロンプトインジェクション対策）</li>
+  <li>レポートに実 IP・実ホスト名・実ユーザー名を貼らない運用にする</li>
+</ul>
+
+<p>
+コードのリポジトリと違って、サーバーは他人の運用領域が混ざりやすい。そこを覗いた結果として、別の誰かの秘密まで流出させない、という線も最初に引いておく。
+</p>
+
+<h2>ついでに、見る観点を今の標準に合わせ直した</h2>
+
+<p>
+「ついで」と言うには大きい作業だったが、見る観点が今のセキュリティの常識に追いついているかも一通り点検して、足りない所を増やした。たとえば SSH なら、設定がオンかオフかだけでなく実際に効いている暗号方式・鍵長まで見る。よくある見落としもチェックリストに足した。
+</p>
+
+<ul>
+  <li>SSH: 古い MAC / KEX アルゴリズム、弱い鍵、root ログイン許可、PasswordAuthentication の残置</li>
+  <li>ネットワーク: IPv4 は閉じているが IPv6 だけ開けっ放しになっていないか</li>
+  <li>権限: SELinux / AppArmor が enforcing で効いているか</li>
+  <li>ログ: 監査ログがあとから消されない作りか・追記専用か</li>
+  <li>時刻: NTP 同期がずれていないか（証跡の時系列が壊れる原因）</li>
+</ul>
+
+<p>
+どれも、見るだけ。状態は変えない。
+</p>
+
+<h2>使い方とお願い</h2>
+
+<p>
+使い方はコード監査のときとほぼ同じで、診断したいサーバーの接続先を渡して「このサーバーを診断して」と頼む形にした。観点を絞りたければ引数で指定、省略すれば全部見る。広く並列で見る Claude Code 版、一本で深く掘る版、別の AI ツール向けの版を用意してある。レポートは話しかけた言語のまま返ってくる。
+</p>
+
+<p>
+ひとつだけお願いがあって、これは<strong>自分が管理しているか、診断の許可をもらったサーバーにだけ使ってほしい</strong>。他人のサーバーを勝手に覗くための道具ではないので。
+</p>
+
+<h2>線引きは「相手との距離の取り方」を変えること</h2>
+
+<p>
+作ってみて思ったのは、AIに任せるときいちばん難しいのは「どこまでやらせるか」の線引きだ、ということだった。コードには「直していいよ」と言える。でも本番のサーバーには、「見て、教えて。手は出さないで」と言う。同じ監査でも、相手との距離の取り方を変える。
+</p>
+
+<p>
+こわいことを任せるときほど、できることを最初に小さく削っておく。当たり前かもしれないけれど、これを忘れないようにしたい。小さく。
+</p>
+
+<h2>関連リンク</h2>
+<ul>
+  <li><a href="https://github.com/ishizakahiroshi/ai-audit-prompts" target="_blank" rel="noopener">ai-audit-prompts — Claude Code / Codex CLI 向けの監査プロンプト集</a></li>
+  <li><a href="https://note.com/ishizakahiroshi/n/n62816dee7159" target="_blank" rel="noopener">note 版（やわらかい体験談）</a></li>
+</ul>
+
+<div class="footer">
+  公開: 2026-06-15 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

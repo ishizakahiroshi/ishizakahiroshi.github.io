@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>そもそもRTX4060でいけるのか。ローカルLLMでClaude Code × Ollama を動かそうと挑んで全滅した話 — 2026-06-19 — ishizakahiroshi</title>
+<meta name="description" content="8GB の RTX4060 でローカル LLM だけで Claude Code を動かそうとした一日の記録。tool 呼び出し非対応・指示書きの音読・大型モデルで PC フリーズ。最終的にクラウドへ逃がした顛末。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_rtx4060-claude-code-ollama-fail/">
+
+<meta property="og:title" content="そもそもRTX4060でいけるのか。ローカルLLMでClaude Code × Ollama を動かそうと挑んで全滅した話">
+<meta property="og:description" content="8GB GPU でローカル LLM × Claude Code を試したら、tool 呼び出し非対応・指示書きの音読・大型モデルで PC フリーズ。クラウドに逃がしてようやく動いた一日の記録。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_rtx4060-claude-code-ollama-fail/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_rtx4060-claude-code-ollama-fail/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_rtx4060-claude-code-ollama-fail/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "そもそもRTX4060でいけるのか。ローカルLLMでClaude Code × Ollama を動かそうと挑んで全滅した話",
+  "description": "8GB GPU でローカル LLM × Claude Code を試したら、tool 呼び出し非対応・指示書きの音読・大型モデルで PC フリーズ。クラウドに逃がしてようやく動いた一日の記録。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-19_rtx4060-claude-code-ollama-fail/hero.png",
+  "datePublished": "2026-06-19",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-19_rtx4060-claude-code-ollama-fail/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">失敗談</span>
+  <span class="stamp">2026-06-19</span>
+</div>
+
+<h1>そもそもRTX4060でいけるのか。ローカルLLMでClaude Code × Ollama を動かそうと挑んで全滅した話</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="RTX4060 と Ollama でローカル LLM から Claude Code を動かそうと挑む様子。8GB の GPU メモリに収まらず PC が固まる現実を示すイラスト。" width="1280" height="670">
+</div>
+
+<p class="lead">
+8GB の GPU（RTX4060）で、ローカル LLM だけで Claude Code を動かせないか。配線まではできていたので、あとはモデルを選ぶだけ——のはずだった一日の記録です。結論から書くと、手元で試したモデルは全部だめでした。何がどう「だめ」だったのかを順番に並べていきます。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/nd6aacc638956" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>前提：配線はできていた、あとはモデルを選ぶだけ</h2>
+
+<p>
+ホスト Windows 側に Ollama を立てて、ゲスト（開発環境）から API を叩く配線は前回終わっていました。GPU を積んでいるのはホスト側。そこでモデルを動かして、Claude Code はゲストから呼ぶ。構成としては素直です。
+</p>
+
+<p>
+今回の縛りはざっくり 4 つ。<strong>tool（道具呼び出し）に対応していること</strong>、<strong>8GB の GPU に収まること</strong>、<strong>できればコーディングが得意なこと</strong>、そして個人的な好みで <strong>中国製は避けたい</strong>。最後の 1 つは趣味の領域ですが、これを足した瞬間に候補がごっそり減りました。8GB に収まってコーディングが得意なモデルは、けっこうな割合が中国製です。残ったのは IBM の 8B か、定番の Meta 系くらい。
+</p>
+
+<h2>軽量モデルは「対応している」と「実用になる」の差で全滅</h2>
+
+<p>
+最初に触った軽量モデルは、起動した瞬間に tool 非対応のエラーで落ちました。Claude Code はファイル読み書きもコマンド実行も全部 tool 経由なので、ここが使えないモデルは初手で詰みます。賢さ以前に仕組みがかみ合わない、というやつです。
+</p>
+
+<p>
+次に IBM の 8B モデル。起動はする、エラーも出ない。けれど「今日は何日ですか」と聞くと変な記号が 1 つ出るだけ。「群馬の気温は」と聞くと、tool を呼び出すための命令文（JSON っぽい構造）をそのまま地の文として吐き出してくる。<strong>道具を呼んでいるつもりが、ただ独り言を画面に書いているだけ</strong>でした。
+</p>
+
+<p>
+そこで定番の Meta 8B に切り替えました。今度は別方向のおかしさです。「今日は何日ですか」に対して、<strong>Claude Code がそのモデルに渡している system プロンプトをそのまま日本語に訳して、頭から音読しはじめた</strong>のです。役割の説明、環境の情報、注意事項。質問には一文字も答えていません。
+</p>
+
+<div class="info">
+正直、画面の前で笑いました。同時に「ああ、これが 8B の限界か」と腹に落ちます。賢さが足りないと、<strong>「これは自分への指示」「これはユーザーへの返事」の区別すらつかなくなる</strong>。tool 呼び出しの仕様に「対応」していても、「実用になる」まではもう一段あるんだな、というのが一番大きな学びでした。
+</div>
+
+<h2>クラウドに逃がしたら、別世界だった</h2>
+
+<p>
+ローカルにこだわるのをやめて、Ollama 経由でクラウド側の大きいモデルを借りてみました。手元の GPU では動かせないサイズを、向こうのデータセンターで動かして API で借りる仕組みです。中国製を避けて、無料枠で使えて、コーディングもこなす。その条件で残ったのが、OpenAI が公開している大きめのモデル（gpt-oss:120b 相当）でした。
+</p>
+
+<p>
+同じ質問をぶつけると、別世界です。「今日は何日ですか」にはちゃんと日付で答える。「群馬の気温は」には自分で Web 検索 tool を呼んで調べに行く。「この設定ファイル読める?」には実際にファイルを読みに行って要約する。さっきまでの 8B 勢とは挙動が違いすぎて、同じ Claude Code を見ているとは思えませんでした。
+</p>
+
+<p>
+もちろん完璧ではありません。気温を取りに行ったとき、日付を 1 年間違えていました。本家 Claude ほどの正確さはまだ出ない。それでも、<strong>tool をちゃんと使えるかどうかの差は、想像していたよりずっと大きい</strong>。賢さの差というより、振る舞いの安定性の差です。
+</p>
+
+<h2>未練で大きいモデルを手元に落としたら、PC ごと固まった</h2>
+
+<p>
+それでもローカルをあきらめきれず、クラウドで動いていたモデルの「小さい版」(20B クラス、13GB ほど)を手元に落としました。これなら 8GB GPU でもなんとかなるかも、と。
+</p>
+
+<p>
+ダウンロードして起動して、「今日は何日ですか」と打った瞬間から地獄でした。GPU の VRAM 8GB には当然収まらない。あふれた分はメインメモリに逃げますが、メインメモリは仮想マシンに食われていて空きがほとんどない。逃げ場をなくしたデータは、最後に SSD のページファイルへ押し出される。
+</p>
+
+<p>
+そこからは PC 全体がディスク待ちで固まりました。リモート接続も切れる。マウスがまた動き出すまで 5 分。Ollama を kill して、ようやく息を吹き返しました。「今日は何日ですか」の一言でここまでやられるのは、さすがに想定外です。
+</p>
+
+<div class="info">
+冷静に整理すると、原因は単純でした。<strong>(1) GPU VRAM が 8GB しかないので大きいモデルが乗りきらない</strong>。<strong>(2) メインメモリも薄いので「乗りきらなかった分の逃げ場」もない</strong>。メモリを増やせばフリーズは避けられるけど、それで速くなるわけではない。GPU に乗らない限り、結局 CPU でのろのろ動くだけ。本丸はやっぱり VRAM のほうです。
+</div>
+
+<h2>今回試したモデル一覧と、次の一手</h2>
+
+<p>
+順番に並べるとこうなります。
+</p>
+
+<p><strong>ローカル（手元の GPU で動かそうとして、全部だめだった組）</strong></p>
+<ul>
+  <li>gemma3:4b … tool 呼び出しに非対応。起動した瞬間にエラーで停止</li>
+  <li>granite3.3:8b（IBM）… tool 用の命令文を、そのまま地の文として垂れ流す</li>
+  <li>llama3.1:8b（Meta）… 渡された system プロンプトを音読して、質問には答えない</li>
+  <li>gpt-oss:20b（OpenAI・ローカル版）… 8GB に乗りきらず、PC ごとフリーズ</li>
+</ul>
+
+<p><strong>クラウド（データセンターの GPU を借りる側。こっちは動いた組）</strong></p>
+<ul>
+  <li>gpt-oss:120b-cloud（OpenAI）… tool 呼び出しもファイル読みも正常。今回の現実解</li>
+  <li>nemotron-3-super:cloud（NVIDIA）… こちらも候補。中国製を避けたいときの数少ない選択肢</li>
+</ul>
+
+<p>
+中国製を避けたいという縛りを外せば、コーディング最強クラスはむしろ中国系に多い、というのが今回の正直な感触です。
+</p>
+
+<p>
+今の構成では、クラウドのモデルに任せるのが現実解でした。次の手はいくつかの方向があります。極小モデルを試す方向、避けていた中国モデルを割り切って使う方向、素直にクラウドに寄せる方向、そして<strong>「そもそも AI ベンダー純正の Claude や Codex を普通に使うのが、トータルではいちばんコスパがいいんじゃないか」</strong>という、今回いちばん身にしみた疑問への方向。
+</p>
+
+<p>
+RTX4060 で Claude Code を実用的に動かせる日は来るのか。その問いを抱えたまま、また小さく試していきます。次は、たぶんメインメモリを増やしてからです。
+</p>
+
+<div class="footer">
+  公開: 2026-06-19 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

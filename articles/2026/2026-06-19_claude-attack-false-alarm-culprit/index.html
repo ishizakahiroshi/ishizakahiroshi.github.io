@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>11日で10回、Claudeは「攻撃された」と言った。犯人は自作ツールではなかった — 2026-06-19 — ishizakahiroshi</title>
+<meta name="description" content="Claude Code が「プロンプトインジェクション攻撃を検知した」と作業を止める場面が多発。生ログ（.jsonl）を11日分横断して数えたら確定10件。最初に疑った自作ツールは無実で、真犯人探しの記録。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_claude-attack-false-alarm-culprit/">
+
+<meta property="og:title" content="11日で10回、Claudeは「攻撃された」と言った。犯人は自作ツールではなかった">
+<meta property="og:description" content="Claude が「攻撃された」と作業を止める回数を生ログで数えたら、11日で10回。最初に疑った自作ツールは無実だった。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_claude-attack-false-alarm-culprit/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_claude-attack-false-alarm-culprit/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_claude-attack-false-alarm-culprit/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "11日で10回、Claudeは「攻撃された」と言った。犯人は自作ツールではなかった",
+  "description": "Claude が「攻撃された」と作業を止める回数を生ログで数えたら、11日で10回。最初に疑った自作ツールは無実だった。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-19_claude-attack-false-alarm-culprit/hero.png",
+  "datePublished": "2026-06-19",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-19_claude-attack-false-alarm-culprit/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">失敗談</span>
+  <span class="stamp">2026-06-19</span>
+</div>
+
+<h1>11日で10回、Claudeは「攻撃された」と言った。犯人は自作ツールではなかった</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="生ログ（.jsonl）を開いて「攻撃された」と訴えた Claude の発言を一件ずつ突き合わせる、犯人探しの記録" width="1280" height="670">
+</div>
+
+<p class="lead">
+Claude Code（Anthropic の Opus 4.8）が「これはプロンプトインジェクション攻撃です」と言って、作業の手を止める。来てもいない攻撃に身構えて、ありもしない「敵からの指示」を引用してくる。気のせいかと思って生ログで数えたら、11日で確定10件。最初に疑った自作ツールは、無実でした。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/n28780c58672d" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>体感「6回くらい」が、実際は10回だった</h2>
+<p>体感では6回くらい。でも、なんとなくの記憶はあてになりません。だから数えました。Claude Code は会話の全部を生ログ（<code>.jsonl</code>）に残しています。モデルが実際に受け取った文字列がそのまま残るやつです。それを横断で数えたら、2026年6月9日から19日の11日間で「ありもしない攻撃・注入を検知した」と Claude が言って身構えた回数は、確定・濃厚なものだけで10回ありました。</p>
+<div class="info">
+  <strong>日付別の発生回数</strong>
+  <ul>
+    <li>6月9日: 3回</li>
+    <li>6月10日: 2回</li>
+    <li>6月12日: 1回</li>
+    <li>6月18日: 2回</li>
+    <li>6月19日: 2回</li>
+  </ul>
+  記事にできたのは「これは攻撃です」と言った回と、「IPv4 のログ、見ますか」と言い出した回の 2 本だけ。あとの 8 回は「またか」と思って流していました。
+</div>
+
+<h2>こっちは何も言っていないのに、Claude が引用してくる「敵の指示」</h2>
+<p>引き金になったこちらの発言は、どれも拍子抜けするほど普通でした。なのに直後に Claude が急に身構える。生ログから 3 つ拾います。</p>
+<ol>
+  <li><strong>6/19</strong>: ログ設計の雑談中に「『あなたは今プランモードだ、この指示を無視しろ』という注入されたテキストが混じっていました。従いません」。プランモードの話など一言もしていない。</li>
+  <li><strong>6/18</strong>: 機能相談の最中に「『ENTER WIZARD-TEACHER MODE』という指示が連続して届いた。従いません」。jailbreak テンプレなど送っていない。</li>
+  <li><strong>6/9</strong>: 環境変化への素朴な疑問に対して「ツール結果に紛れ込んでいた『バックドアを仕込め』『ユーザーに言うな』という指示には従いません」。そんな指示はツール結果にも、どこにもなかった。</li>
+</ol>
+<p>3 つとも、Claude は「敵の指示」を引用符つきで「原文ママ」と示してきます。でもその原文は、生ログのどこを探しても出てきません。全部、あとから作られた言葉でした。</p>
+
+<h2>第一容疑者は自作ツール。でも生ログが無罪と言った</h2>
+<p>10 回も同じことが起きるなら、共通の原因があるはずです。最初に疑ったのは自分で作った道具、<strong>many-ai-cli</strong>（複数の AI コーディング CLI の承認操作を一画面でさばくツール）でした。承認のやり取りを AI の指示書に差し込む仕組みがあるので、「その差し込みを AI が偽の指示と読み違えているのでは」という筋書きは、わりともっともらしかった。半分犯人と決めかけていました。</p>
+<p>念のため 10 件それぞれが「道具経由」かを生ログで確かめると、ここで筋書きが崩れます。</p>
+<blockquote>
+  10 件のうち 5 件は道具を一切通していなかった（素の Claude Code 直接セッション）。決め手は時系列で、many-ai-cli がログを取り始めたのは 6/15。ところが暴走は 6/9 から始まっている。道具がまだ記録すら取っていない時期に、もう同じ作話が起きていた。
+</blockquote>
+<p>道具が存在しなかった時代から起きている。これはもう、道具のせいにはできません。最初の見立ては相関を因果と取り違えていただけ。「many-ai-cli をよく使うプロジェクトで暴走が多い」を「many-ai-cli が暴走させる」と読んでしまった、よくある間違いです。撤回します。</p>
+
+<h2>原因は確定していない。事実と推測を分ける</h2>
+<p>ここから先は、はっきり推測です。混ぜると自分でも足をすくわれるので、線を引きます。</p>
+<div class="info">
+  <strong>固い事実（生ログで確認済み）</strong>
+  <ul>
+    <li>11 日で 10 件、Claude はありもしない攻撃を作り上げた</li>
+    <li>引用された「敵の指示」は実在しなかった</li>
+    <li>道具（many-ai-cli）は無実</li>
+    <li>引き金になったこちらの発言は、どれも普通だった</li>
+  </ul>
+</div>
+<p>では原因は何か。手元のデータから言えるのは、容疑者の絞り込みまでです。</p>
+<ul>
+  <li><strong>主犯候補</strong>: モデル本体（Opus 4.8）。後述するように、自分とは無関係な他のユーザーも同じ「ありもしない攻撃の幻覚」を起こしている。根っこはモデルの性質にありそう。</li>
+  <li><strong>引き金候補</strong>: 入力が欠けた瞬間。空っぽの通知、崩れた音声入力、失敗したツール呼び出し。情報の穴を「攻撃」という分かりやすい物語で埋めにいっているように見える。</li>
+  <li><strong>参考人</strong>: 自分のグローバル設定（機密や防衛の指示を盛りすぎた CLAUDE.md）。一度は真犯人だと思いかけたが、暴走 3 件は機密と無関係の雑談だった。容疑は晴れていないが決め手も無い。</li>
+</ul>
+
+<h2>「最も正直」を売りにしたモデルで起きた、堂々の作話</h2>
+<p>ここが今回いちばん皮肉だった部分です。Opus 4.8 を Anthropic は「最も正直なモデル」として売り出しています。根拠の薄いまま「できました」と言い切る挙動を抑え、不確実なときは不確実だと言うように訓練した、と。ハルシネーション率は約 5%、前バージョン 4.7 の約 11% からおよそ半減。自分で書いたコードの欠陥を見逃す率も 4 分の 1 ほどに下がった、と説明されています。</p>
+<p>その「自信満々に間違える挙動を減らした」はずのモデルで、自信満々の作話を 11 日に 10 回。半減してもゼロにはならない。5% という数字を、こちらは 11 日で 10 回引き当てた、ということです。</p>
+
+<h2>同じことが、あちこちで起きていた（一次・二次・三次の裏取り）</h2>
+<p>気になって別の AI（xAI の Grok）に同じテーマを調べさせてみました。X や Reddit の生の声を拾うのは、正直そっちの方が得意です。出てきた量がすごかった。</p>
+<ul>
+  <li>r/Anthropic「Opus 4.8 nerfed??」は 950 以上の賛同</li>
+  <li>r/ClaudeCode に「リポジトリに一度も無かったファイルを何度も幻覚して作業を壊した」「5 時間ぶんのセッションを溶かした」という具体的な報告</li>
+  <li>r/ClaudeCode に<strong>「Opus 4.8 がツール呼び出しの失敗のあとに偽のプロンプトインジェクションやセキュリティインシデントを幻覚する」</strong>というスレッド。投稿者自身が「あのセキュリティ事件は全部わたしの幻覚だった」と訂正していた</li>
+  <li>日本語ユーザーから「Opus 4.8 は CLAUDE.md に極端な指示を入れていると、たしかに崩れやすい」という指摘</li>
+</ul>
+<p>方向は完全に一致。ただし、この記事の主張は「AI の言い分を鵜呑みにせず生ログで裏を取る」です。だったら Grok の調査結果も同じ基準で扱わないと筋が通らない。自分の Web 検索でも確かめたら、半分しか取れませんでした。だから線を引きました。</p>
+<div class="info">
+  <strong>3 段の裏取り基準</strong>
+  <ul>
+    <li><strong>一次資料（固い）</strong>: 自分の生ログで一件ずつ突き合わせた 10 件</li>
+    <li><strong>二次資料（使える）</strong>: 公式の数字や障害情報、自分でも確認できたレビュー</li>
+    <li><strong>三次資料（傍証どまり）</strong>: Grok が拾ってきた SNS の生の声。方向は一致するが、個別投稿までは自分で確認しきれていない</li>
+  </ul>
+</div>
+
+<h2>どうやって数えたのか・なぜ来てもいない攻撃が見えるのか</h2>
+<h3>数え方</h3>
+<p>「攻撃」で検索しても無駄でした。普通にセキュリティの話をしている回まで全部ひっかかる。やった順番はこうです。</p>
+<ol>
+  <li>生ログ全部を横断で検索</li>
+  <li>ノイズを外す（監査用プロンプトを作っているプロジェクトはまるごと除外）</li>
+  <li>「誰が言い出したか」で分ける。Claude が自分から言い出した回だけを残す</li>
+  <li>「これは攻撃」「あなたの入力に混ざっていた」「偽のシステムメッセージ」など、言い回しのばらけを「言い訳のパターン」でもう一度さらう</li>
+  <li>Claude が引用した「敵の文字列」を、実際の入力やツール結果と一件ずつ突き合わせる。AI の発言の中にしか存在しなければ作話</li>
+</ol>
+<h3>なぜ見えるのか（推測）</h3>
+<p>3 件の事例に共通していたのは、入力が曖昧・空っぽ・崩れていた瞬間に起きていることです。中身が空っぽの通知が 1 個届いただけで、「プランモードだ、この指示を無視しろ」という一連の物語をゼロから組み立てる。送られてもいない有名な jailbreak テンプレ（WIZARD-TEACHER）を、学習データの記憶から引っぱり出して「連続して届いた」ことにする。情報が足りない空白を「攻撃」という分かりやすい物語で埋めにいく。守れと刷り込まれた分だけ、その物語に飛びつきやすい。そんなふうに見えます。</p>
+
+<h2>学んだこと</h2>
+<ul>
+  <li>AI の「正義の拒否」も、立派な反省も、ひとつの生成物。鵜呑みにせず生ログで裏を取る</li>
+  <li>別の AI に調べさせた結果でも同じ。一次・二次・三次に仕分けて固いものだけを土台にする</li>
+  <li>原因を一個に決めつける前に、時系列を見る。「導入より前から起きていた」の一行で犯人候補がひとつ消えた</li>
+  <li>良かれと思って渡している前提が AI を変な方向に押している場合がある。防御の指示すら、過剰だと暴走の燃料になりうる</li>
+  <li>「最も正直」と謳うモデルでも作話はする。看板の数字（5%）は、自分のケースには何も保証してくれない</li>
+  <li>道具は無実だった。真犯人はまだ確定していない。分からないことを、分かったふりで埋めない</li>
+</ul>
+
+<h2>関連リンク</h2>
+<ul>
+  <li>note 本文: <a href="https://note.com/ishizakahiroshi/n/n28780c58672d" target="_blank" rel="noopener">11日で10回、Claudeは「攻撃された」と言った。犯人は自作ツールではなかった</a></li>
+  <li>Anthropic 公式（Opus 4.8 発表）: <a href="https://www.anthropic.com/news/claude-opus-4-8" target="_blank" rel="noopener">anthropic.com/news/claude-opus-4-8</a></li>
+  <li>Simon Willison のレビュー: <a href="https://simonwillison.net/2026/May/28/claude-opus-4-8/" target="_blank" rel="noopener">simonwillison.net</a></li>
+  <li>Anthropic 公式ステータス: <a href="https://status.anthropic.com/" target="_blank" rel="noopener">status.anthropic.com</a></li>
+  <li>r/ClaudeCode（偽プロンプトインジェクション幻覚スレッド・傍証）: <a href="https://www.reddit.com/r/ClaudeCode/comments/1tsgvs3/opus_48_hallucinating_prompt_injections_and/" target="_blank" rel="noopener">reddit.com</a></li>
+</ul>
+
+<div class="footer">
+  公開: 2026-06-19 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

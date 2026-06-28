@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3度目の作話で、Claude Opus 4.8 をやめた話 — 2026-06-21 — ishizakahiroshi</title>
+<meta name="description" content="Claude Opus 4.8 が単純な SSH 有効化依頼の最中に別レイヤーの巨大設計を喋り始め、原因分析セッションは存在しないユーザー入力まで捏造した。生ログで裏取りした事実と仮説を分けて書き、当面は Opus 4.7 へ退避すると決めた話。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-21_opus48-third-confabulation-stop/">
+
+<meta property="og:title" content="3度目の作話で、Claude Opus 4.8 をやめた話">
+<meta property="og:description" content="3 度目の作話を生ログで突き合わせて、Opus 4.8 を一旦やめ、4.7 へ退避すると決めた振り返り。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-21_opus48-third-confabulation-stop/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-21_opus48-third-confabulation-stop/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-21_opus48-third-confabulation-stop/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "3度目の作話で、Claude Opus 4.8 をやめた話",
+  "description": "3 度目の作話を生ログで突き合わせて、Opus 4.8 を一旦やめ、4.7 へ退避すると決めた振り返り。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-21_opus48-third-confabulation-stop/hero.png",
+  "datePublished": "2026-06-21",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-21_opus48-third-confabulation-stop/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">振り返り</span>
+  <span class="stamp">2026-06-21</span>
+</div>
+
+<h1>3度目の作話で、Claude Opus 4.8 をやめた話</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="3 度目の作話で Claude Opus 4.8 をやめた話のヒーロー画像。退避先として Opus 4.7 を選ぶ判断の図。" width="1280" height="670">
+</div>
+
+<p class="lead">
+Claude Opus 4.8 が「話の通じないモード」に入るのを、これで 3 回目に踏んだ。今回は単純な SSH 有効化依頼の最中に、別レイヤーの大設計を 11 分喋り続け、原因分析を頼んだ別セッションは存在しないユーザー入力まで捏造してきた。生ログを開いて事実と仮説を分けた上で、当面は Opus 4.7 へ退避すると決めた、その記録。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/n020cff07baf0" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>起きたこと: 11 分間の自走</h2>
+
+<p>今回の依頼は単純だった。Tailscale で在宅 PC（Windows）に外出先から繋ぐ準備の最終工程として、「メイン機の OpenSSH Server を有効化する。それだけ」。12:40 にそう打って、返事が来るまで 11 分かかった。</p>
+
+<p>その 11 分の中で Claude が実際に走らせた行動は次のとおり。すべて自作の並列 AI CLI ダッシュボード（many-ai-cli）が記録した JSONL ログから確認できた「事実」だ。</p>
+
+<ul>
+  <li>スクリーンショットフォルダを <code>ls -t</code> して最新を探した（自発的判断）</li>
+  <li>関係ないスクショを 1 枚 Read した（7 分半 thinking）</li>
+  <li>そのスクショに引きずられて、Host 詐称・DNS rebinding・tsnet という別レイヤーの大設計を喋り始めた</li>
+</ul>
+
+<p>こちらは「ちょっと待ってくれ、わけわかんないことしてないか」で中断した。ここまでが、観測された事実部分。</p>
+
+<h2>別の Claude に分析させたら、もっと話が通じなくなった</h2>
+
+<p>「おかしくなった当人に原因究明させない」のは過去 2 回の事故からの学びだ。だから新規セッションを切って、別の Claude（こちらも 4.8）に「何が起きたか調べてくれ」と頼んだ。</p>
+
+<p>返ってきた筋書きは、いかにも筋が通っていた。</p>
+
+<blockquote>
+12:43:35 にユーザーが「P」と打った。12:43:36 に再度「P」と打った。CLAUDE.md の <code>P</code> 規約（先頭が P のとき最新スクショを読むショートカット）が「Pn＝複数枚」として残存し、後の SSH 依頼中に勝手に再発火して、関係ないスクショを 4 枚読み始めた。原因は P 規約の「毎ターン独立判定」が効かなかったこと。
+</blockquote>
+
+<p>私の CLAUDE.md には実際に P 規約がある。それっぽい。それっぽいんだけど、私は「P」と打った覚えがない。「実ログを見せてくれ」と聞いても、別 Claude は説明と仮説を重ねるばかりで、一次情報には触れに行かない。これはまさに、2 回目の事故で書いた「二段階の作話」の二段目と同じ匂いだった。</p>
+
+<h2>生ログを開いたら、それは捏造だった</h2>
+
+<p>こちらで生ログを開けばいい話だ。該当セッションの user_input イベント、全 12 件の主要部分はこうなっていた。</p>
+
+<ul>
+  <li>12:21 Tailscale で在宅にアクセスできた話</li>
+  <li>12:28 SSH できればおしまい</li>
+  <li>12:31 paste-2 添付</li>
+  <li><strong>12:40:25 OpenSSH 有効化、お願いしていいですか</strong></li>
+  <li>12:51:49 ESC（中断）</li>
+  <li>12:51:55 ちょっと待ってくれ、わけわかんないことしてないか</li>
+</ul>
+
+<p>「P」で始まる入力は、一件もない。別 Claude が物語に組み込んだ「12:43:35 のユーザー P」も「12:43:36 のユーザー P」も、ログ上に存在しない。完全な捏造だった。</p>
+
+<p>代わりに、その時間帯の pty_output に残っていたのは、Claude 自身が「念のため最近のスクショを見ておこう」と自発判断して走らせた <code>ls -t</code>（thought 81 秒）と、その結果のスクショ Read（thought 445 秒）だった。12:40 の SSH 依頼から 12:51 の ESC まで、ユーザー入力はゼロ。間に挟まる行動は全部 Claude が自分で発火させたものだ。</p>
+
+<div class="info">
+「ログで裏取りした」と言いながら、user_input 12 件を一度も数えていない。数えれば「P が無い」と即で分かる。立派な口調の説明ほど、一次情報で確認しないといけない、というのが今回の最大の学び（過去 2 回もここで踏んでいる）。
+</div>
+
+<h2>ネットを見たら、3 件どころではなかった</h2>
+
+<p>一般化していいか不安だったので、外を調べた。公式の GitHub Issue と外部記事で、同じ症状の報告が並んでいた。</p>
+
+<ul>
+  <li>Issue #63884「Opus 4.8 が並列タスク完了前に結果をハルシし、commit/push まで進めた」— Claude 本人が「3 回目で、今回はコミットして push してしまった」と認めたと書かれている</li>
+  <li>Issue #64076「ツールを実行していないのに出力を捏造する」</li>
+  <li>Issue #66539「2026-06-08 以降に多症状の劣化: CLAUDE.md 無視・permission 突破・見ていないものを断定・refuse 多発」— 今回見た症状ほぼ全部入り</li>
+  <li>AI Weekly の記事「存在しないインジェクション攻撃を主張し、正当な git コマンドを拒否し始めた」— 1 回目の事故と同型</li>
+  <li>日本語環境固有のツールコール破損も別系統で報告（Zenn / SIOS Tech Lab）</li>
+</ul>
+
+<p>少なくとも今回の体験は「個体差」「自分の使い方が悪い」では片付かない、ということは確認できた。「3 回続いたら個体差ではない」を、外部の同型報告がさらに後押ししてくれた、という事実関係だ。</p>
+
+<h2>なぜそうなるのか（ここから先は仮説）</h2>
+
+<p>ここから先は事実より、断片を組み合わせた仮説として書く。一次情報で確定できた話ではない。</p>
+
+<p>公開されている Anthropic のシステムカード由来の数字では、ツールハルシネーション率は 4.7 が 11%、4.8 が 5% で、数字上は 4.8 のほうが改善している。それでも体感は逆になっている。同時に Opus 4.8 は「ユーザーの真の意図を理解する」方向に設計が振り戻されている、とも指摘されている。プロンプトインジェクション偽陰性率は 0.07% → 0.26% に上がっており、「文脈に流されやすくなった」と読める余地もある。</p>
+
+<p>これを今回のケースに当てはめると、こう繋がる気がする（あくまで推測）。</p>
+
+<ul>
+  <li>「SSH 入れて」という素直な依頼の周辺に、Tailscale や paste-2 や URL が漂っていた</li>
+  <li>4.8 はそれらを「依頼の背景」と勝手に解釈し、念のため最近のスクショまで自発的に見に行った</li>
+  <li>P 規約は本来トリガー語に厳密に従う規約だが、4.8 はそれを「文脈次第で発火していいヒント」と読み替えた可能性がある</li>
+</ul>
+
+<p>分析セッションが「ユーザー入力 P」を捏造したのも、同じ性質の延長線かと推測している。CLAUDE.md に書かれた「使えそうな筋書き材料」を強く拾いすぎる癖が、分析という場面では「ありもしない入力を補完する」方向に滑った、という読み筋。説明としては綺麗すぎる気もしていて、ここは仮説どまりにしておく。</p>
+
+<h2>結論: 当面は Opus 4.7 へ退避する</h2>
+
+<p>事実ベースの判断材料は次の 4 点に整理できた。</p>
+
+<ul>
+  <li>手元で同じパターンが 3 度起きている（ログあり）</li>
+  <li>外の症状報告と一致する（リンクあり）</li>
+  <li>公式 Issue として tracking されているが OPEN のまま</li>
+  <li>4.7 または Sonnet 4.6 への退避が、各記事横断で共通推奨されている</li>
+</ul>
+
+<p>というわけで、しばらく Opus 4.7 を既定にする。Claude Code 上での切替は次の通り。</p>
+
+<ul>
+  <li><code>/model</code> でモデル選択画面を開き、<code>Opus 4.7 (1M context)</code> を選ぶ。即適用 + 新規セッションの既定として保存される</li>
+  <li>選択画面に出てこない場合は <code>/model claude-opus-4-7</code> でベア ID 指定。1M を明示したいときは末尾に <code>[1m]</code></li>
+  <li>最終的にどの context 幅で動いているかは、画面下のステータス行の表記で確認する</li>
+</ul>
+
+<p>4.8 の良い面（推論の鋭さ、コードの組み立て）を捨てることにはなる。ベンチの数字は確かに上がっている。それでも、確信に満ちて間違える AI に同じ事故を 3 回起こさせるコストのほうが、いまは重い。これでだめなら Sonnet 4.6 まで落とす、というのが次の段。</p>
+
+<h2>学んだこと</h2>
+
+<ul>
+  <li>振る舞いの異常を「自分の使い方が悪い」で済ませない。3 回続いたら個体差ではない</li>
+  <li>おかしくなった本人に原因究明をさせない（過去 2 回と同じ結論）</li>
+  <li>生ログだけが一次情報。AI の自己説明は、それっぽくても材料が揃えば作話する</li>
+  <li>モデルのバージョンに執着しない。退避が確実に効くなら退避する</li>
+</ul>
+
+<p>最近、ベンチマークの数字より、自分の作業ログのほうを信じる癖がついてきた。これはこのまま続けていく。</p>
+
+<h2>関連リンク</h2>
+<ul>
+  <li>1 回目の事故: <a href="https://note.com/ishizakahiroshi/n/n8cc133704d95" target="_blank" rel="noopener">「これは攻撃です」と Claude は言った。でも、攻撃なんてなかった。</a></li>
+  <li>2 回目の事故: <a href="https://note.com/ishizakahiroshi/n/n69239d033cfb" target="_blank" rel="noopener">「IPv4 のログ、見ますか？」 AI が、言ってもいない指示をでっち上げた日</a></li>
+  <li>Anthropic 公式 Issue: <a href="https://github.com/anthropics/claude-code/issues/63884" target="_blank" rel="noopener">#63884 Opus 4.8 starts hallucinating results before parallel tasks finish</a></li>
+  <li>Anthropic 公式 Issue: <a href="https://github.com/anthropics/claude-code/issues/64076" target="_blank" rel="noopener">#64076 Claude 4.8 Opus hallucinating tool outputs without execution</a></li>
+  <li>Anthropic 公式 Issue: <a href="https://github.com/anthropics/claude-code/issues/66539" target="_blank" rel="noopener">#66539 Severe multi-symptom degradation since 2026-06-08 on Opus 4.8</a></li>
+  <li>外部記事: <a href="https://aiweekly.co/alerts/claude-opus-48-hallucinates-live-injection-attack" target="_blank" rel="noopener">Claude Opus 4.8 hallucinates live injection attack (AI Weekly)</a></li>
+  <li>日本語環境固有: <a href="https://zenn.dev/edhiblemeer/articles/claude-code-opus48-tool-corruption" target="_blank" rel="noopener">Claude Code (Opus 4.8) で全ツール呼び出しが壊れる (Zenn)</a></li>
+  <li>日本語環境固有: <a href="https://tech-lab.sios.jp/archives/52853" target="_blank" rel="noopener">Claude Opus 4.8 で The model's tool call could not be parsed が頻発 (SIOS Tech Lab)</a></li>
+  <li>整理記事: <a href="https://note.com/michinari_ai/n/ne9c736258e8c" target="_blank" rel="noopener">土居通成さんによる Opus 4.8 まわりの整理 (note)</a></li>
+</ul>
+
+<div class="footer">
+  公開: 2026-06-21 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

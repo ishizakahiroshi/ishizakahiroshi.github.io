@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claude も Codex も Copilot も Cursor も、ぜんぶ 1 画面で承認する — many-ai-cli の話 — 2026-06-16 — ishizakahiroshi</title>
+<meta name="description" content="複数の AI コーディング CLI を並列で動かすと、承認待ちの見張りが地獄になる。many-ai-cli v0.3.2 で Claude / Codex / Copilot / Cursor の 4 つを 1 画面に集約した話と、その周辺装備をまとめて紹介します。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_approve-4-ai-clis-one-screen/">
+
+<meta property="og:title" content="Claude も Codex も Copilot も Cursor も、ぜんぶ 1 画面で承認する — many-ai-cli の話">
+<meta property="og:description" content="4 つの AI コーディング CLI の承認待ちを 1 画面に集約した個人ツール many-ai-cli v0.3.2 の紹介。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_approve-4-ai-clis-one-screen/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_approve-4-ai-clis-one-screen/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_approve-4-ai-clis-one-screen/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Claude も Codex も Copilot も Cursor も、ぜんぶ 1 画面で承認する — many-ai-cli の話",
+  "description": "4 つの AI コーディング CLI の承認待ちを 1 画面に集約した個人ツール many-ai-cli v0.3.2 の紹介。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-16_approve-4-ai-clis-one-screen/hero.png",
+  "datePublished": "2026-06-16",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-16_approve-4-ai-clis-one-screen/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">ツール紹介</span>
+  <span class="stamp">2026-06-16</span>
+</div>
+
+<h1>Claude も Codex も Copilot も Cursor も、ぜんぶ 1 画面で承認する — many-ai-cli の話</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="4 つの AI コーディング CLI の承認待ちを 1 画面に集約する many-ai-cli v0.3.2 のヒーロー図" width="1280" height="670">
+</div>
+
+<p class="lead">
+AI コーディング CLI を 1 つだけ使っているうちはターミナル 1 枚で済むのに、Claude Code・Codex・GitHub Copilot CLI・Cursor Agent CLI と並列で動かし始めた途端、ターミナルが 4 枚開き、どこかで承認待ちが 10 分止まっていることに気づけなくなる。その「気づけない」を 1 画面に集約するために作っているのが個人開発の many-ai-cli です。v0.3.2 で形になった主役と周辺装備を、house style の構造化資料としてまとめ直しました。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/nfaf2ab0bdb9c" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>解きたい問題: 並列 AI CLI の承認見張り疲れ</h2>
+
+<p>
+複数の AI コーディング CLI を並列で動かすと、誰がいつ承認待ちで止まっているかを人間が見張る時間がどんどん増えます。具体的にはこういう症状が出ます。
+</p>
+
+<ul>
+  <li>どれかが承認待ちで止まっていても、別タブを見ていると気づけない</li>
+  <li>気づいたときには 10 分単位で止まったまま</li>
+  <li>CLI ごとに承認 UI の見え方が違って、目が慣れない</li>
+  <li>スマホで離席して戻ると、ずっと止まっていた、が起きる</li>
+</ul>
+
+<p>
+要するに、AI に任せたはずの作業を、人間が「承認の見張り番」として常駐することでカバーしている状態でした。many-ai-cli はこの見張り番をブラウザ 1 画面に集約する薄いラッパーです。各 AI CLI を PTY で包み、出力をローカル Hub に集めて、承認待ちを検出したら 1 枚のパネルに並べる。CLI そのものの挙動には触りません。
+</p>
+
+<div class="info">
+固く守っているのは <strong>Hub を外に出さないこと</strong>。サーバーは <code>127.0.0.1</code> 固定で、外部公開ポートは開けません。AI にコマンドを打たせる入口を、うっかり外から触れる場所には置きたくないからです。
+</div>
+
+<h2>主役: 4 つの AI CLI を同じパネルで承認する</h2>
+
+<p>
+v0.3.2 でいちばん伝えたい変化はここです。これまで対応していた Claude Code / Codex CLI の 2 つに加えて、v0.3.x で <strong>GitHub Copilot CLI</strong> と <strong>Cursor Agent CLI</strong> が加わり、対応プロバイダが 4 つになりました。たとえばこんな同時運用が、ひとつの画面の中で完結します。
+</p>
+
+<ul>
+  <li>Claude Code に設計をやらせる</li>
+  <li>Codex に別の実装を進めさせる</li>
+  <li>GitHub Copilot CLI にレビューを回す</li>
+  <li>Cursor Agent に細かい修正をさせる</li>
+</ul>
+
+<p>
+これらを同時に走らせて、4 つの承認待ちを 1 枚のパネルで受けられます。どれが返事待ちなのかはプロバイダごとの色チップで一目で分かり、承認バーには <code>Claude:2 / Codex:1 / Copilot:1 / Cursor:1</code> のように、いま何が何個つながっているかも出ます。起動は <code>many-ai-cli copilot</code> や <code>many-ai-cli cursor-agent</code> で透過的に Hub 経由になります。
+</p>
+
+<h3>資格情報には触っていない</h3>
+
+<p>
+対応 CLI を増やすときに、いちばん気をつけたのがここです。many-ai-cli がやっているのは、公式の <code>copilot</code> / <code>cursor-agent</code> CLI を <strong>そのまま PTY で包むことだけ</strong>。GitHub の OAuth トークンも、PAT も、Cursor のセッショントークンも、読まないし、保存しないし、中継もしません。ラップされた CLI はこれまでどおり各社の API と直接通信し、many-ai-cli はローカルの WebSocket 越しに画面の入出力を運ぶだけです。サインインは各 CLI に任せて、Hub は「画面を集める係」に徹する。この境界は最初から崩していません。
+</p>
+
+<h2>常時表示の数字: トークン・コスト・コンテキスト残量</h2>
+
+<p>
+画面の一番下に細い帯を置いて、いま動いているセッションの <strong>トークン量・概算コスト・コンテキスト残量・燃費（バーンレート）</strong> を常時表示するようにしました。きっかけは、コンテキストが知らないうちに溢れていて AI の調子が悪くなる事故です。残量ゲージが 90% を超えたら赤くして、視界の端で「そろそろ危ない」と気づけるようにしてあります。色味は業務時間中ずっと視界に置ける、しつこくない強さに寄せました。
+</p>
+
+<h2>スマホからの承認: SSH トンネル + PWA + Push</h2>
+
+<p>
+外出時に承認だけ返したいケースは意外と多く、ここも整えました。Hub は外に出さない方針なので、スマホ側の <code>127.0.0.1</code> に <strong>SSH トンネルで Hub を引き込む</strong>形にしています。公開ポートは一切開けません。画面はホーム画面に追加できる PWA にして、承認が来たら通知が飛ぶようにしました。
+</p>
+
+<ul>
+  <li>トンネルが切れていても通知だけ欲しい場合のために、<strong>ntfy</strong> 経由でも飛ばせる</li>
+  <li>Hub のトークンは通知本文に一切含めない</li>
+  <li>Tailscale を使った接続ウィザードも整備。「外部公開を有効化」のインラインボタン 1 クリックで Tailscale serve トグルまで到達できる</li>
+</ul>
+
+<p>
+スマホ向け UI は v0.3.x ではまだベータ扱いで、レイアウトや通知挙動は今後も触っていきます。
+</p>
+
+<h2>運用回りの周辺装備</h2>
+
+<h3>セッションを別ウィンドウのグリッドにばらまく</h3>
+
+<p>
+モニタが 2 枚あると、片方でグリッド表示にして全セッションをぼんやり眺め、もう片方で操作したくなります。セッションを別ブラウザ窓に「グリッドビュー」として切り出して 2×2 や 3×3 に並べられるようにしました。ついでに、ただのシェル（PowerShell や bash）も普通のセッションとして開けるようにしてあり、新しいセッションを作るとき Claude / Codex / Copilot / Cursor に並んで「Shell」が選べます（こちらもベータ）。
+</p>
+
+<h3>ランチャーが全 OS で動くようになった</h3>
+
+<p>
+リモートや別環境の Hub に接続するための統合ランチャーを前から持っていましたが、長く Windows 専用でした。今回やっと <strong>Linux と macOS でも動く</strong> ようになりました。プロファイルを 1 つ書いておけば、WSL の中で Hub を起動したり、SSH でリモートの Hub につないだりがボタン 1 つです（WSL だけは Windows 専用、SSH 接続は全 OS）。
+</p>
+
+<h3>声でも打てる</h3>
+
+<p>
+両手がふさがっているときの入力手段として、音声入力をブラウザ認識とローカル Whisper の両方に対応させました。選び方は用途で割り切れます。
+</p>
+
+<ul>
+  <li><strong>Whisper（ローカル）</strong> — 音声を外に出したくない人向け。録音はローカルの whisper.cpp サーバに渡され、外部送信なし</li>
+  <li><strong>ブラウザ内蔵</strong> — Chrome / Edge の Web Speech API。精度・反応速度は良好だが、音声は Google / Microsoft の認識サーバへ送信される</li>
+  <li><strong>スマホ IME</strong> — iPhone なら <code>Gboard</code> 等のサードパーティ IME を使う手もある。Hub の音声機能を経由しない選択肢</li>
+</ul>
+
+<p>
+おもしろがって作ったのが、iPhone の Safari で喋って手元 PC の Whisper に投げて結果を返すリレー。マイクと推論の場所を分けただけですが、意外と実用になりました。無音や雑音で勝手に変なテキストが出る問題は道半ばです。
+</p>
+
+<h3>リモートサーバー設定を AI エージェントに丸投げ</h3>
+
+<p>
+借りたリモートサーバーで Hub を常駐させる運用のために、サーバー側の初期設定を <strong>手元の AI エージェントに丸ごと貼り付ければ SSH 越しに設定してくれる手順書</strong> を用意しました。エージェントは各ステップで「ちゃんとローカル限定で待ち受けているか」のような確認を満たしながら進み、最後に手元の接続プロファイルまで作ります。お試し向けの単一サーバー版と、常駐向けの Docker 版の 2 種類です。
+</p>
+
+<h3>Workbench で過去セッションを掘る</h3>
+
+<p>
+セッション履歴をローカルの SQLite に残し、後から横断検索・要約閲覧・書き出しができる「Workbench」タブを足しました。ついでに Hub の中からファイルツリーを見たり、Git のログや差分を眺めたり、作業ツリーをまとめてコミットしたり（プッシュはしません）もできます。
+</p>
+
+<h2>v0.3.2 の新機能: AI に投げた生データが見えるようになった（β）</h2>
+
+<p>
+Hub の中に小さな HTTP プロキシを内蔵しました。ラップしている CLI の <code>ANTHROPIC_BASE_URL</code> / <code>OPENAI_BASE_URL</code> を起動時に黙ってこのローカルプロキシに向けます。すると次の URL へのリクエストとレスポンスがすべて Hub の中を一度通過します。
+</p>
+
+<ul>
+  <li><code>https://api.anthropic.com/v1/messages</code></li>
+  <li><code>https://api.openai.com/v1/chat/completions</code></li>
+  <li><code>https://api.openai.com/v1/responses</code></li>
+</ul>
+
+<p>
+TLS の中間者攻撃は一切しません（独自 CA を端末に配ったりもしません）。やっているのは CLI が向く URL を 1 段ずらすだけです。捕捉した payload は、チャットペインの上のトグル <strong>「Payload 表示 (β)」</strong> を ON にすると構造化されたターン一覧で見られ、各ターン右上の「Raw」ボタンで生 JSON が開きます。AI に何を投げて何が返ってきたのか、これまでターミナルの行ぶれだけで見ていた部分が JSON の塊で全部見える。
+</p>
+
+<div class="info">
+<code>Authorization</code> ヘッダーはプロキシ内で剥がしてから内部に渡しているので、API キーや OAuth トークンが Hub のメモリに残ることはありません。
+</div>
+
+<h2>配布: pnpm / winget / brew / deb・rpm</h2>
+
+<p>
+入れ方も変えました。<code>pnpm add -g many-ai-cli</code> で入るようにして、<strong>winget・Homebrew・deb / rpm</strong> からも入れられます。Windows ではブラウザで直接落とした exe は警告に引っかかりやすいので、パッケージマネージャ経由にしておくと「ブラウザで exe を拾う」導線そのものを避けられます。コード署名の代わりにはなりませんが、導入体験はかなり楽になります。
+</p>
+
+<p>
+ついでに、新しいセッションを作るときにモデルを選べるようにし、<strong>Ollama 経由のモデル</strong>にも振り分けられるようにしました。シェルの環境変数をいじらなくていいよう、Hub がセッションごとに注入します。最後に名前も <code>any-ai-cli</code> から <code>many-ai-cli</code> に変えました。npm に出すとき既存パッケージと名前が近すぎて弾かれたためですが、4 つの CLI を並べる用途には <strong>many</strong> のほうが合っている気もします。
+</p>
+
+<h2>方針: ローカルファースト、ただし「外部通信ゼロ」とは言わない</h2>
+
+<p>
+Hub は <code>127.0.0.1</code> 固定で、外には出しません。many-ai-cli 自身はテレメトリも送りません。ただ、正直に書いておくと外部通信が「ゼロ」ではありません。
+</p>
+
+<ul>
+  <li>起動時にスラッシュコマンド一覧や承認の検出パターンを <strong>GitHub から取得してキャッシュ</strong> する場面がある（向き先は設定で変えられる）</li>
+  <li>ラップしている各 CLI 自体は各社の API と <strong>直接</strong> 通信する。そこは many-ai-cli が触れない領域で、今回入った内蔵プロキシはその通信を手前で覗くためのもの</li>
+</ul>
+
+<p>
+隠さないでおきたいので、README にも同じ温度感で書いています。
+</p>
+
+<h2>盛りすぎたけど軸は 1 つ</h2>
+
+<p>
+並べてみると本当に多くて、自分でも「よくこんなに足したな」と思います。でも今回の主役ははっきりしていて、<strong>見張れる CLI が Claude / Codex / Copilot / Cursor の 4 つになったこと</strong>です。残りはすべて、その 4 つを「見張らなくて済む」ようにするための周辺装備でした。ステータスバーも、スマホ承認も、別窓グリッドも、Workbench も、Payload 表示も。
+</p>
+
+<p>
+完成という感じはまだしません。音声の誤認識も承認の取りこぼしも残っているし、これでいいのかは正直よく分かっていません。それでも、<strong>任せたものを任せたままにできる時間</strong> は確実に増えています。並列で AI CLI を使っていて承認の見張りに疲れているなら、たぶん刺さると思います。
+</p>
+
+<h2>関連リンク</h2>
+<ul>
+  <li><a href="https://github.com/ishizakahiroshi/many-ai-cli" target="_blank" rel="noopener">many-ai-cli (GitHub)</a></li>
+  <li><a href="https://note.com/ishizakahiroshi/n/nfaf2ab0bdb9c" target="_blank" rel="noopener">note 版（やわらかい体験談）</a></li>
+</ul>
+
+<div class="footer">
+  公開: 2026-06-16 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

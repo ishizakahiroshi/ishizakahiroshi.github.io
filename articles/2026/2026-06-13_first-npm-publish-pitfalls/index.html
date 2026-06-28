@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>「publish するだけ」だと思っていた — 初めての npm 公開でハマった全部 — 2026-06-13 — ishizakahiroshi</title>
+<meta name="description" content="軽い気持ちで npm publish を叩いたら半日溶けた話。レジストリとコマンドの混同、2FA、トークンのバイパス設定、名前の「似すぎ」判定まで、初回でつまずいた全部を畳んだ詳細版。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-13_first-npm-publish-pitfalls/">
+
+<meta property="og:title" content="「publish するだけ」だと思っていた — 初めての npm 公開でハマった全部">
+<meta property="og:description" content="npm publish 1 発と思って始めて半日溶かした初回ハマりの全部。レジストリとコマンドの分離、2FA、トークンのバイパス、名前の似すぎ判定までの詳細版。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-13_first-npm-publish-pitfalls/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-13_first-npm-publish-pitfalls/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-13_first-npm-publish-pitfalls/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "「publish するだけ」だと思っていた — 初めての npm 公開でハマった全部",
+  "description": "npm publish 1 発と思って始めて半日溶かした初回ハマりの全部。レジストリとコマンドの分離、2FA、トークンのバイパス、名前の似すぎ判定までの詳細版。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-13_first-npm-publish-pitfalls/hero.png",
+  "datePublished": "2026-06-13",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-13_first-npm-publish-pitfalls/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">失敗談</span>
+  <span class="stamp">2026-06-13</span>
+</div>
+
+<h1>「publish するだけ」だと思っていた — 初めての npm 公開でハマった全部</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="赤いエラーが並ぶターミナル画面の前で頭を抱える、初回 npm publish のハマり風景" width="1280" height="670">
+</div>
+
+<p class="lead">
+小さなツールが GitHub に並んできて、ふと「この名前、npm でも押さえておかないと誰かに先に取られるな」と思った。軽い気持ちで <code>npm publish</code> を叩いた。そこから半日が溶けた。レジストリとコマンドの分離、2FA、トークンの「バイパス」設定、名前の「似すぎ」判定 — 初回でつまずいた全部を、次に同じ轍を踏まないために畳んでおく。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/n401963ee4fea" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>npm は「倉庫」と「運送会社」の二語だった</h2>
+
+<p>そもそも npm という言葉に、つまずいていた。npm には二つの意味がある。ひとつはパッケージを置いておく「倉庫」（レジストリ）、もうひとつはその倉庫から取ってくる「運送会社」のコマンド。両方とも npm と呼ばれているせいで、初心者には完全に同一視されている。</p>
+
+<p>運送会社の方は乗り換えがきく。<code>pnpm</code> でも <code>bun</code> でも、倉庫はひとつなので公開先は同じ。だから「npm コマンドが嫌い／苦手」を理由に公開を諦める必要はない。実際の公開コマンドは <code>pnpm publish</code> 1 行で完結する。</p>
+
+<div class="info">
+  ここを混同していると「npm 嫌いだから公開できない」みたいな勘違いをする。しばらく自分もそう思っていた。レジストリ（倉庫）とクライアント（運送会社）は別物、と最初に分けて考えておくと、後半の設定地獄がだいぶ落ち着く。
+</div>
+
+<h2>「2FA、あとでいいや」が許されなかった</h2>
+
+<p>アカウントを作ると、黄色い帯が出た。「二段階認証（2FA）が未設定です」。あとでいいか、と一瞬思って、やめた。公開パッケージは、自分のアカウントが乗っ取られると、それを入れている人みんなに被害が及ぶ。2FA は自分のためというより、入れてくれる人を守るためのもの。</p>
+
+<p>パスキーで設定して、ブラウザのパスワードマネージャーに保存。スマホを変えても困らない動線にして、リカバリコードも印刷して金庫に入れた。完璧、のはずだった。</p>
+
+<p>そして <code>npm publish</code> を流したら、8 個ぜんぶ赤いエラーで止まった。</p>
+
+<blockquote>EOTP. This operation requires a one-time password.</blockquote>
+
+<h2>設定を変えてもログインし直しても通らない</h2>
+
+<p>ここからが長かった。書き込みにも 2FA を要求する設定になっていたので、「書き込みには 2FA を求めない」に変えた。チェックを外して、保存して、もう一度 publish。まだ赤い。</p>
+
+<p>npm 側の設定の要約は「authorization only」と表示されている。なのに通らない。古いログインが残っているのかと思って、<code>npm logout</code> → <code>npm login</code> をやり直した。それでも、同じところで止まる。</p>
+
+<p>設定の UI とコマンド側の挙動が一致しないので、何が効いているのか分からなくなる。8 個ぜんぶが同じエラーで並ぶ画面を、しばらく眺めていた。設定をいじる方向では、もう埒が明かない。</p>
+
+<h2>決め手は、トークンの「2FA をバイパス」というチェック 1 個</h2>
+
+<p>行き着いたのが、アクセストークンだった。CI や自動化のために使うトークンには、「2FA をバイパスする」というチェック項目がある。これを付けて発行し、設定ファイルに貼る。設定画面のオン・オフで右往左往するより、こちらの方がずっと確実だった。</p>
+
+<ol>
+  <li>npm の Access Tokens 画面で <strong>Granular Access Token</strong> を新規発行</li>
+  <li>「Bypass two-factor authentication」相当のチェックを ON にする</li>
+  <li>発行された <code>npm_xxxxxxxx</code> を <code>~/.npmrc</code> に <code>//registry.npmjs.org/:_authToken=npm_xxxxxxxx</code> として貼る</li>
+  <li>そのまま <code>pnpm publish</code> を叩く</li>
+</ol>
+
+<p>今度は緑のチェックが 7 個並んだ。<code>+ &lt;package&gt;@0.0.0</code>。声が出た。</p>
+
+<div class="info">
+  公開したのは README だけを入れた中身ゼロの「仮押さえ」。本体のコードや、ローカル専用の設定ファイルは <code>package.json</code> の <code>files</code> で物理的に外してある。名前だけ先に押さえて、実装はあとからゆっくり差し替える。仮押さえに本体を巻き込まないのは、トークンや秘匿ファイルを誤って tarball に入れない事故防止としても効く。
+</div>
+
+<h2>空いている名前なのに、取れないことがある</h2>
+
+<p>ほっとしたのも束の間、最後の 1 個でまた弾かれた。<code>any-ai-cli</code> という名前。検索しても誰も使っていない。空いている。なのに publish すると「既存の <code>anyai-cli</code> に似すぎ」と怒られる。</p>
+
+<p>npm は名前を比べるとき、ハイフンや記号を無視する。だから <code>any-ai-cli</code> は内部では <code>anyaicli</code> という見え方になって、先にいた <code>anyai-cli</code> とぶつかる。試しに <code>aimux</code> を取ろうとしたら、今度は既存の <code>ai-mux</code> と同じ扱いで弾かれた。</p>
+
+<p>「空いている」と「取れる」は別、ということが、ここで初めて腑に落ちた。</p>
+
+<h3>抜け道はスコープ</h3>
+
+<p><code>@&lt;username&gt;/any-ai-cli</code> のように自分のスコープを付ければ、似すぎ判定は通る。スコープ名前空間は世界に 1 つ自分専用だからだ。ただ、表札なしの素の名前で配りたかったので、この 1 個は保留にした。名前は、まだ悩み中。</p>
+
+<h2>半日かけて分かったこと</h2>
+
+<ul>
+  <li>npm は「倉庫（レジストリ）」と「コマンド」の二語。<code>pnpm publish</code> なら npm コマンドは触らなくていい</li>
+  <li>公開パッケージの 2FA は、自分のためじゃなく「入れてくれる人」のため。逃げない方がいい</li>
+  <li>設定 UI のオン・オフで詰まったら、トークン側の「2FA をバイパス」チェックの方が確実</li>
+  <li>仮押さえは README だけ公開する。本体や秘密のファイルを <code>files</code> で巻き込まない作りにしておく</li>
+  <li>名前は空いていても「似すぎ」で取れないことがある。ハイフン違いは同じ名前とみなされる</li>
+</ul>
+
+<p>どれも、終わってみれば一行で済む話。でも、その一行にたどり着くまでに、赤いエラーを何十回も見た。次に新しいツールを公開するときは、もう半日は溶かさずに済むはず — たぶん。</p>
+
+<div class="footer">
+  公開: 2026-06-13 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

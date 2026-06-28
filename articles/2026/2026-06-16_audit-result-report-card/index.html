@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>監査結果の先頭に、通知表をつけた — 2026-06-16 — ishizakahiroshi</title>
+<meta name="description" content="AI によるコード監査・サーバー診断レポートの先頭に、100 点満点 + S/A/B/C/D の通知表ヘッダを置いた話。5 項目・減点理由→クリア条件・findingゼロ件で満点、という設計の判断過程を書きました。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_audit-result-report-card/">
+
+<meta property="og:title" content="監査結果の先頭に、通知表をつけた">
+<meta property="og:description" content="長い監査レポートの先頭に「総合点 + バッジ + 5 項目内訳 + クリア条件」を置く設計判断の記録。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_audit-result-report-card/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_audit-result-report-card/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_audit-result-report-card/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "監査結果の先頭に、通知表をつけた",
+  "description": "長い監査レポートの先頭に「総合点 + バッジ + 5 項目内訳 + クリア条件」を置く設計判断の記録。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-16_audit-result-report-card/hero.png",
+  "datePublished": "2026-06-16",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-16_audit-result-report-card/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag">設計判断</span>
+  <span class="stamp">2026-06-16</span>
+</div>
+
+<h1>監査結果の先頭に、通知表をつけた</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="監査レポートの先頭に置いた「総合78点・B評価」の通知表ヘッダーのイメージ" width="1280" height="670">
+</div>
+
+<p class="lead">
+AI に「このリポジトリを脆弱性とバグの観点で見て」と頼むと、長い監査レポートが返ってくる。読み込めば中身はあるのだけど、開いた瞬間に「で、このプロジェクト、結局どうなの」が分からない。<br>
+レポートの先頭に通知表を置いた、その設計判断の過程を残しておきます。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/nc5bc2e807f2c" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>困っていたこと: 長い監査レポートに「感触」がない</h2>
+
+<p>公開しているプロンプト集（Claude / Codex 向けの監査雛形）を、自分でも使っています。返ってくるレポートには、finding が重大度つきでずらっと並びます。critical が 3、high が 5、medium が 12、low が 9、みたいな具合に。</p>
+
+<p>ちゃんと書いてあるのですが、スクロールして本文を読まないと「ぼちぼち危ないのか、割と健全なのか」が掴めません。依頼者の立場でこれを開いたら、正直しんどい。</p>
+
+<p>レポートというのは、先頭の数行がぜんぶです。そこに「感触」が出ないと、たぶん使ってもらえない。なので、先頭に総合点を置くことにしました。</p>
+
+<h2>点のつけ方: 5 段階か、100 点満点か</h2>
+
+<p>最初に考えたのは <strong>★★★☆☆ の 5 段階</strong>。直感的でいい。ただ、5 段階だと 72 点と 78 点の差が表現できません。改善した前後で同じ ★3 のまま、になってしまう。</p>
+
+<p>では <strong>100 点満点</strong> か。今度は「78 点」と数字だけ見せられても、それが上なのか下なのか分かりにくい。学校なら何となく分かる温度感が、ソフトウェアの監査ではピンと来ない。</p>
+
+<p>結局、両方を載せることにしました。</p>
+
+<ul>
+  <li><strong>100 点満点</strong>で粒度を出す</li>
+  <li>そのとなりに <strong>S / A / B / C / D のバッジ</strong>を併記して温度感を出す</li>
+</ul>
+
+<p>配点はこうしました。</p>
+
+<ul>
+  <li>90 以上 → <strong>S</strong></li>
+  <li>75 以上 → <strong>A</strong></li>
+  <li>60 以上 → <strong>B</strong></li>
+  <li>40 以上 → <strong>C</strong></li>
+  <li>それ未満 → <strong>D</strong></li>
+</ul>
+
+<p>学校の成績に乗っかった、ちょっと懐かしい配点です。</p>
+
+<h2>項目は 5 つに絞った（10 にしなかった理由）</h2>
+
+<p>総合点だけだと、どこが弱いのかが見えません。なので 5 つの観点に分け、合計が 100 になるよう重みを振りました。</p>
+
+<ul>
+  <li>セキュリティ・脆弱性 <strong>30</strong></li>
+  <li>バグ・正確性 <strong>25</strong></li>
+  <li>依存関係 <strong>15</strong></li>
+  <li>保守性 <strong>15</strong></li>
+  <li>検証カバレッジ <strong>15</strong></li>
+</ul>
+
+<p>「8 項目とか 10 項目にしたほうが診断っぽくない？」も考えました。でも、項目が増えるとぱっと見の認知コストが上がります。10 個並んでいると「結局どこから手を付ければ」が逆に見えなくなる。</p>
+
+<p>5 項目を眺める時間と、10 項目を眺める時間。たぶん前者のほうが、レポートを開いた人の集中力が長持ちします。</p>
+
+<h2>サブ項目で「バージョンの話」を別立てにする</h2>
+
+<p>5 項目で粒度は十分だったのですが、ひとつだけ別の数字として見せたい軸がありました。<strong>バージョンの話</strong>です。</p>
+
+<p>サーバーの OS が古いのと、アプリの依存ライブラリが古いのは、別の話です。前者はインフラ側の更新計画。後者は <code>package.json</code> や <code>go.mod</code> の話。同じ「古い」でも、誰がどこに手を入れるかも違います。</p>
+
+<p>なので、項目はトップレベル 5 つに固定して、その下に小さくサブ項目を出す形にしました。</p>
+
+<blockquote>依存関係 12/15<br>　└ アプリ依存版数 7/9 ・ ランタイム/SDK 版数 5/6</blockquote>
+
+<p>同じ表の中で、見たい人だけ視線を下げる、という構造です。サーバー診断のほうも同じ。「パッチ・更新状況」の下に「OS・カーネル版数」と「パッケージ版数」を別の数字で並べる。これで「サーバー側は古いがアプリ側は新しい」みたいな偏りが、表の中で見えるようになりました。</p>
+
+<h2>点だけ出すのは、たぶん怒られる: 「減点理由 → クリア条件」</h2>
+
+<p>ここで一度書き終えたつもりだったのですが、立ち止まりました。点数を出して内訳も見せる。でも、<strong>「何をすれば点が上がるんですか」</strong>が書いていない。</p>
+
+<p>通知表をもらった生徒に「君は数学 50 点ね」とだけ伝えても、何を勉強すれば足し戻せるかが分からなければ、意味がない。同じことを監査レポートでやっている、ということに気づきました。</p>
+
+<p>なので、表に列を一つ足しました。</p>
+
+<div class="info">
+  <strong>減点理由 → クリア条件</strong><br>
+  例: lodash 4.17.20（高危険 CVE）→ 4.17.21+ に更新で <strong>+3</strong>
+</div>
+
+<p>各カテゴリのとなりに、こういう 1 行を添える。何が引かれていて、何をすれば足し戻せるのか、が同じ表に並ぶようになります。</p>
+
+<p>さらに、finding ひとつひとつにも「これを直すと総合 <strong>+N 点</strong>」というタグを付けることにしました。重大度と「上がる点数」のかけ算で finding を上から並べてあるので、頭から潰していけば最短で総合点が上がります。読み手にとって、優先順位を考える手間が一段減ります。</p>
+
+<h2>満点の定義: finding ゼロ件のときだけ 100 点</h2>
+
+<p>ひとつだけ、決めごとを足しました。</p>
+
+<blockquote>「100 点満点」は、「対象範囲に確定 finding がゼロ件」と定義する。<br>スコア ＝ 満点 − Σ（確定 finding の減点）。</blockquote>
+
+<p>引き算だけ、にしました。満点に意味を持たせると、AI が「いい感じ」を匂わせるためにスコアを甘く出す余地が減ります。finding が残っているなら満点にはならない、と紐付けておきたかった。</p>
+
+<p>それと、<strong>確信度が低い疑い</strong>——敵対的検証で確定に至らなかったもの——は、減点には含めません。別枠に「判断待ち: M 件」とだけ件数を出します。曖昧な疑いで点を下げると、生徒側もどう挽回していいか分からないので、そこは切り離しました。</p>
+
+<h2>9 本のプロンプトへの展開と、ぱっと見の優先</h2>
+
+<p>このリポジトリには、コード監査が 6 本、サーバー診断が 3 本、合計 9 本のプロンプトが置いてあります。設計が決まったら、あとは展開でした。</p>
+
+<p>各プロンプトは独立した貼り付け用テキストなので、規約を 1 か所だけ更新して終わり、にはなりません。ただ、もともと「正本」を 2 つ置いて 9 本はそこに揃える運用にしてあったので、まず正本に書く → 9 本へ展開、の順で進めました。</p>
+
+<p>文体はファイルによって違います。Codex 版は冗長な箇条書き、多エージェント版は記号区切りで簡潔、単体版は直列構造。同じ規約を、各ファイルの口調に合わせて書き直してから入れる。ここはエージェントに任せて、最後に grep で「9 ファイルとも同じキーワードが同じ回数出ているか」だけ確かめて終わり、にしました。</p>
+
+<p>作ってみて思ったのは、レポートというのは <strong>先頭の数行がぜんぶ</strong>、なんだなということでした。長い本文をきれいに整えるより、開いた瞬間に「総合 78 点・B 評価・依存関係が弱い・lodash を上げれば +3 点」が見えるほうが、たぶん使ってもらえる。スクロールして finding を読み込むのは、その「気になった人」の作業です。</p>
+
+<p>書き手としては本文を頑張って書きたくなりますが、読み手は最初に判断したい。この順番を間違えると、せっかくの中身が届かない。レポートの先頭をどう作るか、これからも気にしていきます。小さく。</p>
+
+<h2>関連リンク</h2>
+<ul>
+  <li><a href="https://github.com/ishizakahiroshi/ai-audit-prompts" target="_blank" rel="noopener">ai-audit-prompts (GitHub)</a> — 今回の通知表機能を載せたプロンプト集本体</li>
+  <li><a href="https://note.com/ishizakahiroshi/n/nc5bc2e807f2c" target="_blank" rel="noopener">note 版（やわらかい体験談）</a></li>
+</ul>
+
+<div class="footer">
+  公開: 2026-06-16 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

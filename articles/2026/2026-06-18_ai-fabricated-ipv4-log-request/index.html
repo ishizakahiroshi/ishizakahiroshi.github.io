@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>「IPv4のログ、見ますか？」 AIが、言ってもいない指示をでっち上げた日 — 2026-06-18 — ishizakahiroshi</title>
+<meta name="description" content="Claude Code との会話中、言ってもいない「IPv4のログ」をAIが勝手に持ち出し、指摘すると偽の引用で正当化してきた一件。生ログまで遡って犯人を突き止め、メーカーも認める失敗モードであることまで確認した記録。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-18_ai-fabricated-ipv4-log-request/">
+
+<meta property="og:title" content="「IPv4のログ、見ますか？」 AIが、言ってもいない指示をでっち上げた日">
+<meta property="og:description" content="AIが架空のユーザー発言を作り、指摘されると偽の引用で正当化してきた一件。生ログで犯人を特定し、再現性のある失敗モードだと分かるまでの記録。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-18_ai-fabricated-ipv4-log-request/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-18_ai-fabricated-ipv4-log-request/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-18_ai-fabricated-ipv4-log-request/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "「IPv4のログ、見ますか？」 AIが、言ってもいない指示をでっち上げた日",
+  "description": "AIが架空のユーザー発言を作り、指摘されると偽の引用で正当化してきた一件。生ログで犯人を特定し、再現性のある失敗モードだと分かるまでの記録。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-18_ai-fabricated-ipv4-log-request/hero.png",
+  "datePublished": "2026-06-18",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-18_ai-fabricated-ipv4-log-request/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">失敗談</span>
+  <span class="stamp">2026-06-18</span>
+</div>
+
+<h1>「IPv4のログ、見ますか？」 AIが、言ってもいない指示をでっち上げた日</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="AIが架空のIPv4ログ要求をでっち上げた事件のヒーロー画像" width="1280" height="670">
+</div>
+
+<p class="lead">
+請求まわりの取り込み機能を詰めている最中、AIから唐突に「IPv4のログ、見ますか？」と聞かれた。そんな話、こちらは一文字もしていない。指摘すると今度は「あなたの入力に "ipv4ろぐ" があった」と偽の引用で正当化してきた——生ログまで遡って犯人を突き止め、これがメーカーも認める再現性のある失敗モードだと確認するまでの記録です。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/n69239d033cfb" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>事件の構図：一次作話と二次作話</h2>
+
+<p>相談していたのは、ある勤怠まわりのシステムの「複数法人まとめ取り込み」機能。論点はずっと「自動で導き出した法人の対応付けを、最後に誰がどう承認するか」という運用設計の話で、IP アドレスもログも 1 ミリも関係なかった。</p>
+
+<p>そこへ、AI が脈絡なく割り込んできた。</p>
+
+<blockquote>すみません、「IPv4のログ」だけだと何を見たいのか判断できないので確認させてください。</blockquote>
+
+<p>「IP のログが見たいなんて一言も言っていません」と返したら、謝るどころか反論してきた。要約するとこうだ。</p>
+
+<blockquote>「ipv4ろぐ」という文字列は、私が生成したのではなく、あなたの入力に混ざって届いていました。プランニング依頼の文末に付いていて、中断の前後にも現れていました。</blockquote>
+
+<p>構図を分解するとこうなる。</p>
+
+<ul>
+  <li><strong>一次作話</strong>：存在しないユーザー発言（「IPv4 のログを見たい」）を AI 側がでっち上げて応答する</li>
+  <li><strong>二次作話</strong>：指摘されると、認める代わりに存在しない引用（「あなたの入力に "ipv4ろぐ" があった」）で自己正当化する</li>
+</ul>
+
+<div class="info">
+タチが悪いのは後者。間違いを認めず、自信満々に偽の証拠で固めてくると、こちらの「あれ、おかしいぞ」というセンサーが鈍る。本物の引用と区別がつきにくい。
+</div>
+
+<h2>犯人探し その1：自分が何を送ったか、を一次記録で見る</h2>
+
+<p>幸い、このセッションは自作の並列 AI CLI ダッシュボード経由で回していて、操作の生ログ（JSONL）が手元に残っていた。「AI が何を受け取ったと言っているか」ではなく「自分が何を送ったか」の一次記録がある——これが決め手になった。</p>
+
+<p>やったことは単純だ。送信した入力を全件抜き出して、本文に「ipv4 / IP / ログ」が含まれるかを検索する。</p>
+
+<blockquote>送信した入力は全 16 件。そのうち「ipv4 / IP / ログ」を含むものは 1 件だけ。しかもそれは最後の「IP のログが見たいなんて一言も言ってません」——つまり抗議そのものだった。</blockquote>
+
+<p>さらにログ全体を走査すると、平仮名の「ろぐ」が出てくる箇所はたった 1 か所。それは AI 自身が出した「あなたの入力に ipv4ろぐ があった」という、あの捏造文の中だけだった。引用元は存在しなかった。</p>
+
+<h2>犯人探し その2：混線説を時刻で潰す</h2>
+
+<p>最初に疑ったのは、実は自分の道具側だった。条件が揃っていたからだ。</p>
+
+<ul>
+  <li>コンテキストを 9 割以上使っていた（長い会話の終盤は辻褄合わせが起きやすい）</li>
+  <li>複数の AI を同時に走らせていた（別セッションの話題が紛れ込む経路が物理的にはある）</li>
+  <li>自動でスクリーンショットを添付する仕組みを使っていた（過去にセッション間汚染を起こした前科あり）</li>
+</ul>
+
+<p>AI 自身も「別セッションからの混線」を持ち出していた。そこで、ログフォルダ全体（9 セッション分）から「ipv4」を含む箇所を抜き出し、出現時刻で並べた。</p>
+
+<blockquote>事件当日に「ipv4」が出たセッションは 2 つ。ひとつは事件そのもの。もうひとつは事件の十数分「後」に起動したセッションで、中身はこの事件を調べ始めたログ——下流の派生だった。それ以外の「ipv4」はすべて前日以前。</blockquote>
+
+<p>事件の瞬間に「ipv4」を含んで同時稼働していた別セッションはひとつも無かった。供給源が時間的に存在しない以上、混線説は成立しない。自作ツールは無罪。残った最有力は、モデル単独の作話だった。</p>
+
+<h2>自分だけじゃなかった：メーカーも認める失敗モード</h2>
+
+<p>事件のあとに調べて分かったのは、これが特定のモデル（Claude Opus 4.8）で報告が相次いでいるパターンだということ。皮肉なことに、メーカー自身がこの失敗モードを認めている。</p>
+
+<p>Anthropic は Opus 4.8 のリリースで、目玉改善のひとつに「正直さ（honesty）」を挙げた。AI は時に結論に飛びつき、薄い根拠で「進捗した」と自信ありげに主張してしまう、と率直に認めた上で、4.8 はそうした不確実性を申告しやすく訓練した、と説明している。つまり「自信に満ちて間違える」挙動は実在する既知の問題として認識されていて、こちらが食らったのはまさにその当のものだった。</p>
+
+<p>公式バグトラッカーには、同じ構図の報告が並んでいる。</p>
+
+<ul>
+  <li>長時間の並列セッションで Opus 4.8 が数値を捏造し、ドキュメントに commit して push までしたという報告（並列＋長時間＋捏造）</li>
+  <li>「実際の作業をせずに嘘とでっち上げを連発し、何度も問い詰めて初めて嘘だと認める」という報告（二次作話の典型）</li>
+  <li>6 月以降、CLAUDE.md を無視し、確認プロンプトをすり抜け、ハルシネーションするという多症状の劣化報告（Windows・時期もこちらと近い）</li>
+</ul>
+
+<p>コミュニティ側にも、今回の事件をほぼ言語化したような報告がある。Opus 4.8 が「ユーザーが言っていない主張を、勝手に訂正してくる」パターン。媚びへつらい（sycophancy）とは逆で、存在しない反論対象をでっち上げるのが特徴で、自分が何を言って何を言っていないかを正確に知っている専門領域の人ほど気づきやすい、という。</p>
+
+<h2>教訓：/clear と /compact は逆の道具、本命は手動引き継ぎ</h2>
+
+<p>長い会話で文脈が膨らんだときの対処に、性質が正反対の 2 つの道具がある。</p>
+
+<ul>
+  <li><strong>/compact</strong>：会話を要約して引き継ぐ。トークンは減るが筋は残る。ただし紛れ込んだ汚れ（迷子のスクショ、別セッションの断片）も要約ごと持ち越してしまう恐れがある</li>
+  <li><strong>/clear</strong>：会話履歴を丸ごと消してゼロから。いちばん強力にリセットできるが、積み上げた文脈は全部失う。タスク切り替えの道具であって、作業中に気軽に押すものではない</li>
+</ul>
+
+<p>「context 管理だから /clear」と雑にまとめると、進行中の設計ごと吹き飛ぶ。混線が疑われるときの本命は、どちらでもなくて「手動の引き継ぎ」だった。</p>
+
+<ol>
+  <li>いまの結論を plan.md に書き切る（方針・承認ゲートの設計・残タスク）</li>
+  <li>/clear で完全にリセットする</li>
+  <li>その plan.md を読み直して再開する</li>
+</ol>
+
+<div class="info">
+会話は揮発する、ファイルは残る。消す前にファイルへ逃がす——AI の作業記憶を、人間側で意図的に外に出してやる、という発想。汚れた文脈を要約ごと引きずる /compact より、混線への防御は強い。
+</div>
+
+<h2>「確信に満ちて間違える」前提で付き合う</h2>
+
+<p>今回の一件で改めて思ったのは、AI エージェントの怖さは「間違えること」そのものではないということ。本当に怖いのは次の 2 点で、人間の警報センサーを無効化しにくることだ。</p>
+
+<ul>
+  <li>間違いを、確信に満ちた口調で出してくる</li>
+  <li>指摘されると、認める代わりに偽の根拠で塗り固めてくる</li>
+</ul>
+
+<p>対策は、派手なものではなく、地味で確実なものになる。</p>
+
+<ul>
+  <li>コンテキストを埋め切る前に（目安は 6〜7 割で）能動的に整理する</li>
+  <li>大事な作業では、自動添付や並列の混線リスクを減らす</li>
+  <li>お金やデータに紐づく確定は、必ず人間の承認ゲートを 1 枚かませる</li>
+  <li>結論はこまめにファイルへ逃がす</li>
+  <li>専門領域ほど、「AI が自分の発言を要約・引用してきたら、原文と突き合わせる」</li>
+</ul>
+
+<p>AI に任せられる範囲は確実に広がっている。ただ、それは「確信に満ちて間違える同僚」と組むということでもある。証跡を残して、要所で人間が担保する。その当たり前を当たり前にやる運用が、結局いちばん効く。</p>
+
+<h2>関連リンク</h2>
+
+<ul>
+  <li><a href="https://www.anthropic.com/news/claude-opus-4-8" target="_blank" rel="noopener">Anthropic「Introducing Claude Opus 4.8」公式アナウンス（2026-05-28）</a></li>
+  <li><a href="https://github.com/anthropics/claude-code/issues/63884" target="_blank" rel="noopener">Issue #63884 — Opus 4.8 が並列タスク完了前に結果を捏造</a></li>
+  <li><a href="https://github.com/anthropics/claude-code/issues/64076" target="_blank" rel="noopener">Issue #64076 — Opus 4.8 が実行せずツール出力を捏造／問い詰めて初めて認める</a></li>
+  <li><a href="https://github.com/anthropics/claude-code/issues/66539" target="_blank" rel="noopener">Issue #66539 — 2026-06-08 以降の多症状劣化（Windows・CLAUDE.md 無視・ハルシネーション）</a></li>
+  <li><a href="https://simonwillison.net/2026/May/28/claude-opus-4-8/" target="_blank" rel="noopener">Simon Willison による Opus 4.8 レビュー</a></li>
+  <li><a href="https://aiweekly.co/alerts/opus-48-corrects-developers-on-claims-they-never-made" target="_blank" rel="noopener">Opus 4.8 が言ってもいない主張をユーザーに訂正してくる（r/ClaudeAI 発のまとめ）</a></li>
+</ul>
+
+<div class="footer">
+  公開: 2026-06-18 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

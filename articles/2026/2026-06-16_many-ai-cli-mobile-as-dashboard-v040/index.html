@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>会話アプリじゃなくて、ダッシュボードだった。many-ai-cli のスマホを v0.4.0 で作り直す話 — 2026-06-16 — ishizakahiroshi</title>
+<meta name="description" content="many-ai-cli のスマホ UI を v0.3.2 で盛りきった後、8 件の困りごとを束ねた瞬間に「これは個別バグではなく方針の問題」と気づいた話。Claude アプリ風の吹き出し UI で行きかけて、本質は監視ダッシュボードだったと選び直し、v0.4.0 を別レーンで作り直すと決めるまでの設計判断の記録。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_many-ai-cli-mobile-as-dashboard-v040/">
+
+<meta property="og:title" content="会話アプリじゃなくて、ダッシュボードだった。many-ai-cli のスマホを v0.4.0 で作り直す話">
+<meta property="og:description" content="Claude アプリ風の吹き出し UI で行きかけて、本質は監視ダッシュボードだったと選び直すまでの設計判断の記録。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_many-ai-cli-mobile-as-dashboard-v040/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_many-ai-cli-mobile-as-dashboard-v040/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-16_many-ai-cli-mobile-as-dashboard-v040/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "会話アプリじゃなくて、ダッシュボードだった。many-ai-cli のスマホを v0.4.0 で作り直す話",
+  "description": "Claude アプリ風の吹き出し UI で行きかけて、本質は監視ダッシュボードだったと選び直すまでの設計判断の記録。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-16_many-ai-cli-mobile-as-dashboard-v040/hero.png",
+  "datePublished": "2026-06-16",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-16_many-ai-cli-mobile-as-dashboard-v040/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag">設計判断</span>
+  <span class="stamp">2026-06-16</span>
+</div>
+
+<h1>会話アプリじゃなくて、ダッシュボードだった。many-ai-cli のスマホを v0.4.0 で作り直す話</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="many-ai-cli のスマホ UI 設計判断、吹き出しチャットからダッシュボード型へ作り直す転換点" width="1280" height="670">
+</div>
+
+<p class="lead">
+スマホ向けの困りごとが 8 件溜まっていた。1 件ずつ直そうとして手が止まり、Claude アプリ風の吹き出し UI で全部吸収できそうだとモックまで作って、最後にもう一度問い直したら「これは会話アプリではなくダッシュボードだった」と分かった。v0.3.2 はそのまま出して、v0.4.0 を別レーンで作り直すと決めるまでの設計判断の記録。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/n66981b2e2d55" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>困りごと 8 件は、個別バグではなく方針のサインだった</h2>
+
+<p>many-ai-cli は、Claude Code・Codex・GitHub Copilot CLI・Cursor Agent CLI といった AI コーディング CLI を並列で走らせたときに、ブラウザの 1 画面で承認待ちを束ねるためのツールとして作っている。直近の v0.3.2 でスマホ対応もかなり盛った。</p>
+
+<p>盛ったあとで、提案メモが 8 件ほど溜まっていた。改行ボタンの位置、ヘッダーの整理、承認カードの見せ方、キーボードに被るチャット入力欄、ターミナル点滅、保留中の気づきにくさ。1 つずつ手当てしようとすると別の議論で止まる、というのを 8 回繰り返している状態だった。</p>
+
+<div class="info">
+同じ領域で困りごとが束になっているとき、それは個別バグではなく「方針の問題」のサインだった、と振り返って気づいた。1 件ずつ直すと、同じ画面を 8 回作り直すことになる。
+</div>
+
+<h2>Claude アプリ風で全部吸収できそうだった、けれど止まった</h2>
+
+<p>8 件を見渡して、いちばん筋がよさそうだったのは「Claude のスマホアプリの UI を完全に踏襲する」案だった。吹き出しチャット UI で、入力欄は最下部に控えめ。承認はチャットの流れに inline で差し込む。スマホ入力欄まわりの 4 件はこれで全部吸収できる。HTML のモックも作って、それなりに見栄えはした。</p>
+
+<p>そこで止まった。many-ai-cli は AI と長話するツールだったか。違う。複数の AI を並列で走らせて「どれが承認待ちで止まっているか」を見張るツールだったはず。</p>
+
+<p>吹き出しは会話アプリの言語だ。LINE、Slack、Claude スマホアプリ、ChatGPT スマホアプリ。腰を据えて 1 対 1 で話す前提の UI。一方、自分がスマホからこのツールを触るときにやりたいのは、承認ボタンを押す、いま何が動いているか眺める、短い指示を 1 行出す、の 3 つしかない。腰を据えて長話したいときは、たいてい PC に戻る。</p>
+
+<p>スマホでの本当の主用途は会話ではなく監視だった。器が違う。</p>
+
+<h2>選択肢を箇条書きで強引に並べて、答えを選び直した</h2>
+
+<p>頭の中で結論を出すと自分に都合よく曲げてしまうので、選択肢を 3 軸で並べて、わざと選び直した。</p>
+
+<h3>スマホでの主用途は何か</h3>
+<ul>
+  <li>承認・監視中心（外出先で承認、たまに短い指示）</li>
+  <li>会話中心（腰を据えて対話、Claude アプリ風が妥当）</li>
+  <li>監督中心（複数セッションを横断的に「どれが要対応」と把握）</li>
+  <li>完全ミラー（PC と同じ操作を全部やる）</li>
+</ul>
+
+<h3>ゴールは何か</h3>
+<ul>
+  <li>外出先承認だけできればよい</li>
+  <li>スマホ単独で完結する作業環境</li>
+  <li>閲覧と最小限の操作だけ</li>
+</ul>
+
+<h3>UI メタファは何か</h3>
+<ul>
+  <li>ダッシュボード型（セッションカード一覧＋inline 承認）</li>
+  <li>Claude アプリ風吹き出し</li>
+  <li>通知センター型</li>
+  <li>ターミナル維持（現状）</li>
+</ul>
+
+<p>選び直した結果は「承認・監視中心」「スマホ単独で完結」「ダッシュボード型」だった。Claude アプリ風ではなかった。並べた瞬間に「A 以外を選びたい理由」も湧いてくる、というのが今回いちばん効いた手筋だった。</p>
+
+<h2>v0.3.2 と v0.4.0 の違いを 1 画面で並べる</h2>
+
+<p>言葉だけだとピンとこないので、現行 v0.3.2 と作り直す v0.4.0 のスマホ画面構造を整理しておく。</p>
+
+<h3>v0.3.2 — ターミナルが主役</h3>
+<ul>
+  <li>PC 版を素直に縮めた構造。画面の大半はターミナル（PTY 出力の生テキスト）</li>
+  <li>入力欄が下にあって、承認待ちが発生すると入力欄の上にバーが出る</li>
+  <li>他のセッションが承認待ちになっても、ハンバーガーから一覧を開かないと気づけない</li>
+  <li>「いま誰が止まってる？」の答えが、出力の最後の行を目で追う作業になっている</li>
+</ul>
+
+<p>慣れている人には読める。ターミナル中心のスマホ UI にも需要はあるし、急に消すと現に使っている人が困る。v0.3.2 はこの形のまま出す。</p>
+
+<h3>v0.4.0 — 起動した瞬間にダッシュボード</h3>
+<ul>
+  <li>起動した瞬間にセッション一覧が出る。カードが縦に並んで、それぞれが 1 セッション</li>
+  <li>状態で色分け（承認待ち=赤、実行中=黄、入力待ち=緑）</li>
+  <li>承認待ちカードは画面上部に集約され、カードの中に YES/NO や選択肢のボタンがそのまま入る。タップで完結、ターミナルを開かない</li>
+  <li>ターミナル表示は残すが、1 セッションを開いた先のタブに格下げ。デフォルトのタブは「承認」</li>
+</ul>
+
+<div class="info">
+ホーム画面そのものが「監視盤」になる。Slack でサーバー一覧を眺める感覚に近い、と言うとイメージしやすいかもしれない。重力をダッシュボード側に寄せる、という言い方が一番しっくりくる。
+</div>
+
+<h2>リリースのレーンを 2 本に分ける</h2>
+
+<p>そんなわけで、リリースのレーンを 2 本に分けることにした。</p>
+
+<ul>
+  <li><strong>v0.3.2</strong>: 現行スマホ UI のまま、近いうちに出す。承認まわりの小さな改善や、Codex の進捗表示の点滅修正など地味なやつを混ぜて</li>
+  <li><strong>v0.4.0</strong>: スマホをダッシュボード型に作り直す回。承認カードの全文展開・セッション一覧のホーム化・タブ既定値の見直しをまとめて入れる。破壊的に変わるので、バージョンも 0.3.x の延長ではなく 0.4.0 で区切る</li>
+</ul>
+
+<p>決め切れていない部分も残っている。サイドメニューに何を置くか、カードを長押ししたときに何を出すか、承認待ちが 10 件溜まったときに上部固定セクションがどこまで伸びるか。このあたりは v0.4.0 の実装に入ってから、もう一度モックを並べて選び直すと思う。</p>
+
+<h2>今回の振り返り</h2>
+
+<ul>
+  <li>同じ領域で困りごとが束になっているときは、個別バグではなく方針の問題のサイン。1 件ずつ直すと同じ画面を 8 回作り直す</li>
+  <li>「人気サービスの UI を真似る」は、自分のツールの本質に合っていれば強力だが、合っていなければ毒。Claude アプリ風はそれ自体は綺麗で、モックを作っているときは正解に見えてしまった</li>
+  <li>設計判断は、選択肢を箇条書きで強引に並べたほうが正直になれる。頭の中で「A がよさそう」と思っているときに、わざと B・C・D も並べる</li>
+  <li>モックまで作って捨てる決断を 1 日でできたのは、今回の小さな成果だった。捨てるのに時間をかけない、を習慣にしていきたい</li>
+</ul>
+
+<div class="footer">
+  公開: 2026-06-16 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

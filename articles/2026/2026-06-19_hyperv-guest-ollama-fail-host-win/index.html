@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hyper-VゲストでローカルLLMを4回失敗して、ホストWindowsのOllamaに逃がした話 — 2026-06-19 — ishizakahiroshi</title>
+<meta name="description" content="Hyper-V ゲスト Windows でローカル LLM を回そうとして 4 回失敗。最終的に GPU を持つホスト側で Ollama を動かし、ゲストからは HTTP API で借りる構成に切り替えた話。localhost の罠と base_url 設計の覚書。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/">
+
+<meta property="og:title" content="Hyper-VゲストでローカルLLMを4回失敗して、ホストWindowsのOllamaに逃がした話">
+<meta property="og:description" content="ゲストの中で全部やろうとして詰まり、推論はホスト GPU・開発はゲストに分け、HTTP API でつなぎ直した記録。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Hyper-VゲストでローカルLLMを4回失敗して、ホストWindowsのOllamaに逃がした話",
+  "description": "ゲストの中で全部やろうとして詰まり、推論はホスト GPU・開発はゲストに分け、HTTP API でつなぎ直した記録。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/hero.png",
+  "datePublished": "2026-06-19",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">失敗談</span>
+  <span class="stamp">2026-06-19</span>
+</div>
+
+<h1>Hyper-VゲストでローカルLLMを4回失敗して、ホストWindowsのOllamaに逃がした話</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="Hyper-V ゲストの中で Ollama を回そうとして詰まり、ホスト Windows の GPU に処理を逃がす構成に切り替えた話のヒーロー画像" width="1280" height="670">
+</div>
+
+<p class="lead">
+Hyper-V のゲスト Windows でローカル LLM を回したかった。Ollama を入れて、モデルを入れて、GPU を見に行って、だめで、またやり直して。気づいたら 4 回失敗していました。最終的にやったのは「ゲストの中で全部やる」のをやめる、という地味な方針転換でした。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/nede177d389ed" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>ゲストの中で全部やろうとして詰まった</h2>
+
+<p>やりたかったことは単純です。Hyper-V のゲスト Windows に開発環境を置いて、その中でローカル LLM も動かす。開発用 CLI からモデルピッカーで Ollama を選んだら、そのまま手元の LLM が返事をする。うまくいけば、開発はゲストに閉じてホストは汚さない、失敗したら仮想マシンごと戻せる、という気持ちのよい構成です。</p>
+
+<p>でも、現実はそうきれいにいきませんでした。Ollama は入る。モデルも入る。API もそれっぽく返る。けれど GPU まわりで詰まる。ドライバなのか、仮想化なのか、Windows の機嫌なのか、ひとつ直したつもりで別のところが怪しくなる。これを 4 回やって、正直、参りました。</p>
+
+<div class="info">
+ゲスト側に GPU を渡す話は、選択肢としては存在します。ただし個人の Hyper-V 環境では、世代と機能の組み合わせがかなり狭く、CPU/GPU/ドライバ/ホスト OS のどれかが少しずれると一気に詰みます。「ゲストの中で GPU を直に触る」を主戦場にした瞬間、トラブルの面積が一気に広がる、というのが今回の体感でした。
+</div>
+
+<h2>考え方をひっくり返した</h2>
+
+<p>途中で、ふと気づきました。ローカル LLM を「ゲストの中で動かす」必要は、本当にあるのか。欲しいのは、ゲスト Windows の中から LLM を使えること。Ollama のプロセスがどこで動いているかは、実はそんなに重要ではない。</p>
+
+<p>だったら、GPU を持っているホスト Windows で Ollama を動かせばいい。ゲストは、その API に HTTP でつなぐだけにする。つまりこういう役割分担です。</p>
+
+<ul>
+  <li>ホスト Windows: Ollama とモデルを持つ。GPU で推論する</li>
+  <li>ゲスト Windows: 開発環境を持ち、API のクライアントになる</li>
+  <li>つなぎ目: ゲストからホストの Ollama API を HTTP で叩く</li>
+</ul>
+
+<p>これなら、GPU をゲストに渡す話を一切しなくていい。Ollama はホストの普通の Windows アプリとして動く。ゲストはただのクライアントになる。実際、これは効きました。</p>
+
+<h2>localhost を信じすぎていた</h2>
+
+<p>方針が決まったあとに、もう一段ハマったのが <code>localhost</code> の解釈です。ローカル LLM 周りのツールは、たいてい <code>localhost:11434</code> を見に行く前提で書かれています。ホスト上で全部動かしている分にはそれで正しい。Ollama もクライアントも同じマシンにいるからです。</p>
+
+<p>でも、Hyper-V ゲストの中でクライアントを動かしていると、<code>localhost</code> はゲスト自身を指します。ホスト Windows ではない。ここでだいぶ混乱しました。ホスト側では Ollama が元気に動いていて、ホストのブラウザや PowerShell から叩けば返る。なのにゲストのクライアントから見ると、Ollama がいないことになる。</p>
+
+<blockquote>
+「ローカル」と言っているけど、誰から見たローカルなのか。ここを間違えると、ずっと違う住所を見に行く。
+</blockquote>
+
+<h2>クライアント側に「接続先」を持たせた</h2>
+
+<p>そこでクライアント側に、<code>ollama.base_url</code> のような「Ollama の接続先」を明示する設定値を足しました。考え方は単純です。</p>
+
+<pre><code>ollama:
+  base_url: "http://&lt;host-ip&gt;:11434"</code></pre>
+
+<p>この値を、2 か所で同じように使います。</p>
+
+<ul>
+  <li>モデル一覧を取るときは <code>&lt;base_url&gt;/api/tags</code> を見る</li>
+  <li>子プロセス（OpenAI 互換 / Anthropic 互換のいずれの口でも）を Ollama 経由で起動するときは、env に <code>&lt;base_url&gt;</code> を渡す</li>
+</ul>
+
+<p>互換 API の口によって、内部で <code>/v1</code> を足すかどうかが分かれます。OpenAI 互換として見る場合は <code>/v1</code> を足す、Anthropic 互換として見る場合は足さない、という具合です。ここを設定ファイル 1 か所に寄せたことで、「モデルピッカーには出るのに起動した側からは見えない」みたいな食い違いが消えました。地味ですが、これでやっとつながりました。</p>
+
+<h2>Firewall はちゃんと絞る</h2>
+
+<p>この構成で一番気をつけるのは、Ollama API を外へ開けすぎないことです。ホスト側の Ollama は、ゲストから届くように待ち受けを広げる必要があります。ただし、これはあくまで「同じ物理マシンの中のゲストに渡す」ためのもので、インターネットに出すものではありません。</p>
+
+<ul>
+  <li>Ollama をホストのネットワークインターフェイスで待ち受ける</li>
+  <li>Windows Firewall で Hyper-V のゲスト側ネットワーク（仮想スイッチのサブネット）だけ許可する</li>
+  <li>ルーターのポート転送はしない</li>
+  <li>ゲスト側から疎通確認したうえで、クライアントの <code>base_url</code> を設定する</li>
+</ul>
+
+<p>LLM の API は、手元の道具として使うぶんには便利ですが、外から誰でも叩ける場所に置くものではありません。「動けばいい」で雑にしないところだと思います。</p>
+
+<h2>ゲストで全部やる、を諦めたら楽になった</h2>
+
+<p>最初は、ゲストの中でローカル LLM まで完結させるのがきれいだと思っていました。でも今回の感覚だと、開発環境と推論環境は分けたほうが楽でした。ゲストは壊しても戻せる作業場。ホストは GPU を持っている推論係。間は HTTP API でつなぐ。</p>
+
+<p>分けると、考えることも分かれます。開発環境を整える話、GPU で推論する話、API の向き先をそろえる話。ごちゃっと一つに押し込むより、ずっと見通しがよかったです。学んだことを並べると、こんな感じでした。</p>
+
+<ul>
+  <li><code>localhost</code> は、いま動いている側から見た自分自身</li>
+  <li>GPU を仮想マシンに持ち込むより、API 越しに借りるほうが早いことがある</li>
+  <li>設定値は、モデル一覧取得と実行時 env の両方で同じものを使わないとズレる</li>
+  <li>ネットワーク越しにするなら、Firewall の範囲は必ず絞る</li>
+</ul>
+
+<p>「全部ここでやる」をやめる判断、個人開発でもけっこう大事だなと思いました。また似たところで詰まったら、まず「本当に同じ箱に入れる必要があるのか」を疑うところから始めます。小さく、動く形から。</p>
+
+<div class="footer">
+  公開: 2026-06-19 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

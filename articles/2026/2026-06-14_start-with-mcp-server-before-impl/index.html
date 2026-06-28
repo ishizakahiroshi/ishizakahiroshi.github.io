@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>まだ何も実装してないのに、MCPサーバーから作ろうと思った話 — 2026-06-14 — ishizakahiroshi</title>
+<meta name="description" content="docsweep という書類整理ツールを構想中、まだ本体を一行も書いていないのに MCP サーバーの口から先に設計することにした。人がコマンドを打たず AI エージェントが直接道具を叩く前提に揃えると、コマンドの粒度そのものが変わる。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-14_start-with-mcp-server-before-impl/">
+
+<meta property="og:title" content="まだ何も実装してないのに、MCPサーバーから作ろうと思った話">
+<meta property="og:description" content="本体ゼロの構想段階で MCP サーバーの口から設計した記録。最終ユーザーは人ではなく AI エージェント、と決めた瞬間にコマンドの粒度が変わった。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-14_start-with-mcp-server-before-impl/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-14_start-with-mcp-server-before-impl/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-14_start-with-mcp-server-before-impl/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "まだ何も実装してないのに、MCPサーバーから作ろうと思った話",
+  "description": "本体ゼロの構想段階で MCP サーバーの口から設計した記録。最終ユーザーは人ではなく AI エージェント、と決めた瞬間にコマンドの粒度が変わった。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-14_start-with-mcp-server-before-impl/hero.png",
+  "datePublished": "2026-06-14",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-14_start-with-mcp-server-before-impl/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag">設計判断</span>
+  <span class="stamp">2026-06-14</span>
+</div>
+
+<h1>まだ何も実装してないのに、MCPサーバーから作ろうと思った話</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="docsweep の構想段階で MCP サーバーの口から先に設計する図解" width="1280" height="670">
+</div>
+
+<p class="lead">
+AI が書き散らした <code>plan_*.md</code> や <code>bugfix_*.md</code> を自動で片付ける道具「docsweep」を構想していたら、まだ一行も実装していないのに MCP サーバーの口から決める順番になった。最終的にコマンドを打つのは人ではなくエージェントだと気づいた瞬間、設計の入口がひっくり返った記録。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/n4649c02097ef" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>背景：溜まり続ける作業メモを掃除する道具を考えていた</h2>
+
+<p>Claude Code や Codex に作業させていると、<code>plan_*.md</code>（計画）や <code>bugfix_*.md</code>（障害対応記録）が docs フォルダにどんどん積み上がる。完了したもの、寝かせたまま陳腐化したもの、別計画に統合されて死んだものが混ざる。</p>
+
+<p>これを自動で片付けるツールを作ろうとしている。名前は <strong>docsweep</strong>。役割はシンプル。</p>
+
+<ul>
+  <li>完了したファイルは <code>archive/</code> に移送する</li>
+  <li>放置されて古くなった計画には「これ、まだやる？」のフラグを立てる</li>
+  <li>統合済み・廃止のものは廃止扱いに落とす</li>
+</ul>
+
+<p>最初は普通の CLI ツールのつもりだった。ターミナルでコマンドを打って整理する、Web 画面は後回し、というよくある形。設計の壁打ちをしているうちに、その順番がひっくり返った。</p>
+
+<h2>転換点：判断するのは人ではなく AI だと気づいた</h2>
+
+<p>このツールでいちばん難しいのは、ファイルを動かす機械的な処理ではない。「この古い計画、捨てていいのか・まだ価値があるのか」を見分ける部分。</p>
+
+<p>その判断、誰がやるのが自然か？ 中身を読んで「これは別の計画に統合済みだから廃止」「これは実は重要だから再開」と仕分けるのは、まさに今の LLM が得意な領域だ。</p>
+
+<p>だとすると理想の使い方はこうなる。開発フォルダを Claude Code で開いて、「溜まった計画を整理して」と話しかける。エージェントが裏で道具を叩き、フラグの立ったファイルを読み、判断して片付ける。<strong>人間はコマンドを打たない。エージェントが道具をキックする。</strong></p>
+
+<div class="info">
+  Web UI を捨てたわけではない。今はまだ「これは残す・これは捨てる」を人が決める場面が要るので、その判断をやりやすい画面はいま作っている。ただ、この画面はゴールではない。一歩先では同じ操作をエージェントが回す前提で設計している。
+</div>
+
+<h2>順番が逆転した：先に AI への「口」を決める</h2>
+
+<p>ここで詰まった。エージェントに道具を使わせる、と一言で言っても、具体的にどうやるのか。コマンド文字列を AI に組み立てさせてターミナルに流す、でも動かなくはない。でも、ちゃんとした規格がある。</p>
+
+<p><strong>MCP（Model Context Protocol）</strong>。AI エージェントが外部の道具を「自分のツール」として直接呼ぶための共通プラグ。docsweep を MCP サーバーとして出しておけば、対応エージェントは <code>scan</code>（探す）/ <code>triage</code>（仕分けの材料を出す）/ <code>apply</code>（判断を反映する）を手足のように直接呼べる。コマンド文字列のパースもいらない。</p>
+
+<p>そうか、と。だったら本体が完成してから後付けで MCP 対応する、では遅い。なぜなら<strong>コマンドの切り方そのもの</strong>が「1 コマンド = 1 ツール」の粒度になっていないと、後で必ず歪むからだ。</p>
+
+<p>だから構想段階の今、まだ一行も本体を書いていないのに、MCP の口だけは先に意識して設計することにした。順番、逆に見えるけれど。</p>
+
+<h2>ひとつだけ強く決めたこと：道具は賢くしない</h2>
+
+<p>設計で一点だけ譲らないと決めたのがこれ。<strong>docsweep 自身は AI を呼ばない。</strong></p>
+
+<p>賢い判断はエージェント側にやらせ、道具は「言われた移送を、ログを残して、取り消せる形で、安全にやる」ことだけに徹する。理由は 2 つ。</p>
+
+<ul>
+  <li>AI の API を道具に抱え込むと、特定ベンダーに縛られる</li>
+  <li>モデルが新しくなるたびに追従する羽目になる（道具は寿命の長さで選ぶべき）</li>
+</ul>
+
+<p>道具は道具のまま、決定論的でいる。賢さは外。ここはブレないことにした。</p>
+
+<h2>収穫：作る前に「誰がどう使うのか」を最後まで想像する</h2>
+
+<p>と、ここまで威勢よく書いたが、正直まだ何も動いていない。設定ファイルの形を決めて、ステータスのラベル（計画・実行中・様子見・完了・廃止）を決めて、MCP の口の粒度を決めた。それだけ。</p>
+
+<p>でも、作る前に「最終的に誰がどう使うのか」を最後まで想像してから手を動かすと、コマンドの切り方が変わる。今回いちばんの収穫はそこだった。「人間が CLI で叩く前提」と「エージェントが MCP 越しに呼ぶ前提」では、同じ機能でも分割線が違う。</p>
+
+<p>MCP サーバー、勉強がてら本当に小さいやつから立ててみる。まずは <code>scan</code> ひとつをツールとして公開して、Claude Code から呼べたら、それが最初の「動いた」になる。そこから少しずつ。</p>
+
+<div class="footer">
+  公開: 2026-06-14 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

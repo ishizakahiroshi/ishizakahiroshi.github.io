@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cursorが9兆円で買われた。狙いはAIの柱を丸ごと握ることだと思う — 2026-06-18 — ishizakahiroshi</title>
+<meta name="description" content="SpaceX が Cursor を 9 兆円で買収した報道を、エディタの値段ではなく『電力・GPU・モデル・エディタ・Git ホスティング』までの縦一本の柱を丸ごと握る値段として読み解く、田舎エンジニアの見立てメモ。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-18_cursor-9-trillion-yen-chicken-race/">
+
+<meta property="og:title" content="Cursorが9兆円で買われた。狙いはAIの柱を丸ごと握ることだと思う">
+<meta property="og:description" content="SpaceX による Cursor 9 兆円買収を、AI の縦一本の柱を握りにいくチキンレースとして読む。事実と見立てを分けたメモ。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-18_cursor-9-trillion-yen-chicken-race/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-18_cursor-9-trillion-yen-chicken-race/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-18_cursor-9-trillion-yen-chicken-race/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Cursorが9兆円で買われた。狙いはAIの柱を丸ごと握ることだと思う",
+  "description": "SpaceX による Cursor 9 兆円買収を、AI の縦一本の柱を握りにいくチキンレースとして読む。事実と見立てを分けたメモ。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-18_cursor-9-trillion-yen-chicken-race/hero.png",
+  "datePublished": "2026-06-18",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-18_cursor-9-trillion-yen-chicken-race/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">エッセイ</span>
+  <span class="stamp">2026-06-18</span>
+</div>
+
+<h1>Cursorが9兆円で買われた。狙いはAIの柱を丸ごと握ることだと思う</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="9 兆円のチキンレースを表すヒーロー画像。AI 覇権をめぐる SpaceX と Cursor の縦一本の柱の構図" width="1280" height="670">
+</div>
+
+<p class="lead">
+SpaceX が AI コードエディタ Cursor の開発元 Anysphere を 600 億ドル（約 9 兆円）で買収する、という報道を見て、最初は「VS Code をフォークしたエディタに 9 兆円?」と思った。けれど買収前後で並んでいた事実をつなげると、これは「エディタの値段」ではなく「AI という山ぜんぶの、てっぺんから地面までを握りにいく値段」に見えてくる。事実と、自分の勝手な見立てを、混ぜないように分けて書いたメモ。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/nf4bc4cdd62b9" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>報道で確定している「事実」だけ並べる</h2>
+
+<p>まず、自分の意見を抜いて、開示や報道で確認できている事実だけを並べる。ここが見立てと混ざると一番たちが悪い。</p>
+
+<ul>
+  <li>SpaceX が Cursor の開発元 Anysphere を買収すると、2026 年 6 月 16 日に開示された</li>
+  <li>金額は <strong>600 億ドル（約 9 兆円）</strong>。現金ではなく、全額が株式での交換（オールストック）</li>
+  <li>この買収は、SpaceX が史上最大規模の IPO（約 750 億ドル調達）を終えた <strong>わずか 4 日後</strong> に出てきた。上場で跳ねた株価で支払う形になっている</li>
+  <li>Cursor はもともと 500 億ドル超の評価額で資金調達の最中だった。買収額はそれを上回った</li>
+  <li>Microsoft も買収を検討したが、正式な入札はせず見送り。Cursor は OpenAI からの打診も 2 度断っていた、と報じられている</li>
+</ul>
+
+<p>金額そのものより、私が引っかかったのは「同じ数日の中で並んでいた他の事実」のほうだった。</p>
+
+<h2>同じ数日のうちに並んでいた、もう一段下の事実</h2>
+
+<p>ここも全部、報道ベースの事実。これらを並べてみると、エディタ会社の買収という感じが急にしなくなる。</p>
+
+<ul>
+  <li>買収発表の翌日（6 月 17 日）、Cursor は「<strong>Origin</strong>」という Git ホスティングサービスを秋に出すと発表した。コードを置いて AI エージェントと一緒にレビュー・共同作業する基盤で、早い話 GitHub に正面からぶつけにいく動き</li>
+  <li>買い手の SpaceX は、今年すでに Grok を作る xAI を吸収し、社内に「SpaceXAI」という AI 部門を持っている</li>
+  <li>SpaceXAI はメンフィスに「<strong>Colossus</strong>」という巨大スーパーコンピュータを持ち、22 万基超の NVIDIA GPU と 300 メガワット超の電力規模がある。しかもその計算資源を、ライバルの Anthropic にまで貸し出している</li>
+  <li>さらに SpaceX は、最大 100 万基の人工衛星を「<strong>宇宙のデータセンター</strong>」として打ち上げる計画を FCC に申請している。太陽光で動かし、地上の電力・冷却の限界を飛び越える狙い</li>
+</ul>
+
+<div class="info">
+  買収の話と並走して、Git ホスティング新設・自社モデルの一から学習・宇宙のデータセンター申請が一気に出てきている。「上から下まで全部用意しにいっている」と読めるくらい、隣接ピースの動きが揃っている。
+</div>
+
+<h2>Cursor は「モデルを借りる会社」から「作る会社」へ</h2>
+
+<p>もう一つ、買収と同時期に出てきていた話。Cursor の立ち位置そのものが変わろうとしている。</p>
+
+<p>少し前まで、Cursor は他社の頭脳（Claude や GPT）を借りて、開発者にとって気持ちいい道具を作る会社だった。自分でモデルを作る会社ではなかった。</p>
+
+<p>ところが、すでに「Composer」という自社モデルがあり、2026 年 3 月に出した Composer 2 は同社初の自前フロンティアコーディングモデルだった。ただしこの世代は、外部のオープンソース土台モデルを下敷きにした改造ベース。</p>
+
+<p>そして買収と同じ時期、こんどは <strong>下敷きを使わず、モデルを一から（from scratch）自前で学習させる</strong> という発表が出てきた。報道によると、Cursor は SpaceXAI と組んで Colossus の上で、これまでの約 10 倍の計算資源を使い、1.5 兆パラメータ超とされる大型モデルをゼロから訓練している。既存モデルの微調整段階を、はっきり越えにいっている。公開日や性能数値はまだ出ていない。</p>
+
+<p>ここまでが、確認できる事実の側。ここから先は私の勝手な見立てになる。</p>
+
+<h2>見立て: 主役が「IDE」から「AI」へ静かに入れ替わっている</h2>
+
+<p>金額の回収から考え始める。Cursor の年間売上を 40 億ドル、利益率 20% と <em>雑に置いて</em> 試算すると、年間利益は 8 億ドル。9 兆円を利益だけで回収しようとすると、ざっくり 75 年。利益率 30% でも 50 年。実際の数字ではなく仮置きだが、「Cursor 単体が将来稼ぐ利益で元を取る買収ではなさそうだ」という方向感は言ってよさそうに思う。</p>
+
+<p>しかも今回は、現金ではなく上場直後に跳ねた株での支払い。だとすると、これは「Cursor の事業価値ぶんのお金を払った」というより、別のものを買っている気がする。</p>
+
+<p>少し前までは、エディタ（IDE）があってその中の便利機能として AI が乗っている構造だった。主役は人間が使うエディタで、AI は脇役。</p>
+
+<p>でも今は逆になりかけている。AI が真ん中にいて、その下にターミナル・エディタ・ブラウザ・GitHub・データベース・クラウドがぶら下がる。<strong>AI が主役で、人間向けの道具がそれに従属する</strong>、という向きだ。この向きが本当なら、「開発者が AI に最初に触れる入口」を押さえる意味は、ただのエディタのシェアとは違う重さになる。</p>
+
+<h2>見立て: 入口だけじゃ足りない。柱まるごと取りにきている</h2>
+
+<p>下から積み上げると、こうなる。</p>
+
+<ol>
+  <li><strong>場所と電力</strong>: 地上の限界の先に、宇宙のデータセンター構想</li>
+  <li><strong>計算資源</strong>: 22 万基の GPU と 300 メガワットの Colossus</li>
+  <li><strong>頭脳（モデル）</strong>: Grok と、これから Cursor が Colossus 上で一から育てる 1.5 兆超パラメータの新モデル</li>
+  <li><strong>開発者の入口（エディタ）</strong>: Cursor 本体</li>
+  <li><strong>共同作業の場</strong>: 新設する Git ホスティング Origin</li>
+</ol>
+
+<p>電気をどこで起こすか、というところから、開発者が朝いちばんに開く画面まで。AI にまつわる <strong>縦一本の柱</strong> を、ぜんぶ自前で持とうとしているように見える。</p>
+
+<p>おもしろいのは、その計算資源をライバルの Anthropic にまで貸していること（これは事実）。柱の土台がそれだけ太いと、競合まで自分の地面の上で動くことになる。9 兆円は、この柱のいちばん上のピースを買った値段なんじゃないか、というのが私の推測。</p>
+
+<h2>逆向きの疑問: この陣営が勝ち続けるとは限らない</h2>
+
+<p>自分の中には逆向きの疑問もある。これも推測。</p>
+
+<p>今後の主流は、エディタ中心ではなく、もっとエージェント中心の環境になる気がしている。Claude Code、Codex、Gemini CLI、Grok のビルド機能。どれもエディタの画面に閉じこもらず、ターミナルや OS 全体を直接操作していくタイプだ。</p>
+
+<p>開発者の仕事はコードを書くだけじゃない。PR を作る、Issue を読む、ログを掘る、DB を確認する、ブラウザで動作を見る。これはエディタの中だけでは閉じない。だとすると、AI がエディタの外まで含めて全部やる方向に進むほうが自然に見える。</p>
+
+<p>もしそうなら、Cursor が今握っている「エディタという入口」の優位は、ずっとは続かないかもしれない。さらに、AI が賢くなるほど開発者 1 人あたりの生産性は上がり、必要な開発者の数そのものが減るかもしれない。エディタへの課金で成り立つ前提も、そこで揺らぐ。柱を縦に全部持っていても、いちばん上のピースが時代遅れになる可能性は消えていない。</p>
+
+<h2>結局これは、計算資源ごと賭けたチキンレース</h2>
+
+<p>事実に戻る。SpaceX は上場 4 日後の跳ねた株で 9 兆円を払い、ライバルに GPU を貸しながら、宇宙にデータセンターを上げる申請まで出している。OpenAI のサム・アルトマン氏は、その宇宙データセンター構想を「ばかげている」と一蹴したと報じられている。それでも、この値段とこの規模で突っ込んでいる。</p>
+
+<p>ここから先はまた見立て。OpenAI、Anthropic、Google、そして xAI を抱えた SpaceX が、それぞれ自分の頭脳に計算資源も入口も全部くっつけようと、ものすごい速さで突っ込んでいるように見える。もう、製品の良し悪しだけの競争ではなく、電力と土地と GPU と、最後は宇宙まで賭けにいく勝負になっている。</p>
+
+<blockquote>
+  誰も減速しない。減速したら、柱のどこか一段を他陣営に取られるから、降りられない。
+</blockquote>
+
+<p>これはもう勝者が決まっているレースではなく、計算資源ごと全部を賭けて全員が横並びで突っ込んでいくデッドヒートのチキンレースだと思う。今がまさにその真っ最中で、Cursor がてっぺんに立ち続けるのか、別の流れに飲まれるのか、まだ誰にも分からない。9 兆円は、その分からなさに賭けた値段なんだろうな、と。</p>
+
+<p>群馬の田舎から眺めているだけの立場で、勝者を当てる気はない。ただ、どっちに転ぶかは見届けたいので、自分の手元の道具がどの柱の上で動いているのかだけは、これからも静かに観察していこうと思う。</p>
+
+<h2>参考にしたソース（一次情報・報道）</h2>
+
+<p>事実として書いた部分の根拠。仮説・見立ての部分は、これらの事実をもとにした自分の解釈であって、各ソースの主張ではない。</p>
+
+<h3>買収そのもの</h3>
+<ul>
+  <li><a href="https://techcrunch.com/2026/06/16/spacex-to-acquire-cursor-for-60b-in-stock-days-after-blockbuster-ipo/" target="_blank" rel="noopener">TechCrunch「SpaceX to acquire Cursor for $60B in stock, days after blockbuster IPO」</a></li>
+  <li><a href="https://www.cnbc.com/2026/06/16/spacex-spcx-cursor-acquisition-ipo.html" target="_blank" rel="noopener">CNBC「SpaceX to acquire the AI coding startup Cursor for $60 billion」</a></li>
+</ul>
+
+<h3>エコシステム（入口・計算資源・宇宙）</h3>
+<ul>
+  <li><a href="https://news.yahoo.co.jp/articles/8dd1acdc6cfccb33a7cfd1982ced025eaaefd26e" target="_blank" rel="noopener">ITmedia NEWS「Cursor、Git ホスティング『Origin』発表 SpaceX による買収発表直後に」</a></li>
+  <li><a href="https://www.tomshardware.com/tech-industry/artificial-intelligence/musks-spacex-has-rented-out-access-to-its-supercomputers-220-000-nvidia-gpus-and-300-megawatts-of-ai-compute-power-to-rival-anthropic-musk-says-no-one-set-off-my-evil-detector-antrhropic-also-interested-in-orbital-data-centers" target="_blank" rel="noopener">Tom's Hardware「Musk's SpaceX has rented out access to its supercomputer's 220,000 Nvidia GPUs and 300 megawatts of AI compute power to rival Anthropic」</a></li>
+  <li><a href="https://spacenews.com/spacex-files-plans-for-million-satellite-orbital-data-center-constellation/" target="_blank" rel="noopener">SpaceNews「SpaceX files plans for million-satellite orbital data center constellation」</a></li>
+  <li><a href="https://cursor.com/blog/composer-2-5" target="_blank" rel="noopener">Cursor 公式ブログ「Introducing Composer 2.5」</a></li>
+</ul>
+
+<h3>会社の背景（合併・上場）</h3>
+<ul>
+  <li><a href="https://www.cnbc.com/2026/02/03/musk-xai-spacex-biggest-merger-ever.html" target="_blank" rel="noopener">CNBC「Musk's xAI, SpaceX combo is the biggest merger of all time」</a></li>
+  <li><a href="https://www.cnbc.com/2026/06/11/spacex-raises-75-billion-in-record-setting-ipo-ahead-of-nasdaq-debut.html" target="_blank" rel="noopener">CNBC「SpaceX raising $75 billion in record-setting IPO ahead of Nasdaq debut」</a></li>
+</ul>
+
+<div class="footer">
+  公開: 2026-06-18 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

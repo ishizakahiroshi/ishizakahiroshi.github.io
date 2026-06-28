@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>自作ツールのダウンロード数を、全部1画面にまとめた — 2026-06-19 — ishizakahiroshi</title>
+<meta name="description" content="npm のダウンロード数・GitHub Releases のアセット DL 数・star を1画面に集める個人ダッシュボード dl-stats を、Cloudflare 無料枠だけで作った話。自動ディスカバリ・90日履歴・公開 API まで含めた構成と、ポートフォリオサイトの自動更新も整えた経緯。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_tool-download-stats-one-screen/">
+
+<meta property="og:title" content="自作ツールのダウンロード数を、全部1画面にまとめた">
+<meta property="og:description" content="npm・GitHub Releases・star を1画面にまとめる個人ダッシュボードを Cloudflare 無料枠だけで作った話。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_tool-download-stats-one-screen/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_tool-download-stats-one-screen/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_tool-download-stats-one-screen/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "自作ツールのダウンロード数を、全部1画面にまとめた",
+  "description": "npm・GitHub Releases・star を1画面にまとめる個人ダッシュボードを Cloudflare 無料枠だけで作った話。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-19_tool-download-stats-one-screen/hero.png",
+  "datePublished": "2026-06-19",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-19_tool-download-stats-one-screen/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">ツール紹介</span>
+  <span class="stamp">2026-06-19</span>
+</div>
+
+<h1>自作ツールのダウンロード数を、全部1画面にまとめた</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="自作ツールのダウンロード数を1画面に集めるダッシュボードのイメージ" width="1280" height="670">
+</div>
+
+<p class="lead">
+npm のダウンロード数を見て、GitHub Releases のページを開いて、リポジトリの star をまた別タブで確認して——「何個タブが要るんだろう」と思ったのがきっかけでした。1画面で全部見えるようにしたら、想像以上に手が止まらなくなった、という話です。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/n9b7d1e17849e" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>数字が3か所にバラけていた</h2>
+
+<p>個人で公開しているツールは、配布先がそれぞれ違います。npm に置いてあるものは npm のサイトでダウンロード数を見るし、バイナリ配布しているものは GitHub Releases のアセットダウンロード数を見る。star の動きは GitHub のリポページで見る。配布先が違えば、見る場所も違います。</p>
+
+<p>1本しか公開していないうちは気にならなかったのですが、本数が増えてくると「今週何件くらい落とされたっけ」という素朴な確認だけで、3ページを開いて閉じることになります。リリースのたびにそれをやっていると、そのうちやらなくなる。やらなくなると、数字が動いていないことにも気づかなくなる。</p>
+
+<p>「タブを増やさず、1画面で全部見たい」という気持ちは、たぶんどこかでみんな持っているはずで、自分で作ることにしました。</p>
+
+<h2>dl-stats という小さなダッシュボード</h2>
+
+<p>作ったのが <a href="https://dl-stats.ishizakahiroshi.workers.dev" target="_blank" rel="noopener">dl-stats</a> です。GitHub のユーザー名を1つ設定するだけで、その人が公開しているリポジトリを自動で拾い、npm のダウンロード数・GitHub Releases のアセット DL 数・star 数を1か所に集めます。</p>
+
+<h3>主な要素</h3>
+<ul>
+  <li><strong>自動ディスカバリ</strong>: 対象リポを手で登録しない。新しいツールを追加しても設定をいじらなくていい</li>
+  <li><strong>1日1回の Cron 収集</strong>: 直近の数字と90日分の推移グラフを出す</li>
+  <li><strong>足跡（オプション）</strong>: ページを開いたことだけ記録するマイクロビーコン。IP は保存しない</li>
+  <li><strong>公開 API</strong>: <code>/api/stats.json</code> で全データを JSON で取れる。手元のスクリプトや別ページからも使える</li>
+</ul>
+
+<p>「数字を見るためだけのページ」なので、画面はあえて軽くしました。グラフと数字、それだけ。設定 UI も最小限です。</p>
+
+<h2>常駐サーバーなしで、月額ゼロで動かす</h2>
+
+<p>運用は Cloudflare の無料枠だけで完結させました。常駐サーバーがいない構成なので、放っておいてもお金が出ていかない。個人ツールはここが一番大事だと思っています。</p>
+
+<ul>
+  <li><strong>Workers</strong>: 関数実行（API・ページ配信）</li>
+  <li><strong>KV</strong>: 今日の集計値のキャッシュ</li>
+  <li><strong>D1</strong>: 90日分の履歴を持つマネージド SQLite</li>
+  <li><strong>Cron Triggers</strong>: 毎日自動で収集を回す</li>
+  <li><strong>Workers Assets</strong>: フロントエンドの静的配信</li>
+</ul>
+
+<p>認証情報は <code>wrangler secret put</code> で環境変数に入れる方針にしました。コードには何も書かない。手元と本番で同じ手順を踏むので、設定がぶれない。個人ツールでこの規模なら、これが一番シンプルだと思っています。</p>
+
+<div class="info">
+無料枠で動かす設計は「いつでも捨てられる」という安心感もあります。動いていないと気づいたときに気軽に直せるし、要らなくなったらそのまま放置していい。<strong>使い続ける覚悟を要求しない構成</strong>が、結局のところ長持ちします。
+</div>
+
+<h2>ついでにポートフォリオも整えた</h2>
+
+<p>ツールを「数えて見せる」場所を作ったので、ついでに「並べて見せる」場所も整えることにしました。<a href="https://ishizakahiroshi.github.io/" target="_blank" rel="noopener">ishizakahiroshi.github.io</a> の更新を3点。</p>
+
+<ul>
+  <li><strong>CLI のリネーム反映</strong>: 以前 <code>any-ai-cli</code> として出していたものを <code>many-ai-cli</code> に改名したので、サイト側の表記も合わせた</li>
+  <li><strong>star 数の自動同期</strong>: GitHub API から都度引いて表示。手で書き換えなくて済む</li>
+  <li><strong>最新 note の自動表示</strong>: GitHub Actions が6時間おきに RSS を読んで <code>latest-note.json</code> を更新。サイトを開くと「今書いている記事」が出る</li>
+</ul>
+
+<p>どれも派手な機能ではないのですが、「自分で手を入れる工程」を減らしておくのが大事で、サイトを直したくないからツールを公開しない、みたいな順序のねじれを防いでいます。</p>
+
+<h2>「見えていれば、また触る」</h2>
+
+<p>個人ツールは、公開した瞬間がピークになりがちです。誰が使っているか分からないし、数字も見えないので、だんだん「あってもなくてもいい感じ」になってきて、最後は触らなくなる。</p>
+
+<p>dl-stats を作った動機はそこに尽きていて、何か壮大な目的があるわけではないです。1画面で全部見える、それだけで十分でした。グラフの線が少し上がっているのを見ると「そういえばあれ、まだ直せるところあったな」と思い出します。逆に、横ばいでも「ちゃんと動いているな」で安心できる。どっちでも次の一歩につながる。</p>
+
+<p>ポートフォリオも、完璧に作ろうとすると手が止まるので、動いている状態のまま小さく更新し続けるほうが性に合っています。作ったものが見える場所にある。それだけで、次を考えやすくなる気がしています。</p>
+
+<h2>関連リンク</h2>
+<ul>
+  <li><a href="https://dl-stats.ishizakahiroshi.workers.dev" target="_blank" rel="noopener">dl-stats（ライブで動いているダッシュボード）</a></li>
+  <li><a href="https://github.com/ishizakahiroshi/dl-stats" target="_blank" rel="noopener">dl-stats のリポジトリ</a></li>
+  <li><a href="https://ishizakahiroshi.github.io/" target="_blank" rel="noopener">ishizakahiroshi.github.io（ポートフォリオ）</a></li>
+</ul>
+
+<div class="footer">
+  公開: 2026-06-19 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

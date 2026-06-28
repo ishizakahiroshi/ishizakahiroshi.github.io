@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>同じ exe なのに、ブラウザで落としたときだけ SmartScreen に怒られる理由 — 2026-06-14 — ishizakahiroshi</title>
+<meta name="description" content="同じ未署名 exe なのに、ブラウザで落とすと SmartScreen に止められ、パッケージマネージャ経由だと素通り。差は Mark-of-the-Web という「付箋」だった、と腑に落ちた話。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-14_same-exe-smartscreen-motw/">
+
+<meta property="og:title" content="同じ exe なのに、ブラウザで落としたときだけ SmartScreen に怒られる理由">
+<meta property="og:description" content="同じ未署名 exe なのに、ブラウザ経由だと SmartScreen に止められる。差は Mark-of-the-Web という付箋だった話。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-14_same-exe-smartscreen-motw/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-14_same-exe-smartscreen-motw/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-14_same-exe-smartscreen-motw/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "同じ exe なのに、ブラウザで落としたときだけ SmartScreen に怒られる理由",
+  "description": "同じ未署名 exe なのに、ブラウザ経由だと SmartScreen に止められる。差は Mark-of-the-Web という付箋だった話。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-14_same-exe-smartscreen-motw/hero.png",
+  "datePublished": "2026-06-14",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-14_same-exe-smartscreen-motw/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:28px 0 12px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  blockquote{margin:20px 0;padding:8px 18px;border-left:4px solid var(--ink-soft);background:var(--card);color:var(--ink-soft)}
+  ul,ol{padding-left:1.4em}
+  ul li,ol li{margin:6px 0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">失敗談</span>
+  <span class="stamp">2026-06-14</span>
+</div>
+
+<h1>同じ exe なのに、ブラウザで落としたときだけ SmartScreen に怒られる理由</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="同じ未署名 exe が、ブラウザ経由では SmartScreen に止められ、別経路では素通りする様子を示すヒーロー画像" width="1280" height="670">
+</div>
+
+<p class="lead">
+自作の小さな CLI ツールを Windows 向けに配ろうとしていて、未署名の exe を配ると SmartScreen の「Windows によって PC が保護されました」が出るのは知っていた。知らなかったのは、その先。まったく同じ exe なのに、警告が出る経路と出ない経路があった。<br>
+この「同じファイルなのに結果が違う」をほどいていったら、Windows のセキュリティに対する自分の考え方が一個ずれた、という記録です。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/ne59309868808" target="_blank" rel="noopener">note で読む →</a>
+</div>
+
+<h2>同じバイナリなのに、出たり出なかったり</h2>
+
+<p>症状はシンプルでした。</p>
+
+<ul>
+  <li>ブラウザで zip をダウンロードし、展開して中の exe をダブルクリック → 警告が出る</li>
+  <li>別の入れ方（パッケージマネージャ経由）で入れた、まったく同じ exe → 何も出ない</li>
+</ul>
+
+<p>中身は 1 バイトも違わず、ハッシュも一致する。同じビルドで出た、同じファイル。なのに、かたや「保護されました」で止められ、かたや素通り。最初に浮かんだのは「気のせいか？」でしたが、何度やっても同じ結果でした。</p>
+
+<div class="info">
+  経路で結果が変わる。中身が同じなら、SmartScreen は「中身以外の何か」を見て判断している、という当たり前の事実が、ここでようやく腹落ちした。
+</div>
+
+<h2>「未署名だから」では説明がつかなかった</h2>
+
+<p>最初に立てた仮説は、たぶん多くの人と同じで「未署名の exe だから警告される。署名すれば消える」でした。これは半分は正しい。</p>
+
+<p>でも、引っかかった。署名していないのは、どっちの経路でも同じです。同じ未署名ファイルなのだから、署名の有無で説明するなら、両方とも警告が出るか、両方とも出ないか、のどちらかのはず。</p>
+
+<p>出たり出なかったりする。じゃあ SmartScreen は、署名以外の「何か」を見て判断していて、その「何か」が経路によって変わっている。ここがこの記事の背骨でした。</p>
+
+<h2>隠れていた付箋 — Zone.Identifier</h2>
+
+<p>調べていくと、<code>Zone.Identifier</code> という単語に行き当たります。PowerShell で次のように打つと見えます。</p>
+
+<blockquote>
+  Get-Item ファイル名 -Stream Zone.Identifier
+</blockquote>
+
+<p>ブラウザで落とした exe には、これが付いている。中を覗くと「このファイルはインターネットから来た」と書いてある。一方、パッケージマネージャで入れた同じ exe には、これが無い。コマンドはエラーになる。</p>
+
+<p>ここで前に見たことのある光景と繋がりました。WSL2 で Windows 側のフォルダ（<code>/mnt/c</code>）を覗くと、たまに <code>setup.exe:Zone.Identifier</code> みたいな、コロン付きの謎ファイルが並んでいることがある。あれです。あれが、この付箋の正体だった。</p>
+
+<h2>中身じゃなく、ファイルに貼られた付箋だった</h2>
+
+<p>これが Mark-of-the-Web（MotW）と呼ばれているものでした。腑に落ちた瞬間に、頭の中の絵がガラッと変わりました。</p>
+
+<p>MotW は、exe の中身（実行されるバイト列）には入っていません。NTFS というファイルシステムが、そのファイルの「隣」にぶら下げている、隠しの付箋です。中身ではなく、来歴のメモ。「こいつはインターネットから来たやつだぞ」という。</p>
+
+<p>宅配の荷物に貼られる「外部から到着・中身要確認」のシールを想像すると近いかもしれません。箱の中身が同じでも、シールが貼ってあるかどうかで、税関（SmartScreen）が止めるか素通りさせるかが変わる。中身は無実で、シールに反応している。</p>
+
+<p>そして決定的だったのが、このシールは誰がいつ貼るのか、でした。貼るのはビルドした自分でも配布サーバーでもなく、ファイルを受け取った人がブラウザでダウンロードした、まさにその瞬間に、その人の PC のディスク上で初めて貼られる。ビルドの時点では、この付箋はまだ存在すらしていない。</p>
+
+<p>だから経路で変わったんです。ブラウザは「外から来たもの」に律儀にこの付箋を貼る。パッケージマネージャは付箋を貼らずにファイルを置く。同じ exe でも、どう手元に来たかで、付箋の有無が決まる。</p>
+
+<h2>考え方が一個ずれた</h2>
+
+<p>ここまで来て、自分の中の前提がいくつか入れ替わりました。書き出してみます。</p>
+
+<ul>
+  <li>「危険なファイル」だと思っていたものは、ファイル本体の性質じゃなかった。「どこから来たか」という来歴への評価で、それはファイルの外にぶら下がる付箋でしかない</li>
+  <li>付箋は中身じゃないから、ハッシュは変わらない。NTFS の機能なので、USB（FAT32）や Linux のディスクにコピーすると保持できずに落ちる。ファイルと一緒に動くけど、ファイルそのものではない、という独特の存在</li>
+  <li>「署名する」と「付箋が付かない経路で届ける」は、別々の解だった。署名はファイルの中に入る本人証明。経路を変えるのは、そもそも付箋を貼られない届け方。効く相手も範囲も違う</li>
+  <li>付箋を剥がすこと自体はできる（Unblock という正規の操作がある）。でも剥がせるのは付いた後、つまり受け取った人の手元だけ。配る側が事前に剥がしておくことは、原理的にできない。まだ無いものは剥がせない</li>
+  <li>しかも付箋を消しても、黙るのは SmartScreen のあの警告だけ。中身をスキャンする別の防御は、付箋とは無関係に動く。だから「付箋を外す」は万能の解ではなく、あくまで一面の話</li>
+</ul>
+
+<h2>仕組みは、剥がすとただの仕組みになる</h2>
+
+<p>最初は「同じファイルなのに、なんで」とイライラしていただけでした。でも一枚ずつめくっていくと、こわく見えていた「保護されました」の赤い画面が、ただの素直な仕組みに変わっていく。</p>
+
+<p>「危険」という言葉を、ずっとファイルそのものの属性だと思い込んでいた。実際は、来歴に貼られた付箋への反応で、付箋はファイルの外にある後付けのメモだった。たったそれだけのことが、分かってみるとけっこう気持ちいい。</p>
+
+<p>派手な結論はありません。ただ、こういう「腑に落ちた」を一個ずつ拾っていくのが好きなので、今日みたいな小さな引っかかりを、面倒がらずにほどいていく。それを地味に続けていこうと思います。</p>
+
+<div class="footer">
+  公開: 2026-06-14 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>
