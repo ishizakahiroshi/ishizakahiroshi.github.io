@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>パスかクエリか。1問の面接問題から学ぶ、API設計とRESTの完全ガイド — 2026-06-28 — ishizakahiroshi</title>
+<meta name="description" content="X で流れてきたバックエンド面接問題（パスで分けるかクエリで分けるか）から出発し、API・HTTP・REST・URL 設計・実務パターン・REST の限界までを 1 本で繋いだ詳細版。結論は「パスは別リソース、クエリは同一リソースの絞り込み」。即答した時点で不正解になる理由を、前提別に場合分けして解説します。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://zenn.dev/ishizakahiroshi/articles/20260628-rest-api-design">
+
+<meta property="og:title" content="パスかクエリか。1問の面接問題から学ぶ、API設計とRESTの完全ガイド">
+<meta property="og:description" content="X で流れてきた面接問題から出発し、API・HTTP・REST・URL 設計・実務パターンまでを 1 本で繋ぐ詳細 HTML 版。結論は「パスは別リソース、クエリは同一リソースの絞り込み」。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-28_rest-api-design/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-28_rest-api-design/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-28_rest-api-design/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "パスかクエリか。1問の面接問題から学ぶ、API設計とRESTの完全ガイド",
+  "description": "X で流れてきた1問のバックエンド面接問題から出発し、API・HTTP・REST・URL 設計・実務パターンまでを地続きで解説する詳細 HTML 版。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-28_rest-api-design/hero.png",
+  "datePublished": "2026-06-28",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://zenn.dev/ishizakahiroshi/articles/20260628-rest-api-design"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8; --ok:#2e7d4f; --warn:#b8860b; --bad:#b3261e;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.75;
+       text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(880px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em;line-height:1.35}
+  h2{font-family:var(--display);font-weight:700;font-size:1.5rem;margin:64px 0 18px;
+     padding-bottom:10px;border-bottom:2px solid var(--ink);line-height:1.4}
+  h3{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:32px 0 10px;line-height:1.45}
+  h4{font-family:var(--display);font-weight:700;font-size:1rem;margin:22px 0 8px;color:var(--ink-soft)}
+  p,li{font-size:1rem}
+  p{margin:0 0 14px}
+  ul,ol{margin:0 0 14px;padding-left:1.4em}
+  li{margin:4px 0}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  code{font-family:'SFMono-Regular','Consolas',monospace;background:#fff5e6;border:1px solid var(--line);
+       border-radius:5px;padding:1px 6px;font-size:0.92em}
+  pre{background:#241f1a;color:#f7eccb;border-radius:12px;padding:16px 18px;overflow:auto;
+      font-family:'SFMono-Regular','Consolas',monospace;font-size:0.88rem;line-height:1.55;margin:14px 0}
+  pre code{background:none;border:none;padding:0;color:inherit;font-size:inherit}
+  blockquote{border-left:4px solid var(--accent);background:#fff;margin:14px 0;padding:12px 18px;
+             border-radius:0 12px 12px 0;color:var(--ink)}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:12px;
+            font-family:var(--display);font-weight:700;font-size:0.86rem;
+            padding:6px 14px;border-radius:999px;border:2px solid var(--ink);
+            background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;
+         border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;
+       font-family:var(--display);font-weight:700;font-size:0.78rem;
+       border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .tag-ok{background:var(--ok);color:#fff}
+  .tag-warn{background:var(--warn);color:#fff}
+  .tag-bad{background:var(--bad);color:#fff}
+  .system-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;
+                border-radius:999px;border:2px solid var(--ink);background:var(--card);
+                font-family:var(--display);font-weight:700;font-size:0.86rem}
+  .system-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  .hero{margin:18px 0 22px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;
+        box-shadow:5px 6px 0 var(--line);background:#eef2f7}
+  .hero img{display:block;width:100%;height:auto}
+  .infographic{margin:22px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;
+               box-shadow:5px 6px 0 var(--line);background:#fff}
+  .infographic img{display:block;width:100%;height:auto}
+  .fig{margin:22px 0;border:2px solid var(--ink);border-radius:16px;overflow:hidden;
+       box-shadow:4px 5px 0 var(--line);background:#fff}
+  .fig img{display:block;width:100%;height:auto}
+  .fig figcaption{padding:10px 16px;font-size:0.86rem;color:var(--ink-soft);
+                  border-top:1px solid var(--line);background:#fffdf8}
+  .lead{font-size:1.05rem;margin:18px 0 24px;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;
+             padding:7px 16px;border-radius:999px;font-family:var(--display);
+             font-weight:700;font-size:0.86rem;text-decoration:none;
+             border:2px solid var(--ink);color:#fff;
+             box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-zenn{background:#3ea8ff}
+  .card{background:var(--card);border:2px solid var(--ink);border-radius:18px;
+        padding:20px 24px;box-shadow:4px 5px 0 var(--line);margin:18px 0}
+  .card.accent{background:#fff5e6}
+  .card.warn{background:#fffaf0;border-color:var(--warn)}
+  .card h3{margin-top:0}
+  .callout{background:#fff;border:2px solid var(--accent);border-radius:14px;
+           padding:14px 18px;margin:18px 0;font-size:0.96rem}
+  .callout.warn{border-color:var(--warn);background:#fffaf0}
+  .callout.bad{border-color:var(--bad);background:#fff5f4}
+  .callout-title{font-family:var(--display);font-weight:700;font-size:0.85rem;
+                 color:var(--accent);margin:0 0 6px;letter-spacing:0.05em}
+  .callout.warn .callout-title{color:var(--warn)}
+  .callout.bad .callout-title{color:var(--bad)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;background:#fff;
+        border:2px solid var(--ink);border-radius:12px;overflow:hidden;font-size:0.94rem}
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#fffdf8;font-family:var(--display);font-weight:700;color:var(--ink)}
+  tr:last-child td{border-bottom:0}
+  td.center{text-align:center;font-weight:700}
+  .toc{background:var(--card);border:2px solid var(--ink);border-radius:18px;
+       padding:16px 22px;box-shadow:4px 5px 0 var(--line);margin:22px 0 36px}
+  .toc h3{margin:0 0 8px;font-size:1rem;color:var(--ink-soft);letter-spacing:0.04em}
+  .toc ol{margin:0;padding-left:1.4em}
+  .toc li{margin:4px 0;font-size:0.96rem}
+  .toc a{color:var(--ink);text-decoration:none;border-bottom:1px dashed var(--line)}
+  .toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .footer{margin-top:64px;padding-top:18px;border-top:2px solid var(--ink);
+          color:var(--ink-soft);font-size:0.88rem}
+  .footer a{color:var(--accent)}
+  .info{padding:12px 16px;border:2px dashed var(--ink);border-radius:14px;
+        background:#fff;margin:18px 0;font-size:0.92rem;color:var(--ink-soft)}
+  @media print{
+    body{background:#fff}
+    .card,.fig,.hero,.infographic,.toc{box-shadow:none;page-break-inside:avoid}
+    h2{page-break-before:auto;page-break-after:avoid}
+    .nav-back,.plat-row{display:none}
+    pre{background:#f4f4f4;color:#241f1a;border:1px solid var(--line)}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <div class="system-badge"><span class="dot"></span> 対象: <b>REST API URL 設計</b></div>
+  <span class="tag tag-accent">設計判断</span>
+  <span class="stamp">2026-06-28</span>
+</div>
+
+<h1>パスかクエリか。1問の面接問題から学ぶ、API設計とRESTの完全ガイド</h1>
+
+<figure class="hero">
+  <img src="hero.png" alt="REST API URL 設計、パスかクエリかの分岐をモチーフにしたヒーロー画像" width="1280" height="670">
+</figure>
+
+<p class="lead">
+X で流れてきた1問のバックエンド面接問題「パスで分けるか、クエリで分けるか」から出発し、API の基礎・HTTP・REST・URL 設計・実務パターン・REST の限界までを 1 本で繋いだ詳細版です。結論は「<b>パスは別リソース、クエリは同一リソースの絞り込み</b>」。即答した時点で不正解になる理由を、前提別に場合分けして語っていきます。Zenn 側はやわらかい体験談トーン、こちら HTML 版は構造化された設計資料として読めるよう整理しました。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-zenn" href="https://zenn.dev/ishizakahiroshi/articles/20260628-rest-api-design" target="_blank" rel="noopener">Zenn の本文版で読む →</a>
+</div>
+
+<figure class="infographic">
+  <img src="infographic.png" alt="記事全体の判断基準を 1 枚にまとめたインフォグラフィック">
+</figure>
+
+<div class="toc">
+  <h3>目次</h3>
+  <ol>
+    <li><a href="#conclusion">先に結論だけ</a></li>
+    <li><a href="#part1">第1部：そもそも API とは何か</a></li>
+    <li><a href="#part2">第2部：Web API の土台。HTTP の基礎</a></li>
+    <li><a href="#part3">第3部：REST とは何か</a></li>
+    <li><a href="#part4">第4部：URL 設計の原則と面接問題の回収</a></li>
+    <li><a href="#part5">第5部：実務で必要になる設計パターン</a></li>
+    <li><a href="#part6">第6部：やりがちなアンチパターン集</a></li>
+    <li><a href="#part7">第7部：REST の限界とその先</a></li>
+    <li><a href="#summary">まとめ</a></li>
+  </ol>
+</div>
+
+<h2 id="conclusion">先に結論だけ</h2>
+
+<p>出発点はこの面接問題でした（出典: <a href="https://x.com/jahirsheikh8/status/2070849696730607695" target="_blank" rel="noopener">@jahirsheikh8 のポスト</a>）。</p>
+
+<blockquote>
+次の API 設計のうち、<b>はるかにスケーラブルなもの</b>が一つあります。どちらを選びますか？
+</blockquote>
+
+<div class="card">
+  <h3>A 案（パスで分ける）</h3>
+<pre><code>GET /api/v1/users/profile
+GET /api/v1/users/orders
+GET /api/v1/users/settings</code></pre>
+  <h3>B 案（クエリで分ける）</h3>
+<pre><code>GET /api/v1/users?type=profile
+GET /api/v1/users?type=orders
+GET /api/v1/users?type=settings</code></pre>
+</div>
+
+<h3>答え。A でも B でも、即答した時点で不正解</h3>
+
+<p><code>profile</code> / <code>orders</code> / <code>settings</code> が「別物（別リソース）」なのか「同じものの出し分け」なのか。<b>前提が示されていない</b>。前提次第で正解はひっくり返ります。</p>
+
+<table>
+  <thead><tr><th>前提</th><th>正解</th><th>理由</th></tr></thead>
+  <tbody>
+    <tr><td>これらが<b>別リソース</b>（型・権限・ライフサイクルが違う）</td><td class="center"><span class="tag tag-accent">A（パス）</span></td><td>別物はパスで分ける。クエリで束ねると型崩壊・ポリシー分離不能</td></tr>
+    <tr><td>これらが<b>同一スキーマの出し分け</b>（type は単なる条件）</td><td class="center"><span class="tag tag-ok">B（クエリ）</span></td><td>同じものの絞り込みはクエリ。拡張・合成に強い</td></tr>
+  </tbody>
+</table>
+
+<p>判断軸はたった一行に集約されます。</p>
+
+<blockquote><b>パスは「別のリソース」、クエリは「同一リソースの絞り込み」。</b></blockquote>
+
+<p>だから満点回答はこうなります。</p>
+
+<blockquote>「異なるリソースならパスで分ける A、同一スキーマの出し分けならクエリの B。判断軸は『別リソースか、同一リソースの絞り込みか』です」</blockquote>
+
+<p>この設問が測っているのは「A/B の知識」ではなく「<b>前提を疑い、条件で場合分けして語れるか</b>」だったわけです。</p>
+
+<figure class="fig">
+  <img src="fig1.png" alt="パスかクエリか 判定フローチャート">
+  <figcaption>図1: URL を設計するときに「パスで分けるか・クエリで分けるか」の判断を、2 つの問いで決められるよう整理したフローチャート</figcaption>
+</figure>
+
+<div class="callout">
+  <p class="callout-title">SUMMARY</p>
+  急いでいる人はここで読み終えて大丈夫。「<b>パス＝別リソース／クエリ＝絞り込み</b>」。この一行さえ持ち帰れば、実務の URL 設計はほぼ迷わなくなります。以降は「なぜそう言えるのか」を、API の基礎から REST まで地続きで掘り下げます。気になった節だけ拾い読みで OK。
+</div>
+
+<h2 id="part1">第1部：そもそも API とは何か</h2>
+
+<h3>API ＝ システム同士の「契約」</h3>
+
+<p>API（Application Programming Interface）は直訳すると「アプリケーション同士をつなぐ接点」ですが、実務的には<b>「呼び出す側と呼び出される側のあいだの契約（contract）」</b>と捉えるのが一番しっくりきます。</p>
+
+<p>レストランの比喩で考えると腑に落ちます。</p>
+
+<ul>
+  <li>あなた（クライアント）はメニュー（API 仕様）を見て注文する</li>
+  <li>キッチン（サーバー）が中で何をしているかは知らなくていい</li>
+  <li>「この注文をすれば、この料理が出てくる」という約束だけが共有されている</li>
+</ul>
+
+<p>「中身を知らなくても、決められた入力に対して決められた出力が返る」という性質を<b>抽象化（abstraction）</b>と呼びます。API の本質はこの抽象化にある。そしてこの抽象化が、ソフトウェア開発に 2 つの巨大な恩恵をもたらします。</p>
+
+<ul>
+  <li><b>呼び出す側</b>は、相手の実装の詳細から切り離される（中身が変わっても、約束さえ守られれば動き続ける）</li>
+  <li><b>提供する側</b>は、約束を守る限り、内部を自由に作り替えられる（DB を MySQL から PostgreSQL に変えても、API の形が同じなら利用者に影響しない）</li>
+</ul>
+
+<p>つまり API とは、<b>「変わってもいい部分」と「変えてはいけない部分」のあいだに引く境界線</b>です。この境界線をどこに引くか、どんな形にするか。それが「API 設計」という営みのすべてだと言ってもいい。</p>
+
+<h3>API にはいくつもの種類がある</h3>
+
+<table>
+  <thead><tr><th>種類</th><th>例</th><th>通信相手</th><th>失敗するか</th></tr></thead>
+  <tbody>
+    <tr><td>ライブラリ API</td><td><code>Array.prototype.map()</code></td><td>同一プロセス内（メモリ上）</td><td>ほぼしない</td></tr>
+    <tr><td>OS API（システムコール）</td><td><code>open()</code>, <code>read()</code></td><td>カーネル</td><td>ときどき</td></tr>
+    <tr><td>Web API</td><td><code>GET /users</code></td><td>ネットワーク越しのサーバー</td><td><b>頻繁に</b></td></tr>
+  </tbody>
+</table>
+
+<p>この記事の主題は <b>Web API</b>、つまりネットワーク越しに HTTP で叩く API です。<b>Web API は、ネットワークを挟むことで「失敗」が日常になる</b>。この一点、<b>遅延がある・失敗する・相手が見えない</b>という事実こそが、Web API 設計のあらゆる難しさの源泉になります。あとで出てくる冪等性・ステータスコード・リトライといった概念は、すべてこの「ネットワークは信頼できない」という前提から生まれています。</p>
+
+<h2 id="part2">第2部：Web API の土台。HTTP の基礎</h2>
+
+<p>REST を理解するには、その土台である HTTP を避けて通れません。REST は HTTP の上に成り立つスタイルだからです。ここを丁寧に押さえると、REST の設計判断がすべて「HTTP の素直な使い方」として腑に落ちます。</p>
+
+<h3>リクエストとレスポンスの構造</h3>
+
+<p>HTTP 通信は、クライアントが<b>リクエスト</b>を送り、サーバーが<b>レスポンス</b>を返す、というシンプルな往復で成り立ちます。</p>
+
+<pre><code>GET /api/v1/users/42 HTTP/1.1
+Host: example.com
+Authorization: Bearer eyJhbGc...
+Accept: application/json</code></pre>
+
+<pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+Cache-Control: max-age=60
+
+{ "id": 42, "name": "Ishizaka" }</code></pre>
+
+<p><b>リクエストとレスポンスが、ほぼ同じ「メソッド/ステータス + ヘッダー + ボディ」という構造をしている</b>ことに注目してください。HTTP はこの単純な型の繰り返しでできています。</p>
+
+<figure class="fig">
+  <img src="fig2.png" alt="HTTP リクエスト／レスポンス構造の解剖図">
+  <figcaption>図2: HTTP の通信は「行 1 = 動詞 / 結果」「ヘッダー = 付帯情報」「ボディ = データ本体」の 3 段でできていて、リクエストとレスポンスはほぼ対称</figcaption>
+</figure>
+
+<h3>HTTP メソッド。「動詞」を表現する</h3>
+
+<table>
+  <thead><tr><th>メソッド</th><th>意味</th><th>安全</th><th>冪等</th><th>ボディ</th></tr></thead>
+  <tbody>
+    <tr><td><code>GET</code></td><td>取得する</td><td class="center">◯</td><td class="center">◯</td><td>なし</td></tr>
+    <tr><td><code>HEAD</code></td><td>ヘッダーだけ取得</td><td class="center">◯</td><td class="center">◯</td><td>なし</td></tr>
+    <tr><td><code>POST</code></td><td>新規作成／処理を実行</td><td class="center">×</td><td class="center">×</td><td>あり</td></tr>
+    <tr><td><code>PUT</code></td><td>全体を置き換える</td><td class="center">×</td><td class="center">◯</td><td>あり</td></tr>
+    <tr><td><code>PATCH</code></td><td>一部を更新する</td><td class="center">×</td><td class="center">△</td><td>あり</td></tr>
+    <tr><td><code>DELETE</code></td><td>削除する</td><td class="center">×</td><td class="center">◯</td><td>任意</td></tr>
+    <tr><td><code>OPTIONS</code></td><td>利用可能なメソッドを問い合わせ</td><td class="center">◯</td><td class="center">◯</td><td>なし</td></tr>
+  </tbody>
+</table>
+
+<h4>安全性（Safe）</h4>
+
+<p><b>そのメソッドがサーバーの状態を変更しないこと</b>を「安全」と言います。<code>GET</code> は何度叩いてもデータが変わりません。だからクローラーは安心して投げられるし、ブラウザはプリフェッチできるし、CDN は気軽にキャッシュできる。</p>
+
+<div class="callout bad">
+  <p class="callout-title">絶対にやってはいけない例</p>
+<pre><code>GET /users/42/delete   ← GETなのに削除している</code></pre>
+  クローラーがリンクをたどっただけでユーザーが消える、という悪夢が起きます。「<code>GET</code> は安全」は単なるお行儀ではなく、エコシステム全体が依存している約束です。
+</div>
+
+<h4>冪等性（Idempotent）</h4>
+
+<p><b>同じリクエストを何回送っても、サーバーの最終状態が変わらないこと</b>を「冪等」と言います。</p>
+
+<ul>
+  <li><code>DELETE /users/42</code> を 1 回送る → 42 が消える</li>
+  <li><code>DELETE /users/42</code> をもう 2 回送る → すでに消えているので、最終状態は「42 が消えた状態」のまま</li>
+</ul>
+
+<p>何回送っても結果は同じ。だから<b>ネットワークが不安定でリトライしても安全</b>です。一方 <code>POST /users</code> は冪等ではない。レスポンスが返ってこないからリトライ → ユーザーが二重作成、という事故が起きます。</p>
+
+<div class="callout">
+  <p class="callout-title">TIP</p>
+  <code>POST</code> を冪等にしたいときの定石が <b>Idempotency-Key ヘッダー</b>です。クライアントがユニークなキーを発行して送り、サーバーは「このキーは処理済み」と覚えておく。Stripe の決済 API などがこの方式。第5部で詳しく扱います。
+</div>
+
+<figure class="fig">
+  <img src="fig3.png" alt="HTTP メソッド × 安全性／冪等性マトリクス">
+  <figcaption>図3: 主要メソッドを「安全か」「冪等か」の 2 軸でマッピング。リトライ可否・キャッシュ可否はこの位置から自動的に導ける</figcaption>
+</figure>
+
+<h3>ステータスコード。「結果」を表現する</h3>
+
+<table>
+  <thead><tr><th>レンジ</th><th>意味</th><th>代表例</th></tr></thead>
+  <tbody>
+    <tr><td><code>1xx</code></td><td>情報（処理中）</td><td><code>100 Continue</code></td></tr>
+    <tr><td><code>2xx</code></td><td>成功</td><td><code>200</code> <code>201</code> <code>204</code></td></tr>
+    <tr><td><code>3xx</code></td><td>リダイレクト</td><td><code>301</code> <code>304</code></td></tr>
+    <tr><td><code>4xx</code></td><td><b>クライアント</b>側のエラー</td><td><code>400</code> <code>401</code> <code>403</code> <code>404</code> <code>409</code> <code>422</code> <code>429</code></td></tr>
+    <tr><td><code>5xx</code></td><td><b>サーバー</b>側のエラー</td><td><code>500</code> <code>502</code> <code>503</code></td></tr>
+  </tbody>
+</table>
+
+<div class="callout warn">
+  <p class="callout-title">CAUTION 現場で頻発する 3 つの混同</p>
+  <ul>
+    <li><b>401 と 403</b>: 「認証(401)＝あなたが誰か不明」「認可(403)＝あなたは分かるが権限なし」。別物。</li>
+    <li><b>400 と 422</b>: 「400＝構文が壊れている」「422＝構文は正しいが意味的にダメ（バリデーション）」。</li>
+    <li><b>404 の使い分け</b>: 存在しないから 404 か、権限がなくて見せたくないから（あえて）404 か。セキュリティ上、存在を隠すために 403 ではなく 404 を返す設計もあります。</li>
+  </ul>
+</div>
+
+<figure class="fig">
+  <img src="fig4.png" alt="HTTP ステータスコード 2xx／3xx／4xx／5xx の俯瞰カード">
+  <figcaption>図4: ステータスコードを 5 レンジのカードに並べた早見表。「責任の所在」で見ると意味の取り違えが減る</figcaption>
+</figure>
+
+<h3>ヘッダー。通信のメタ情報</h3>
+
+<table>
+  <thead><tr><th>ヘッダー</th><th>向き</th><th>役割</th></tr></thead>
+  <tbody>
+    <tr><td><code>Content-Type</code></td><td>両方</td><td>ボディの形式</td></tr>
+    <tr><td><code>Accept</code></td><td>リクエスト</td><td>クライアントが望む形式</td></tr>
+    <tr><td><code>Authorization</code></td><td>リクエスト</td><td>認証情報</td></tr>
+    <tr><td><code>Cache-Control</code></td><td>両方</td><td>キャッシュの可否・有効期間</td></tr>
+    <tr><td><code>ETag</code></td><td>レスポンス</td><td>リソースのバージョン識別子</td></tr>
+    <tr><td><code>Location</code></td><td>レスポンス</td><td>作成された／移動先のリソース URL</td></tr>
+    <tr><td><code>Retry-After</code></td><td>レスポンス</td><td>再試行までの推奨待機時間</td></tr>
+  </tbody>
+</table>
+
+<h2 id="part3">第3部：REST とは何か</h2>
+
+<p>多くの人が「REST ＝ JSON を返す HTTP API」くらいの理解で止まっていますが、REST はもっと明確に定義された<b>アーキテクチャスタイル</b>です。Roy Fielding が 2000 年に博士論文で提唱しました。重要なのは、REST が机上の理想として作られたのではなく、<b>「すでに大成功していた Web」を後追いで理論化したもの</b>だということ。</p>
+
+<h3>REST の 6 つの制約</h3>
+
+<div class="card">
+  <h4>1. クライアント・サーバー分離</h4>
+  <p>UI とデータストレージの関心を分離する。それぞれを独立して進化させられる。</p>
+
+  <h4>2. ステートレス（最重要）</h4>
+  <p>サーバーはリクエスト間でクライアントの状態を保持しない。<b>各リクエストは、それ単体で処理に必要な情報をすべて含む</b>。これが水平スケールの前提です。</p>
+
+  <h4>3. キャッシュ可能</h4>
+  <p>レスポンスは「キャッシュしていいか／どれくらい有効か」を明示する。<code>GET</code> が安全だからこそ、ブラウザや CDN が安心して結果を取っておけます。</p>
+
+  <h4>4. 統一インターフェース（REST の核心）</h4>
+  <p>リソースを URI で識別し、HTTP メソッドという共通の動詞で操作する。<b>どの API も同じ「叩き方の文法」になる</b>。</p>
+
+  <h4>5. 階層化システム</h4>
+  <p>中間層（ロードバランサー・CDN・プロキシ・API ゲートウェイ）を自由に挿入・除去できる。</p>
+
+  <h4>6. コードオンデマンド（任意）</h4>
+  <p>サーバーがクライアントに実行可能コードを送れる。6 つの中でこれだけは必須ではない。</p>
+</div>
+
+<figure class="fig">
+  <img src="fig6.png" alt="ステートフル vs ステートレス 水平スケール対比図">
+  <figcaption>図5: ステートフル（左）とステートレス（右）でリクエストがサーバーに振り分けられる様子。「スケーラブル」の正体はここの構造差</figcaption>
+</figure>
+
+<p>ステートレスは<b>サーバーを横に並べるだけでスケールできる（水平スケール）</b>ための前提です。REST が「スケーラブル」と言われる最大の理由がここにあります。冒頭の面接問題の「スケーラブル」というキーワードも、根っこはこの思想に繋がっています。</p>
+
+<figure class="fig">
+  <img src="fig5.png" alt="REST 6 制約の俯瞰マップ">
+  <figcaption>図6: REST を成立させる 6 つの制約をひとつの俯瞰図にまとめたもの。中心は統一インターフェース、エンジンはステートレス</figcaption>
+</figure>
+
+<h3>リソース指向。「動詞でなく名詞」という発想の転換</h3>
+
+<p>RPC 的な発想だと、API は「やりたい操作（動詞）」の一覧になります。</p>
+
+<pre><code>POST /getUser
+POST /createUser
+POST /deleteUser
+POST /updateUserName</code></pre>
+
+<p>REST 的な発想だと、API は「リソース（名詞）」の一覧になり、操作は HTTP メソッドが担います。</p>
+
+<pre><code>GET    /users/42      取得
+POST   /users         作成
+PATCH  /users/42      更新
+DELETE /users/42      削除</code></pre>
+
+<p><b>「何をするか」をエンドポイント名に書くのをやめ、「何に対して」をパスで、「どうするか」をメソッドで表す。</b>動詞は HTTP がすでに用意してくれているので、自分で命名する必要がなく、一貫性が保たれます。</p>
+
+<h3>CRUD に収まらない「アクション」</h3>
+
+<p>「ユーザーを ban する」「カートを精算する」のような、CRUD に素直に収まらない操作。代表的なアプローチは 3 つ。</p>
+
+<pre><code># 1. 状態をリソースとして PATCH で更新する（最も REST らしい）
+PATCH /users/42        { "status": "banned" }
+
+# 2. サブリソースを「作成」する（イベントをリソースと捉える）
+POST /users/42/bans
+
+# 3. 動詞をパスに含める（純粋さは劣るが、明快で現実的）
+POST /users/42/ban</code></pre>
+
+<h3>Richardson 成熟度モデル</h3>
+
+<p>「自分の API はどれくらい REST なのか」を測るものさし。Level 0 から 3 までの 4 段階で、上に行くほど REST の理念に忠実になります。</p>
+
+<ul>
+  <li><b>Level 0</b>: HTTP をトンネルとして使うだけ（1 エンドポイントに全部 POST）</li>
+  <li><b>Level 1</b>: リソースの導入（URL でリソースを区別）</li>
+  <li><b>Level 2</b>: HTTP メソッドの活用（<span class="tag tag-accent">実務の大半</span>）</li>
+  <li><b>Level 3</b>: HATEOAS（レスポンスにリンクを含める）</li>
+</ul>
+
+<figure class="fig">
+  <img src="fig7.png" alt="Richardson 成熟度モデル Level 0〜3 の階段図">
+  <figcaption>図7: API の「REST 度」を 4 段階の階段で示したもの。実務の大半は Level 2、その上にもう一段ある</figcaption>
+</figure>
+
+<h2 id="part4">第4部：URL 設計の原則と面接問題の回収</h2>
+
+<h3>パスとクエリは役割が違う</h3>
+
+<table>
+  <thead><tr><th></th><th>役割</th><th>例</th></tr></thead>
+  <tbody>
+    <tr><td><b>パス</b>（path）</td><td>別のリソースを指し示す</td><td><code>/users/42/orders</code></td></tr>
+    <tr><td><b>クエリ</b>（query）</td><td>同一リソースの絞り込み・並び替え・ページング</td><td><code>/users?status=active&sort=created_at</code></td></tr>
+  </tbody>
+</table>
+
+<p>もう一つの覚え方: <b>「パスは "What"（何を）、クエリは "Which/How"（どれを・どう見せるか）」</b>。</p>
+
+<h3>典型的な URL 設計パターン</h3>
+
+<pre><code># コレクションと個別リソース
+GET    /users           ユーザー一覧
+GET    /users/42        ID=42 のユーザー
+POST   /users           ユーザーを作成
+
+# ネストしたリソース
+GET    /users/42/orders        ユーザー42の注文一覧
+GET    /users/42/orders/7      ユーザー42の注文7
+
+# シングルトン
+GET    /users/42/profile       1人に1つ
+GET    /me                     ログイン中の自分
+
+# 絞り込み・並び替え・ページング（すべてクエリ）
+GET    /users?role=admin&status=active
+GET    /users?sort=-created_at
+GET    /users?page=2&limit=20</code></pre>
+
+<p>ネストは便利ですが<b>深くしすぎない</b>のがコツ。3 階層以上ネストすると URL が硬直化します。深い関係はネストせず、<code>/order-items/3</code> のようにトップレベルで持って ID で繋ぐほうが柔軟。</p>
+
+<h3>面接問題の回収</h3>
+
+<p>問うべきは「<code>profile</code> と <code>orders</code> と <code>settings</code> は、別リソースか、それとも同一リソースの絞り込みか」。答えは前提によって割れます。</p>
+
+<div class="card accent">
+  <h4>ケース1：別リソースの場合 → A（パス）が正しい</h4>
+  <p>それぞれが別のスキーマ・別の権限・別のページネーションを持つ "別物" だとすると、B のように <code>?type=</code> で 1 エンドポイントに束ねたとき以下が芋づる式に発生します。</p>
+  <ul>
+    <li><b>型定義・ドキュメントが破綻する</b>: 戻り値が type 次第。OpenAPI で表現しづらく、クライアント型が <code>Profile | Order | Settings</code> のユニオン</li>
+    <li><b>横断的関心事を分けられない</b>: 認可・レート制限・キャッシュのリソース別ポリシーが書けない</li>
+    <li><b>ハンドラが神メソッド化</b>: サーバー側は <code>switch (type)</code> の巨大な分岐</li>
+    <li><b>サービス分割ができない</b>: マイクロサービス化で <code>orders</code> だけ切り出せない</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h4>ケース2：同一スキーマの汎用ドキュメントの場合 → B（クエリ）が正しい</h4>
+  <p><code>profile</code> / <code>orders</code> / <code>settings</code> が実は<b>同じスキーマを持つ汎用的なドキュメント</b>で、type が出し分けの条件でしかないなら逆転します。</p>
+  <ul>
+    <li><b>拡張に強い</b>: 新しい type の追加が、ルート追加＆デプロイではなく許可値 1 個増やすだけ</li>
+    <li><b>ロジックを集約できる</b>: 取得・認可・バリデーションを 1 箇所に</li>
+    <li><b>他のクエリと自然に合成できる</b>: <code>?type=profile&fields=...&page=...&sort=...</code></li>
+  </ul>
+</div>
+
+<figure class="fig">
+  <img src="fig8.png" alt="A 案 vs B 案 前提別の正解分岐 解剖図">
+  <figcaption>図8: A 案・B 案を「前提」で分岐させて見直す全体像。即答した時点で不正解になる構造が見える</figcaption>
+</figure>
+
+<blockquote>異なるリソースなら<b>別リソースなのでパスで分ける A</b>、同一スキーマの可変ドキュメントで type が単なる出し分けなら<b>クエリで合成できる B</b>。判断基準は一貫して「<b>別リソースか、同一リソースの絞り込みか</b>」。</blockquote>
+
+<p>これが、出題者の意図（おそらく「短絡的に B を選ぶ人をふるい落とす罠」）を完全に見抜いた回答です。<b>API 設計で問われているのは「答えの暗記」ではなく「判断基準を持っているか」</b>。</p>
+
+<div class="callout warn">
+  <p class="callout-title">補足</p>
+  ちなみに A 案も完璧ではない。特定ユーザーを指すなら本来 <code>GET /users/{id}/profile</code> のように <b>ID を含めるべき</b>。<code>/users/profile</code> だと「誰の profile か」が曖昧（暗黙に「ログイン中の自分」を指すなら <code>/me/profile</code> のほうが明示的で安全）。
+</div>
+
+<h3>B（クエリ）を採用するときの実務的ガード</h3>
+
+<ul>
+  <li><b>許可値を enum でホワイトリスト化</b>する（<code>?type=__proto__</code> のような攻撃やタイポを弾く）</li>
+  <li>type ごとに戻り値の型が変わるなら、それは結局多態。スキーマを揃えるか、<b>discriminated union</b>（<code>{ "kind": "profile", ... }</code>）にする</li>
+  <li>必須の type が欠けていたら、黙って全件返したりせず <b><code>400 Bad Request</code></b> を返す</li>
+</ul>
+
+<h2 id="part5">第5部：実務で必要になる設計パターン</h2>
+
+<h3>バージョニング</h3>
+
+<pre><code># 1. パスに含める（最も一般的・推奨）
+GET /api/v1/users
+
+# 2. ヘッダーで指定する
+GET /api/users
+Accept: application/vnd.myapp.v1+json
+
+# 3. クエリで指定する（手軽だが推奨度は低い）
+GET /api/users?version=1</code></pre>
+
+<p>実務では<b>パス方式が圧倒的に多い</b>。URL を見ただけでバージョンがわかり、ルーティングもキャッシュも素直になります。<b>フィールドの削除・リネーム・意味変更・必須化</b>といった破壊的変更のときだけ <code>v2</code> を切る。</p>
+
+<h3>ページネーション</h3>
+
+<table>
+  <thead><tr><th>方式</th><th>例</th><th>深いページ</th><th>追加でズレ</th><th>任意ジャンプ</th></tr></thead>
+  <tbody>
+    <tr><td>オフセット</td><td><code>?limit=20&offset=40</code></td><td class="center">遅い</td><td class="center">ズレる</td><td class="center">できる</td></tr>
+    <tr><td>カーソル</td><td><code>?limit=20&cursor=eyJpZ...</code></td><td class="center">速い</td><td class="center">ズレにくい</td><td class="center">不可</td></tr>
+  </tbody>
+</table>
+
+<p><b>SNS のタイムラインや無限スクロール、大規模データではカーソル方式</b>が選ばれます。管理画面の「全 N ページ・任意ジャンプ」が要るならオフセット、と使い分ける。</p>
+
+<figure class="fig">
+  <img src="fig9.png" alt="オフセット方式 vs カーソル方式 比較図">
+  <figcaption>図9: ページネーション 2 方式を「深いページの速度」「ズレ」「任意ジャンプ」の 3 観点で比較。トレードオフが一目で分かる</figcaption>
+</figure>
+
+<h3>フィルタリング・ソート・部分取得</h3>
+
+<pre><code>GET /users?status=active&role=admin   # 複数条件（AND）
+GET /users?sort=-created_at,name      # 降順は - を前置
+GET /users?fields=id,name             # 必要なフィールドだけ
+GET /users?created_after=2026-01-01   # 範囲指定
+GET /users?q=ishizaka                 # 全文検索</code></pre>
+
+<p>厳密な標準は無いので、<b>自分の API 内で一貫した規約を決める</b>のが大事。</p>
+
+<h3>エラーレスポンスの設計</h3>
+
+<pre><code>{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Validation failed for 1 field",
+    "details": [
+      { "field": "email", "issue": "invalid_format" }
+    ]
+  }
+}</code></pre>
+
+<ul>
+  <li><b>機械可読な code と人間可読な message を分ける</b>。<code>message</code> の文字列でクライアントが分岐する設計は<b>厳禁</b></li>
+  <li><b>details でフィールド単位の理由を返す</b>。フォームのどの項目がなぜダメだったかをクライアントが画面に反映できる</li>
+</ul>
+
+<div class="callout">
+  <p class="callout-title">STANDARD</p>
+  エラーフォーマットには <b>RFC 9457（Problem Details for HTTP APIs）</b> という標準もあります。迷ったらこれに寄せると車輪の再発明を避けられる。
+</div>
+
+<h3>認証と認可。別物として設計する</h3>
+
+<ul>
+  <li><b>認証（Authentication）</b> = 「あなたは誰か」を確認する → 失敗は <code>401</code></li>
+  <li><b>認可（Authorization）</b> = 「権限があるか」を確認する → 失敗は <code>403</code></li>
+</ul>
+
+<table>
+  <thead><tr><th>方式</th><th>仕組み</th><th>向くケース</th></tr></thead>
+  <tbody>
+    <tr><td><b>API キー</b></td><td>固定の文字列を送る</td><td>サーバー間連携、社内ツール</td></tr>
+    <tr><td><b>Bearer トークン（JWT 等）</b></td><td>署名付きトークン</td><td>ユーザー認証全般</td></tr>
+    <tr><td><b>OAuth 2.0</b></td><td>第三者にアクセス権を委譲</td><td>「Google でログイン」等の連携</td></tr>
+  </tbody>
+</table>
+
+<p>JWT はステートレス制約と相性が良い。サーバーが状態を持たなくても、トークン自体に「誰か」が入っており署名で本物だと検証できる。これがステートレスの具体的な恩恵です。</p>
+
+<div class="callout warn">
+  <p class="callout-title">JWT の注意点</p>
+  ペイロードは暗号化ではなく<b>ただの Base64</b>なので中身は丸見え。機密情報は入れない。また、サーバーが状態を持たない裏返しとして<b>発行済みトークンの即時無効化（即時 BAN）が難しい</b>。有効期限を短くしてリフレッシュトークンと組み合わせる設計が定番。
+</div>
+
+<h3>キャッシュ。ETag と条件付きリクエスト</h3>
+
+<ol>
+  <li>クライアントが <code>GET /users/42</code> する</li>
+  <li>サーバーがデータと一緒に <code>ETag: "abc123"</code> を返す</li>
+  <li>次回、クライアントは <code>If-None-Match: "abc123"</code> を付けて問い合わせる</li>
+  <li>中身が変わっていなければ、サーバーは<b>本体を送らず <code>304 Not Modified</code> だけ返す</b></li>
+</ol>
+
+<h3>レート制限。429 と Retry-After</h3>
+
+<pre><code>HTTP/1.1 429 Too Many Requests
+Retry-After: 30
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1719500000</code></pre>
+
+<p>クライアント側は <code>429</code> を受けたら、<code>Retry-After</code> 秒待って<b>指数バックオフ</b>でリトライ、というのが行儀の良い実装です。</p>
+
+<h3>冪等性キー。POST を安全にリトライする</h3>
+
+<pre><code>POST /api/v1/payments HTTP/1.1
+Idempotency-Key: 9f8b7c6d-1234-...
+Content-Type: application/json
+
+{ "amount": 5000, "currency": "JPY" }</code></pre>
+
+<p>クライアントがユニークなキーを送り、サーバーは処理前に「このキーは処理済みか」を確認。同じキーで再送が来たら新規実行せず保存済みの結果を返す。決済のような失敗が許されない POST では事実上必須のパターンです。</p>
+
+<h3>CORS。ブラウザからの呼び出しで必ず出会う壁</h3>
+
+<pre><code>HTTP/1.1 200 OK
+Access-Control-Allow-Origin: https://app.example.com
+Access-Control-Allow-Methods: GET, POST, PATCH, DELETE</code></pre>
+
+<p><b>CORS はサーバー側の設定で解決するもの</b>で、フロント側で小細工するものではない、と覚えておくと迷いません。</p>
+
+<h2 id="part6">第6部：やりがちなアンチパターン集</h2>
+
+<div class="card warn">
+  <ul>
+    <li><b>GET で状態を変える</b>（<code>GET /users/42/delete</code>）: 安全性の破壊。クローラーやプリフェッチで事故る</li>
+    <li><b>動詞をパスに濫用する</b>（<code>/getUserList</code>, <code>/doUpdate</code>）: リソース指向の放棄。Level 0〜1 に逆戻り</li>
+    <li><b>すべて 200 で返し、ボディの <code>success: false</code> で失敗を表す</b>: HTTP の意味を捨てている</li>
+    <li><b>別リソースをクエリで多態化する</b>: 型崩壊・ポリシー分離不能</li>
+    <li><b>ページネーションがない一覧 API</b>: データ増加で必ず破綻する。最初から入れる</li>
+    <li><b>エラーメッセージの文言でクライアントが分岐</b>: 文言変更で壊れる。機械可読な code を返す</li>
+    <li><b>破壊的変更をバージョンなしで入れる</b>: 既存クライアントが沈黙して壊れる</li>
+    <li><b>深すぎるネスト</b>（<code>/a/1/b/2/c/3/d/4</code>）: 硬直化。関連は ID で繋ぐ</li>
+    <li><b>複数形と単数形が混在</b>（<code>/user/42</code> と <code>/orders</code>）: 一貫性がない。複数形で統一</li>
+    <li><b>JWT のペイロードに秘密情報を入れる</b>: Base64 で丸見え</li>
+  </ul>
+</div>
+
+<h2 id="part7">第7部：REST の限界とその先</h2>
+
+<h3>REST が苦しくなる場面</h3>
+
+<p><b>オーバーフェッチ / アンダーフェッチ</b>: <code>GET /users/42</code> は固定の形を返す。「名前だけ欲しい」のに全部返ってくる（オーバー）、「ユーザーと注文と商品」を欲しいのに何度も叩く羽目になる（アンダー = N+1 問題）。</p>
+
+<p><b>エンドポイントの爆発</b>: 画面ごとに最適なデータ形が違うと、<code>/users/42/dashboard-summary</code> のような画面専用エンドポイントが増殖しがちになります。</p>
+
+<h3>代替アーキテクチャ</h3>
+
+<table>
+  <thead><tr><th>方式</th><th>強み</th><th>弱み</th><th>向くケース</th></tr></thead>
+  <tbody>
+    <tr><td><b>GraphQL</b></td><td>クライアントが必要な形を指定。オーバー/アンダーフェッチ解消</td><td>HTTP キャッシュが効きにくい、複雑性</td><td>多様なクライアント、複雑な画面</td></tr>
+    <tr><td><b>gRPC</b></td><td>バイナリで高速、型が厳格、双方向ストリーム</td><td>ブラウザから直接叩きにくい、可読性低</td><td>マイクロサービス間、低レイテンシ要求</td></tr>
+    <tr><td><b>tRPC</b></td><td>TS で型を端から端まで共有、コード生成不要</td><td>TS エコシステムに閉じる</td><td>TS で完結するフルスタック</td></tr>
+  </tbody>
+</table>
+
+<figure class="fig">
+  <img src="fig10.png" alt="REST / GraphQL / gRPC / tRPC 特性比較レーダー">
+  <figcaption>図10: 4 つの方式を「キャッシュのしやすさ」「型の厳格さ」「学習コスト」「向くクライアント多様性」などの軸で並べたもの。軸ごとに得意が違う</figcaption>
+</figure>
+
+<p>誤解してはいけないのは、<b>これらは「REST の上位互換」ではない</b>こと。GraphQL は柔軟だが URL ベースの HTTP キャッシュが効きにくい。gRPC は速いがブラウザから直接は叩けず curl で気軽に試せない。REST のシンプルさ・HTTP インフラとの親和性・ツールの豊富さは、依然として強力な武器です。<b>「適材適所」であって、新しいものが常に正解ではない</b>。この判断の構図は、結局のところ冒頭の面接問題（前提次第で正解が変わる）とまったく同じです。</p>
+
+<h2 id="summary">まとめ</h2>
+
+<div class="card accent">
+  <ul>
+    <li>API の本質は<b>「契約」と「抽象化」</b>。中身を知らずに、決めた入出力だけでつながる。<b>境界線をどこに引くか</b>が設計のすべて</li>
+    <li>HTTP の<b>安全性・冪等性</b>が、キャッシュ・リトライ・スケーラビリティの土台</li>
+    <li>REST は技術ではなく<b>制約の集合</b>。とくに<b>ステートレス</b>が水平スケールを可能にする</li>
+    <li>リソース指向 ＝<b>「動詞でなく名詞」</b>。何をするかはメソッドが担う</li>
+    <li>自分の REST 度は<b>Richardson 成熟度モデル</b>で測れる。多くの実務 API は Level 2</li>
+    <li>URL 設計の原則は<b>「パスは別リソース、クエリは同一リソースの絞り込み」</b>の一行に集約</li>
+    <li>そして最重要：<b>API 設計は答えの暗記ではなく、判断基準を持っているか</b>。「A か B か」ではなく「どういう前提ならどちらが正解か」を語れることがゴール</li>
+  </ul>
+</div>
+
+<p>冒頭の面接問題に即答で「B です」と答えていた自分は、半分正解で半分不正解だった。<b>前提を場合分けして語れて初めて満点になる</b>。この「前提を疑い、条件で場合分けして語る」感覚こそ、API 設計だけでなく、技術選定のあらゆる場面で効いてきます。</p>
+
+<div class="footer">
+  関連: <a href="https://zenn.dev/ishizakahiroshi/articles/20260628-rest-api-design" target="_blank" rel="noopener">Zenn 本文版（やわらかい体験談トーン・公開予定）</a>
+       / <a href="https://github.com/ishizakahiroshi" target="_blank" rel="noopener">GitHub</a>
+       / <a href="/">トップへ戻る</a><br>
+  著者: ishizakahiroshi（田舎在宅エンジニア / バックエンド・インフラ・AI 連携）<br>
+  公開: 2026-06-28
+</div>
+
+</div>
+</body>
+</html>
