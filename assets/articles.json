@@ -5,7 +5,7 @@
   },
   "articles": [
     {
-      "date": "2026-06-30",
+      "date": "2026-07-01",
       "title": {
         "ja": "AI CLI のセッションログ、誰も掃除しないので作ってます",
         "en": "Building ai-log-clean: nobody else trims AI coding CLI session logs"
@@ -15,9 +15,10 @@
         "en": "Claude Code piled 1.41 GB of session logs over half a year. Codex CLI, Cursor Agent, opencode, Grok Build, all of them keep writing transcripts forever. Antigravity has no retention key in settings.json at all. ai-log-clean is a small cross-platform CLI that trims them all on a 60-day rolling retention. Release is imminent."
       },
       "tag": { "ja": "ツール紹介", "en": "Tool" },
-      "hero": "articles/2026/2026-06-30_ai-log-clean-promo/hero.png",
+      "hero": "articles/2026/2026-07-01_ai-log-clean-promo/hero.png",
       "links": {
-        "html": "articles/2026/2026-06-30_ai-log-clean-promo/"
+        "html": "articles/2026/2026-07-01_ai-log-clean-promo/",
+        "zenn": "https://zenn.dev/ishizakahiroshi/articles/20260701-ai-cli-session-log-cleanup"
       }
     },
     {
