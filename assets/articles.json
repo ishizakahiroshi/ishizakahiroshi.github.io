@@ -5,6 +5,39 @@
   },
   "articles": [
     {
+      "date": "2026-06-30",
+      "title": {
+        "ja": "AI CLI のセッションログ、誰も掃除しないので作ってます",
+        "en": "Building ai-log-clean: nobody else trims AI coding CLI session logs"
+      },
+      "short": {
+        "ja": "Claude Code を半年使ったら ~/.claude/projects/ が 1.41 GB。Codex CLI も Cursor Agent も opencode も Grok Build も、入れた瞬間から会話履歴を書き残しはじめて消す仕掛けを持たない。Antigravity に至っては settings.json に retention のキー枠すら無い。7 種類の AI コーディング CLI のログを 60 日で日次自動掃除する小さな CLI、もうすぐリリースです。",
+        "en": "Claude Code piled 1.41 GB of session logs over half a year. Codex CLI, Cursor Agent, opencode, Grok Build, all of them keep writing transcripts forever. Antigravity has no retention key in settings.json at all. ai-log-clean is a small cross-platform CLI that trims them all on a 60-day rolling retention. Release is imminent."
+      },
+      "tag": { "ja": "ツール紹介", "en": "Tool" },
+      "hero": "articles/2026/2026-06-30_ai-log-clean-promo/hero.png",
+      "links": {
+        "html": "articles/2026/2026-06-30_ai-log-clean-promo/"
+      }
+    },
+    {
+      "date": "2026-06-30",
+      "title": {
+        "ja": "メルカリで一方的にキャンセルされた件、消費生活センターに相談した結果（第三弾・完結編）",
+        "en": "Final installment: what the consumer-affairs center actually told me about the unilateral Mercari cancel"
+      },
+      "short": {
+        "ja": "メルカリの一方的キャンセル体験シリーズの完結編。群馬県消費生活センターからの回答は『規約 13 条 1 項 + 民法 412 条の 2 第 1 項』の整理で、合理的理由なしとはいえずあっせんも行わない、というものでした。違法ではないことと、利用者として体験的に納得できるかは別の話。その線を残してシリーズを閉じます。",
+        "en": "Final installment of the unilateral Mercari cancel trilogy. The Gunma consumer-affairs center built the answer on Article 13(1) of Mercari's terms and Article 412-2(1) of the Civil Code: not unreasonable, no mediation. Legal and acceptable are not the same line, and that distinction is what I keep."
+      },
+      "tag": { "ja": "振り返り", "en": "Retro" },
+      "hero": "articles/2026/2026-06-30_mercari-unilateral-cancel-final/hero.png",
+      "links": {
+        "html": "articles/2026/2026-06-30_mercari-unilateral-cancel-final/",
+        "note": "https://note.com/ishizakahiroshi/n/n779cd49b2417"
+      }
+    },
+    {
       "date": "2026-06-28",
       "title": {
         "ja": "株主の手紙はなぜ、まだ封書のままなのか",
