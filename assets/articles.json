@@ -7,6 +7,22 @@
     {
       "date": "2026-07-01",
       "title": {
+        "ja": "「機能は増えたのに、業務は楽にならない」を戦略と戦術の 5 階層で読み解く（MO作戦・珊瑚海海戦からの学び）",
+        "en": "Winning tactics, losing strategy: reading system rollouts through the MO Operation and the Battle of the Coral Sea"
+      },
+      "short": {
+        "ja": "取引先の方から教わった「戦略と戦術の違い」が、太平洋戦争のMO作戦・珊瑚海海戦の話で腹落ちしました。日本側は戦術的勝利と言われつつ、作戦目標のポートモレスビー海上攻略は取り下げ、その先の米豪連絡・補給路への圧迫にも届かなかった。これがシステム設計・システム導入で「機能は増えたのに業務が楽にならない」「AI を入れたのに成果が見えない」として現れる仕組みを、目的・目標・戦略・戦術・手段の 5 階層フレームと 4 例で整理し、要件定義でそのまま使えるチェックリストにしました。",
+        "en": "A friend explained strategy vs tactics via the MO Operation and the Battle of the Coral Sea: Japan scored a tactical win but never took Port Moresby by sea and never squeezed the Australia-US supply line. Same pattern shows up in system rollouts as 'features grew but ops did not get easier' or 'we shipped AI but see no outcome'. Structured as a five-layer frame (purpose / target / strategy / tactics / means) with a copy-paste requirements-doc checklist."
+      },
+      "tag": { "ja": "設計判断", "en": "Design note" },
+      "hero": "articles/2026/2026-07-01_strategy-vs-tactics/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-01_strategy-vs-tactics/"
+      }
+    },
+    {
+      "date": "2026-07-01",
+      "title": {
         "ja": "子供用の電話回線を計画したら、楽天モバイル＋povoの2回線構成になった",
         "en": "Planning my kids' future mobile lines ended up as a Rakuten + povo two-line setup"
       },

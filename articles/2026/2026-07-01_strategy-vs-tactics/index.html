@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>「機能は増えたのに、業務は楽にならない」を戦略と戦術の 5 階層で読み解く（MO作戦・珊瑚海海戦からの学び） — 2026-07-01 — ishizakahiroshi</title>
+<meta name="description" content="太平洋戦争のMO作戦・珊瑚海海戦を比喩に、システム設計・システム導入で起きる「戦術は成功、戦略は失敗」の構造を、目的・目標・戦略・戦術・手段の 5 階層で読み解きます。要件定義でそのまま使える実務チェックリスト付き。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-07-01_strategy-vs-tactics/">
+
+<meta property="og:title" content="「機能は増えたのに、業務は楽にならない」を戦略と戦術の 5 階層で読み解く（MO作戦・珊瑚海海戦からの学び）">
+<meta property="og:description" content="太平洋戦争のMO作戦・珊瑚海海戦を比喩に、システム設計・システム導入で起きる「戦術は成功、戦略は失敗」を、目的・目標・戦略・戦術・手段の 5 階層で読み解く。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-01_strategy-vs-tactics/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-01_strategy-vs-tactics/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-01_strategy-vs-tactics/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "「機能は増えたのに、業務は楽にならない」を戦略と戦術の 5 階層で読み解く（MO作戦・珊瑚海海戦からの学び）",
+  "description": "太平洋戦争のMO作戦・珊瑚海海戦を比喩に、システム設計・システム導入で起きる「戦術は成功、戦略は失敗」を、目的・目標・戦略・戦術・手段の 5 階層で読み解く。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-07-01_strategy-vs-tactics/hero.png",
+  "datePublished": "2026-07-01",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-07-01_strategy-vs-tactics/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;
+       text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;
+     padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;
+            font-family:var(--display);font-weight:700;font-size:0.86rem;
+            padding:6px 14px;border-radius:999px;border:2px solid var(--ink);
+            background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;
+         border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;
+       font-family:var(--display);font-weight:700;font-size:0.78rem;
+       border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;
+        box-shadow:5px 6px 0 var(--line);background:#16213a}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;
+             padding:7px 16px;border-radius:999px;font-family:var(--display);
+             font-weight:700;font-size:0.86rem;text-decoration:none;
+             border:2px solid var(--ink);color:#fff;
+             box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
+  .plat-note{background:#2cb696}
+  .info{margin:14px 0 22px;padding:14px 18px;border:2px dashed var(--ink);border-radius:14px;
+        background:var(--card);font-size:0.95rem;color:var(--ink-soft)}
+  .infographic{margin:26px 0 26px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;
+               box-shadow:5px 6px 0 var(--line);background:#fff}
+  .infographic img{display:block;width:100%;height:auto}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);
+          color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">設計判断</span>
+  <span class="stamp">2026-07-01</span>
+</div>
+
+<h1>「機能は増えたのに、業務は楽にならない」を戦略と戦術の 5 階層で読み解く（MO作戦・珊瑚海海戦からの学び）</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="戦術で勝って、戦略で負ける - 作戦地図のヒーロー画像" width="1280" height="670">
+</div>
+
+<p class="lead">
+取引先の方から教わった「戦略と戦術の違い」が、太平洋戦争のMO作戦・珊瑚海海戦の話で腹落ちしました。日本側は「戦術的勝利」と言われつつ、作戦目標のポートモレスビー海上攻略は取り下げ、その先の米豪連絡・補給路への圧迫にも届いていません。これがシステム設計・システム導入で「機能は増えたのに業務は楽にならない」「AI を入れたのに成果が見えない」として現れる仕組みを、目的・目標・戦略・戦術・手段の 5 階層フレームと 4 例で整理し、要件定義でそのまま使えるチェックリストにしました。
+</p>
+
+<div class="info">
+Qiita 投稿予定です。投稿後に各プラットフォームへの導線を追記します。
+</div>
+
+<!-- 各プラットフォーム導線（投稿後ヘルパーで有効化）
+<div class="plat-row">
+  <a class="plat-pill plat-qiita" href="__QIITA_URL_TBD__" target="_blank" rel="noopener">Qiita で読む →</a>
+</div>
+-->
+
+<div class="infographic">
+  <img src="infographic.png" alt="戦略と戦術の 5 階層フレーム インフォグラフィック" loading="lazy">
+</div>
+
+<h2>この記事のテーマ</h2>
+<p>珊瑚海海戦は、日本側が連合軍に大きな損害を与えつつも、本来やりたかったポートモレスビー海上攻略は取り下げになった戦いです。Royal Australian Navy や Anzac Portal は、これを「日本軍の戦術的勝利、連合軍の戦略的勝利」と整理しています。戦術で勝ちが立っても、その上のレイヤーが未達なら、狙いには届かないという構図です。</p>
+
+<p>これがシステム開発でも、驚くほどそのまま起きます。「機能は増えたが、業務は楽にならない」「サーバーは強くなったが、運用は不安定なまま」「ツールは入れたが、使われていない」「AI を入れたが、成果が見えない」の 4 例に共通するのは、戦術（何をやったか）は増えているのに、目的（なぜやったか）に戻って計測していない、という 1 点です。</p>
+
+<p>本文では、目的・目標・戦略・戦術・手段の 5 階層フレームで整理し直し、要望が来たら 30 秒立ち止まって目的に戻る「4 分岐フロー」と、要件定義・提案書・キックオフ資料にそのままコピペできる 5 つのチェックリストまで書きました。</p>
+
+<div class="footer">
+  公開: 2026-07-01 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>
