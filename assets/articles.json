@@ -17,7 +17,8 @@
       "tag": { "ja": "設計判断", "en": "Design note" },
       "hero": "articles/2026/2026-07-01_strategy-vs-tactics/hero.png",
       "links": {
-        "html": "articles/2026/2026-07-01_strategy-vs-tactics/"
+        "html": "articles/2026/2026-07-01_strategy-vs-tactics/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/414cd0733345efed85ac"
       }
     },
     {
