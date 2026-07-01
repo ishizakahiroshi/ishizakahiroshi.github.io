@@ -7,6 +7,23 @@
     {
       "date": "2026-07-01",
       "title": {
+        "ja": "子供用の電話回線を計画したら、楽天モバイル＋povoの2回線構成になった",
+        "en": "Planning my kids' future mobile lines ended up as a Rakuten + povo two-line setup"
+      },
+      "short": {
+        "ja": "楽天モバイルで子どもの誕生日にちなんだ番号を検索したところから、3回線案・1回線案・2回線案と方針が動きます。楽天経済圏の主回線・番号資産・実用回線を1本に兼務させると意思決定が破綻するので、役割を1つずつに切り分けて2回線構成へ。2回線目は楽天で長期維持せずポイント回収後にpovoへ退避、高校生になったら本人名義へ変更、という運用ルールまでまとめた設計判断メモです。書き終えた朝、マイナンバーのオンライン本人認証で1回線目の申し込みと eSIM 開通、Rakuten LINK の通話テストまで完了させました。",
+        "en": "Started from searching Rakuten Mobile for a memorable number for my kids. The plan moved through three-line, one-line, and finally a two-line setup. Each line takes exactly one role: the primary line spins the Rakuten ecosystem, the second line is a short-term point-farming line that MNPs to povo, and a separate line handles daily data. The order 'Rakuten → change owner → povo' matters because povo is weak at ownership transfer."
+      },
+      "tag": { "ja": "設計判断", "en": "Design note" },
+      "hero": "articles/2026/2026-07-01_kids-mobile-line-plan/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-01_kids-mobile-line-plan/",
+        "note": "https://note.com/ishizakahiroshi/n/n426d21660675"
+      }
+    },
+    {
+      "date": "2026-07-01",
+      "title": {
         "ja": "AI CLI のセッションログ、誰も掃除しないので作ってます",
         "en": "Building ai-log-clean: nobody else trims AI coding CLI session logs"
       },
