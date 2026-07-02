@@ -5,6 +5,22 @@
   },
   "articles": [
     {
+      "date": "2026-07-02",
+      "title": {
+        "ja": "X の複数アカウント運用: Chrome 拡張で挫折 → Firefox Multi-Account Containers に流れ着いた記録",
+        "en": "Running multiple X accounts: how I abandoned a self-built Chrome extension and landed on Firefox Multi-Account Containers"
+      },
+      "short": {
+        "ja": "X の 3 垢を 1 ウィンドウで運用したくて Chrome プロファイル切替を試したがウィンドウが 3 個立ち上がって回らない。次にタブ単位で Cookie と localStorage を分離する Chrome 拡張 many-tab を自作したが、X には届かなかった。現代 SaaS の identity は Cookie と localStorage の上に IndexedDB / Service Worker / fingerprinting が積まれていて、拡張の下 2 層だけの分離では上 3 層で identity が繋がったままになる。最終的に Firefox の Multi-Account Containers というブラウザレベル分離に落ち着いた紆余曲折の記録と、そこで残った「タブが見分けつかない」問題への次の一手 tab-title-prefix 構想までを含む設計判断メモ。",
+        "en": "I wanted three X accounts in a single window. Chrome profiles spawn three separate windows, too heavy for daily use. My hand-built Chrome extension (many-tab) that split cookies and localStorage per-tab worked for small internal SaaS, but X broke through the split via IndexedDB and Service Workers. Modern SaaS identity sits on a five-layer stack — Cookie, localStorage, IndexedDB, Service Worker + Cache API, fingerprinting — and only browser-level partitioning like Firefox Multi-Account Containers reaches all five. This is the trip, the loss, and the landing, plus the small remaining UX problem (tabs are indistinguishable) that turned into the next tiny project."
+      },
+      "tag": { "ja": "失敗談", "en": "Postmortem" },
+      "hero": "articles/2026/2026-07-02_x-multi-account-firefox-container/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-02_x-multi-account-firefox-container/"
+      }
+    },
+    {
       "date": "2026-07-01",
       "title": {
         "ja": "「機能は増えたのに、業務は楽にならない」を戦略と戦術の 5 階層で読み解く（MO作戦・珊瑚海海戦からの学び）",
