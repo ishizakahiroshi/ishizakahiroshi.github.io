@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>今は Obsidian を使わない選択: 薄いマスタデータと最新引き寄せで足りている運用 — 2026-07-02 — ishizakahiroshi</title>
+<meta name="description" content="Obsidian の vault を骨格まで作り、実運用に踏み出す前に手を止めました。廃止ではなく保留です。AI の進化速度が個人ナレッジの陳腐化を超え、貯めた情報を AI に読ませるほどトークンは無駄になる。今の自分に必要なのは薄くて重要なマスタデータだけで、それは既に CSV と TOML で持っていました。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-07-02_declined-obsidian-for-now/">
+
+<meta property="og:title" content="今は Obsidian を使わない選択: 薄いマスタデータと最新引き寄せで足りている運用">
+<meta property="og:description" content="Obsidian の vault を骨格まで作り、実運用に踏み出す前に手を止めた記録。廃止ではなく保留。AI 時代の PKM は薄く保つほうが実利があると気づいた設計判断メモ。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-02_declined-obsidian-for-now/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-02_declined-obsidian-for-now/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-02_declined-obsidian-for-now/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "今は Obsidian を使わない選択: 薄いマスタデータと最新引き寄せで足りている運用",
+  "description": "Obsidian の vault を骨格まで作り、実運用に踏み出す前に手を止めた記録。廃止ではなく保留。AI 時代の PKM は薄く保つほうが実利があると気づいた設計判断メモ。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-07-02_declined-obsidian-for-now/hero.png",
+  "datePublished": "2026-07-02",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-07-02_declined-obsidian-for-now/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#c2740f; --card:#fffdf8; --ok:#2e7d4f; --warn:#b8860b; --bad:#b3261e;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;
+       text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;
+     padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.1rem;margin:28px 0 10px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;
+            font-family:var(--display);font-weight:700;font-size:0.86rem;
+            padding:6px 14px;border-radius:999px;border:2px solid var(--ink);
+            background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;
+         border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;
+       font-family:var(--display);font-weight:700;font-size:0.78rem;
+       border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;
+        box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .info{margin:18px 0;padding:14px 18px;border:2px dashed var(--warn);border-radius:12px;
+        background:#fff8e6;color:var(--ink);font-size:0.94rem}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;
+             padding:7px 16px;border-radius:999px;font-family:var(--display);
+             font-weight:700;font-size:0.86rem;text-decoration:none;
+             border:2px solid var(--ink);color:#fff;
+             box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-zenn{background:#3ea8ff}
+  .plat-note{background:#2cb696}
+  .fig{margin:22px 0;border:2px solid var(--ink);border-radius:16px;overflow:hidden;
+       box-shadow:4px 5px 0 var(--line);background:var(--card)}
+  .fig img{display:block;width:100%;height:auto}
+  .fig-cap{font-size:0.86rem;color:var(--ink-soft);margin:6px 0 0;padding:0 6px}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);
+          color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">エッセイ / 設計判断</span>
+  <span class="stamp">2026-07-02</span>
+</div>
+
+<h1>今は Obsidian を使わない選択: 薄いマスタデータと最新引き寄せで足りている運用</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="生成りベージュの静かな書斎、片付いた本棚と朝の光" width="1280" height="670">
+</div>
+
+<p class="lead">
+Obsidian の vault を骨格まで作り、実運用に踏み出す前に手を止めました。廃止ではなく保留です。AI の進化速度が個人ナレッジの陳腐化を超えていて、貯めた情報を AI に読ませるほどトークンは無駄になります。今の自分に必要なのは薄くて重要なマスタデータだけで、それは既に CSV と TOML で持っていました。それでも Obsidian が刺さる人はいる、という話まで含めた設計判断メモです。
+</p>
+
+<div class="info">
+Zenn 投稿予定です。投稿後に各プラットフォームへの導線を追記します。
+</div>
+
+<!-- 各プラットフォーム導線（投稿後ヘルパーで有効化） -->
+<!-- <div class="plat-row">
+  <a class="plat-pill plat-zenn" href="__ZENN_URL_TBD__" target="_blank" rel="noopener">Zenn で読む →</a>
+  <a class="plat-pill plat-note" href="__NOTE_URL_TBD__" target="_blank" rel="noopener">note で読む →</a>
+</div> -->
+
+<h2>この記事のテーマ</h2>
+
+<p>Obsidian の vault を、ディレクトリ 4 つ・クラウド同期・junction 配線・8 章の plan md まで作ってから、実運用に踏み出す前に手を止めました。「Obsidian が悪い」でも「PKM は不要」でもありません。骨格まで作って初めて、今の自分の用途と噛み合わないことに気づいたという記録です。骨格は消していません。将来の自分が拾えるように寝かせてあります。</p>
+
+<div class="fig">
+  <img src="infographic.png" alt="記事の要約インフォグラフィック">
+</div>
+
+<h2>主張の核（3 行）</h2>
+
+<ol>
+  <li>AI の進化速度が個人ナレッジの陳腐化速度を超えている。半年前に丁寧にまとめた技術メモが、次に読み返す時にはすでに古びている。</li>
+  <li>貯めた情報を「一応確認」で AI に読ませるのはトークンが無駄。薄い最新情報を都度引くほうが実利が高い。</li>
+  <li>本当に必要なのは「薄くて重要で陳腐化しにくい」識別情報だけ。家族・会社・サーバー・認証情報のようなマスタデータで、これは既に CSV や TOML で薄く持っている。</li>
+</ol>
+
+<h2>2 つの PKM の型</h2>
+
+<div class="fig">
+  <img src="fig1.png" alt="蓄積型 PKM vs 引き寄せ型 PKM の対比">
+</div>
+
+<p>蓄積型は倉庫にモノを置いて、必要になったら棚を探す作り。引き寄せ型は必要になったときにその場で外から取り寄せる作り。情報の陳腐化が速い領域ほど、引き寄せ型のほうが結果として鮮度が高くなります。技術記事や公式 docs のように「常に最新版がどこかに置いてある」情報は、自分で持たなくてもすぐ取り出せます。むしろ持たないほうが、古い情報を最新だと勘違いする事故を防げます。</p>
+
+<h2>薄いマスタデータの配置</h2>
+
+<div class="fig">
+  <img src="fig2.png" alt="CSV と TOML のマスタデータ配置図">
+</div>
+
+<p>会社まわりは共有ストレージ経由の CSV、家族まわりは個人クラウド同期の CSV、認証情報は暗号化前提の TOML。全部合わせて数百行に収まります。ID で相互参照するだけで、バックリンクも graph も要りませんでした。</p>
+
+<h2>情報の耐用年数スペクトル</h2>
+
+<div class="fig">
+  <img src="fig3.png" alt="情報の耐用年数スペクトル">
+</div>
+
+<p>左端に家族の名前、右端に AI CLI の細かい仕様。右に行くほど「自分で持たずに引き寄せる」ほうが実利があります。右側を溜め込むと、AI が古い情報を「事実」として拾ってしまう事故が起きます。</p>
+
+<h2>あなたに Obsidian は要るか</h2>
+
+<div class="fig">
+  <img src="fig4.png" alt="判断フローチャート">
+</div>
+
+<p>2 問だけ聞く判定フロー。「5 年以上追い続ける知識体系があるか」「用語間の関係を辿りたいか」。両方 Yes ならたぶん正解、片方だけなら要検討、両方 No なら薄いマスタデータで十分。Obsidian が刺さる人がいて、その人には正解。自分は「10 年書き続けるつもりの知識体系」を持たなかっただけです。</p>
+
+<h2>姉妹編</h2>
+
+<p>同じ日に書いた「<a href="https://zenn.dev/ishizakahiroshi/articles/20260702-x-multi-account-firefox-container" target="_blank" rel="noopener">X の複数アカウント運用: Chrome 拡張で挫折 → Firefox Multi-Account Containers に流れ着いた記録</a>」もあります。そちらは「自作で境界突破は勝てない」、この記事は「自作で情報蓄積も勝てない」。同じ日に、別の場所で、似た形の白旗を上げました。</p>
+
+<div class="footer">
+  公開: 2026-07-02 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

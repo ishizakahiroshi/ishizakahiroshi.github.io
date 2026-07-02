@@ -7,6 +7,22 @@
     {
       "date": "2026-07-02",
       "title": {
+        "ja": "今は Obsidian を使わない選択: 薄いマスタデータと最新引き寄せで足りている運用",
+        "en": "Choosing not to use Obsidian (for now): thin master data plus on-demand fetch was enough"
+      },
+      "short": {
+        "ja": "Obsidian の vault を骨格まで作り、実運用に踏み出す前に手を止めました。廃止ではなく保留です。AI の進化速度が個人ナレッジの陳腐化を超え、貯めた情報を AI に読ませるほどトークンは無駄になる。今の自分に必要なのは薄くて重要なマスタデータだけで、それは既に CSV と TOML で持っていました。長期研究や連続執筆を持つ人には Obsidian が刺さる、というリスペクトも含めた設計判断メモ。姉妹編として同日公開の X 複数垢 Firefox 移行記録と対の位置づけで、「自作で情報蓄積も勝てない」を語ります。",
+        "en": "I built the skeleton of an Obsidian vault (four directories, cloud sync, junction plumbing, an eight-chapter plan md) and stopped before actually running it. Not abandoned, but on hold. AI is now evolving faster than personal notes can stay fresh; feeding stale md to an AI just wastes tokens and injects false facts. What I actually need is thin master data (family names, servers, credentials) that stays true for years, and I already keep it in CSVs and TOMLs. The article also respects that Obsidian is the right answer for researchers and long-form writers whose knowledge graphs actually pay off. Sister piece to the same-day Firefox Multi-Account Containers migration article: both admit that hand-rolled boundary work loses to platform-native tools."
+      },
+      "tag": { "ja": "エッセイ", "en": "Essay" },
+      "hero": "articles/2026/2026-07-02_declined-obsidian-for-now/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-02_declined-obsidian-for-now/"
+      }
+    },
+    {
+      "date": "2026-07-02",
+      "title": {
         "ja": "X の複数アカウント運用: Chrome 拡張で挫折 → Firefox Multi-Account Containers に流れ着いた記録",
         "en": "Running multiple X accounts: how I abandoned a self-built Chrome extension and landed on Firefox Multi-Account Containers"
       },
