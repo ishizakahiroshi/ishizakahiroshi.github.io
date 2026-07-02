@@ -17,7 +17,8 @@
       "tag": { "ja": "失敗談", "en": "Postmortem" },
       "hero": "articles/2026/2026-07-02_x-multi-account-firefox-container/hero.png",
       "links": {
-        "html": "articles/2026/2026-07-02_x-multi-account-firefox-container/"
+        "html": "articles/2026/2026-07-02_x-multi-account-firefox-container/",
+        "zenn": "https://zenn.dev/ishizakahiroshi/articles/20260702-x-multi-account-firefox-container"
       }
     },
     {
