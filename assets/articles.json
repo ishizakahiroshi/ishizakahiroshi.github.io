@@ -17,7 +17,8 @@
       "tag": { "ja": "エッセイ", "en": "Essay" },
       "hero": "articles/2026/2026-07-02_declined-obsidian-for-now/hero.png",
       "links": {
-        "html": "articles/2026/2026-07-02_declined-obsidian-for-now/"
+        "html": "articles/2026/2026-07-02_declined-obsidian-for-now/",
+        "zenn": "https://zenn.dev/ishizakahiroshi/articles/20260702-declined-obsidian-for-now"
       }
     },
     {
