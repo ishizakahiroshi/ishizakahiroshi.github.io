@@ -7,7 +7,7 @@
 <meta name="description" content="X の 3 垢を 1 ウィンドウで運用したくて Chrome 拡張を自作した (many-tab) が、IndexedDB と Service Worker の壁で X には届かず、結局 Firefox の Multi-Account Containers に落ち着いた紆余曲折。現代 SaaS の identity は Cookie と localStorage だけでは決まらない。">
 <meta name="author" content="ishizakahiroshi">
 
-<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-07-02_x-multi-account-firefox-container/">
+<link rel="canonical" href="https://zenn.dev/ishizakahiroshi/articles/20260702-x-multi-account-firefox-container">
 
 <meta property="og:title" content="X の複数アカウント運用: Chrome 拡張で挫折 → Firefox Multi-Account Containers に流れ着いた記録">
 <meta property="og:description" content="X の 3 垢を 1 ウィンドウで運用したくて Chrome 拡張を自作した (many-tab) が、IndexedDB と Service Worker の壁で X には届かず、結局 Firefox の Multi-Account Containers に落ち着いた紆余曲折。">
@@ -36,7 +36,7 @@
   "datePublished": "2026-07-02",
   "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
   "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
-  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-07-02_x-multi-account-firefox-container/"
+  "mainEntityOfPage": "https://zenn.dev/ishizakahiroshi/articles/20260702-x-multi-account-firefox-container"
 }
 </script>
 
@@ -112,13 +112,8 @@
 X で複数アカウントを持っていて、1 ウィンドウの中で行き来したい。Chrome のプロファイル切替は 3 ウィンドウ立ち上がって重い。そこでタブ単位で Cookie と localStorage を分離する拡張 <code>many-tab</code> を自作したが、X には届かなかった。現代 SaaS の identity は Cookie と localStorage の上に IndexedDB / Service Worker / fingerprinting が積まれていて、拡張の守備範囲では超えられない。最終的に Firefox の Multi-Account Containers に落ち着いた紆余曲折の記録です。
 </p>
 
-<!-- 各プラットフォーム導線（投稿後ヘルパーで有効化） -->
-<!-- <div class="plat-row">
-  <a class="plat-pill plat-zenn" href="__ZENN_URL_TBD__" target="_blank" rel="noopener">Zenn で読む →</a>
-</div> -->
-
-<div class="info">
-Zenn 投稿予定です。投稿後に導線を追記します。
+<div class="plat-row">
+  <a class="plat-pill plat-zenn" href="https://zenn.dev/ishizakahiroshi/articles/20260702-x-multi-account-firefox-container" target="_blank" rel="noopener">Zenn で読む →</a>
 </div>
 
 <h2>この記事のテーマ</h2>
