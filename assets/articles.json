@@ -7,6 +7,22 @@
     {
       "date": "2026-07-03",
       "title": {
+        "ja": "Nextcloud App Store に個人アプリを公開するときにハマったポイントまとめ",
+        "en": "Publishing a personal app to the Nextcloud App Store: the gotchas I hit"
+      },
+      "short": {
+        "ja": "Nextcloud 上の HTML ファイルを CSP sandbox で安全にプレビューするアプリ「Safe HTML Viewer」を作り、Nextcloud App Store に公開しました。証明書申請、アプリ登録 API の signature は base64 化必須だった話、description が HTML ではなく Markdown 記法だった話、info.xml の screenshot 要素が XSD の順序違反だった話、公開前の実機検証を使い捨て Docker コンテナで行った話、タグを打つだけで公開まで自動化する CI の組み方まで、公開までにハマったポイントをまとめました。",
+        "en": "Built and published \"Safe HTML Viewer\", a Nextcloud app that previews HTML files inside a strict CSP sandbox with best-effort secret redaction. A record of the gotchas hit along the way to the Nextcloud App Store: the certificate request PR, a base64 encoding trap in the app registration API, discovering the description field is Markdown (not HTML), an XSD ordering bug in the screenshot element, disposable Docker containers for pre-release verification, and a tag-driven CI pipeline that fully automates publishing after the first release."
+      },
+      "tag": { "ja": "ツール紹介", "en": "Tool release" },
+      "hero": "articles/2026/2026-07-03_nextcloud-app-store-koukai/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-03_nextcloud-app-store-koukai/"
+      }
+    },
+    {
+      "date": "2026-07-03",
+      "title": {
         "ja": "初めての Firefox 拡張を AMO に出したら、公開前に 2 回落ちた",
         "en": "My first Firefox extension got rejected twice by AMO validation before going live"
       },
