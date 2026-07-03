@@ -7,6 +7,23 @@
     {
       "date": "2026-07-03",
       "title": {
+        "ja": "あまり更新しないアプリの v0.2.0。npx 一発で開けるようにした話",
+        "en": "A rarely-updated app hits v0.2.0: now it opens with a single npx command"
+      },
+      "short": {
+        "ja": "自作のオフライン Markdown エディタ v0.2.0 の振り返り。ユーザーに見える変更は「npx 1 コマンドで開ける」だけ。でも npm に GUI アプリは置けないので、パッケージは同梱 HTML を既定ブラウザで開くだけのランチャー（依存ゼロ・4 ファイル）にしました。winget や Homebrew を検討して見送った配布チャネルの絞り方、同名ファイル同時作成でデータが消える隙を塞ぐなどの見えない監査修正、公開済みの正本 ZIP から checksum 照合して取り出す npm 自動公開（Trusted Publishing・トークンレス・来歴付き）まで、1 回のリリースに詰め込んだ中身を全部書きました。",
+        "en": "A retrospective on v0.2.0 of my offline Markdown editor. The only user-visible change: it now opens with a single npx command. Since a GUI app has no place on npm, the package is a zero-dependency four-file launcher that just opens the bundled single-file HTML in the default browser. Also covered: why winget and Homebrew were deliberately skipped, invisible audit fixes like closing a window where concurrent file creation could silently destroy data, and a tag-driven npm publish that extracts the HTML from the already-published canonical ZIP with checksum verification, via tokenless Trusted Publishing with provenance."
+      },
+      "tag": { "ja": "振り返り", "en": "Retrospective" },
+      "hero": "articles/2026/2026-07-03_rarely-updated-app-v020-npx/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-03_rarely-updated-app-v020-npx/",
+        "note": "https://note.com/ishizakahiroshi/n/n2da7a10f3f5c"
+      }
+    },
+    {
+      "date": "2026-07-03",
+      "title": {
         "ja": "Nextcloud App Store に個人アプリを公開するときにハマったポイントまとめ",
         "en": "Publishing a personal app to the Nextcloud App Store: the gotchas I hit"
       },
