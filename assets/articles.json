@@ -17,7 +17,8 @@
       "tag": { "ja": "ツール紹介", "en": "Tool release" },
       "hero": "articles/2026/2026-07-03_nextcloud-app-store-koukai/hero.png",
       "links": {
-        "html": "articles/2026/2026-07-03_nextcloud-app-store-koukai/"
+        "html": "articles/2026/2026-07-03_nextcloud-app-store-koukai/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/a32b3affeffd49acb2b4"
       }
     },
     {
