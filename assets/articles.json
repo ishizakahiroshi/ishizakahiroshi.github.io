@@ -5,6 +5,23 @@
   },
   "articles": [
     {
+      "date": "2026-07-03",
+      "title": {
+        "ja": "初めての Firefox 拡張を AMO に出したら、公開前に 2 回落ちた",
+        "en": "My first Firefox extension got rejected twice by AMO validation before going live"
+      },
+      "short": {
+        "ja": "コンテナで開いたタブが全部「ホーム / X」で見分けがつかない問題を 95 行の自作拡張 tab-title-prefix で解決し、初めて AMO に提出した記録。実装より提出でつまずきました。2026 年から新規拡張に必須になった data_collection_permissions（収集ゼロでも宣言必須・ローカル開発では見えない）と、検証失敗でも下書きが残ることで起きる「重複したアドオン ID」エラーの正体、ライセンス表明が提出フォームにしかない話、tabs 権限が実は不要だった話まで、次に Firefox 拡張を作る人向けのチェックリストにまとめています。前日公開の Multi-Account Containers 移行記の続編です。",
+        "en": "Container tabs all read 'Home / X', so I wrote a 95-line Firefox extension (tab-title-prefix) that prefixes tab titles with the container name, and submitted it to AMO for the first time. Shipping was harder than coding: the newly mandatory data_collection_permissions declaration (required even when you collect nothing, and invisible in local about:debugging), and a baffling 'duplicate add-on ID' error caused by AMO keeping a draft even after a failed validation. Plus: the license can only be declared in the submission form, and the tabs permission turned out to be unnecessary. A checklist for the next Firefox extension author, sequel to the previous day's Multi-Account Containers migration story."
+      },
+      "tag": { "ja": "失敗談", "en": "Postmortem" },
+      "hero": "articles/2026/2026-07-03_amo-first-submission-rejected-twice/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-03_amo-first-submission-rejected-twice/",
+        "zenn": "https://zenn.dev/ishizakahiroshi/articles/20260703-amo-first-submission-rejected-twice"
+      }
+    },
+    {
       "date": "2026-07-02",
       "title": {
         "ja": "今は Obsidian を使わない選択: 薄いマスタデータと最新引き寄せで足りている運用",
