@@ -7,6 +7,23 @@
     {
       "date": "2026-07-03",
       "title": {
+        "ja": "AIが毎日量産するplan_*.mdを腐らせない。docsweepをPyPIに初リリースした",
+        "en": "Keeping AI-generated plan_*.md files from rotting: I released docsweep on PyPI"
+      },
+      "short": {
+        "ja": "25プロジェクトに408個溜まっていたplan_*.md / bugfix_*.md / pending_*.mdを畳むためのCLI + Web UIツール docsweep を作り、PyPIに初リリースしました。ラベルを立てるのは人、運ぶのは機械という設計と、リリース当日に自分のツールで非公開ログを公開リポジトリへ移送しかけたヒヤリハットの話。",
+        "en": "I built and released docsweep, a CLI + Web UI tool to keep 408 accumulated plan/bugfix/pending markdown files from rotting across 25 projects. The design principle: humans set the label, the machine moves the file. Plus a near-miss on release day where my own tool almost moved private logs into a public repo."
+      },
+      "tag": { "ja": "ツール紹介", "en": "Tool intro" },
+      "hero": "articles/2026/2026-07-03_docsweep-first-release/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-03_docsweep-first-release/",
+        "zenn": "https://zenn.dev/ishizakahiroshi/articles/20260703-docsweep-first-release"
+      }
+    },
+    {
+      "date": "2026-07-03",
+      "title": {
         "ja": "メモリを64GBに増やしても、また全滅した話",
         "en": "I upgraded to 64GB of RAM, and it still failed"
       },

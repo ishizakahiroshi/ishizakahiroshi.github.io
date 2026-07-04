@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AIが毎日量産するplan_*.mdを腐らせない。docsweepをPyPIに初リリースした — 2026-07-03 — ishizakahiroshi</title>
+<meta name="description" content="25プロジェクトに408個溜まっていたplan_*.md / bugfix_*.md / pending_*.mdを腐らせないためのCLI + Web UIツール docsweep を作り、PyPIに初リリースしました。設計の芯とドッグフーディングで踏んだバグの話です。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://zenn.dev/ishizakahiroshi/articles/20260703-docsweep-first-release">
+
+<meta property="og:title" content="AIが毎日量産するplan_*.mdを腐らせない。docsweepをPyPIに初リリースした">
+<meta property="og:description" content="408個溜まったplan_*.md / bugfix_*.md / pending_*.mdを畳む道具 docsweep をPyPIに初リリース。設計の芯とドッグフーディングで踏んだバグの記録。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-03_docsweep-first-release/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-03_docsweep-first-release/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-03_docsweep-first-release/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "AIが毎日量産するplan_*.mdを腐らせない。docsweepをPyPIに初リリースした",
+  "description": "25プロジェクトに408個溜まったplan_*.md / bugfix_*.md / pending_*.mdを畳む道具 docsweep をPyPIに初リリース。設計の芯とドッグフーディングで踏んだバグの記録。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-07-03_docsweep-first-release/hero.png",
+  "datePublished": "2026-07-03",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://zenn.dev/ishizakahiroshi/articles/20260703-docsweep-first-release"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8; --ok:#2e7d4f; --warn:#b8860b; --bad:#b3261e;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;
+       text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;
+     padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.1rem;margin:28px 0 10px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;
+            font-family:var(--display);font-weight:700;font-size:0.86rem;
+            padding:6px 14px;border-radius:999px;border:2px solid var(--ink);
+            background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;
+         border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;
+       font-family:var(--display);font-weight:700;font-size:0.78rem;
+       border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;
+        box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;
+             padding:7px 16px;border-radius:999px;font-family:var(--display);
+             font-weight:700;font-size:0.86rem;text-decoration:none;
+             border:2px solid var(--ink);color:#fff;
+             box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-zenn{background:#3ea8ff}
+  .plat-note{background:#2cb696}
+  .plat-qiita{background:#55c500}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);
+          color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">ツール紹介</span>
+  <span class="stamp">2026-07-03</span>
+</div>
+
+<h1>AIが毎日量産するplan_*.mdを腐らせない。docsweepをPyPIに初リリースした</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="docsweep初リリース: 増え続けるplan/bugfix/pending mdを畳む道具" width="1280" height="670">
+</div>
+
+<p class="lead">
+手元の管理対象を数えたら、25 プロジェクトに 408 個ありました。plan_*.md、bugfix_*.md、pending_*.md。AI コーディングツールに「計画を md に残して」と頼んだ結果の山を捌く道具 docsweep を作り、PyPI に初リリースしました。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-zenn" href="https://zenn.dev/ishizakahiroshi/articles/20260703-docsweep-first-release" target="_blank" rel="noopener">Zenn で読む →</a>
+</div>
+
+<h2>この記事のテーマ</h2>
+<p>「書く仕組みはあるのに、畳む仕組みがない」という問題に対して、docsweep は H1 ラベルを人が立て、archive への運搬は機械が担うという役割分担で応えます。CLI・Web UI（看板）・MCP の 3 つの顔が同じ services 層を叩く構成、「様子見」を自動移送しない設計、そしてリリース当日に自分のツールで自分の非公開ログを公開リポジトリへ移送しかけたヒヤリハットまで書きました。</p>
+
+<div class="footer">
+  公開: 2026-07-03 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>
