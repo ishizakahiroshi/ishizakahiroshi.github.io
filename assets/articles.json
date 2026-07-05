@@ -7,6 +7,22 @@
     {
       "date": "2026-07-05",
       "title": {
+        "ja": "plan md 1枚で走らせた結果、2時間4分でMVPが本番に立った",
+        "en": "One plan.md, one run: the MVP went live in 2h04m"
+      },
+      "short": {
+        "ja": "plan md 1 枚に 11 の仕掛けを仕込んで AI エージェントに実装を任せた実験の結果編。実装開始から 2:04:55 で v0.1.0 の MVP が本番に立ち、LINE ログインも通った。予想した停止条件はほぼ発動せず、実際に止まったのは管理画面の不調・スマホの 2 段階認証・他社サービス同士の仕様のズレという「plan に書きようがない壁」だった。",
+        "en": "The results of letting an AI agent run from a single plan.md packed with 11 mechanisms: the v0.1.0 MVP went live in 2h04m55s, LINE login included. The 3 planned stop conditions barely fired; what actually stopped the run were walls no plan could cover: a stuck dashboard, phone 2FA, and a spec mismatch between third-party services."
+      },
+      "tag": { "ja": "振り返り", "en": "Retrospective" },
+      "hero": "articles/2026/2026-07-05_goal-autonomous-run-result/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-05_goal-autonomous-run-result/"
+      }
+    },
+    {
+      "date": "2026-07-05",
+      "title": {
         "ja": "plan md 1 枚で AI エージェントが最後まで走れるように、11 の仕掛けを仕込んだ",
         "en": "I packed 11 mechanisms into a single plan.md so an AI agent can run to the end"
       },
