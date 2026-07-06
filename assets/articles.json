@@ -5,6 +5,23 @@
   },
   "articles": [
     {
+      "date": "2026-07-06",
+      "title": {
+        "ja": "初めての Firefox 拡張、2 回落ちてから 3 日で公開された",
+        "en": "My first Firefox extension: rejected twice, published 3 days later"
+      },
+      "short": {
+        "ja": "X の複数アカウント運用のためにコンテナ名をタブタイトルへ差し込む Firefox 拡張を作り、AMO の検証に 2 回落ちてから 3 日後に承認・公開されました。実装は最終的に 3 ファイル・100 行程度に収まり、権限も 3 つまで絞り込みました。Chrome での挫折から拡張の公開までの 3 本の記事を、この記事で一区切りにします。",
+        "en": "A Firefox extension that prefixes tab titles with the container name, built for running multiple X accounts side by side, got rejected twice by AMO review and was approved 3 days later. The final implementation came in around 100 lines across 3 files, with permissions trimmed to just 3. This closes out a 3-part series that started with a failed Chrome extension attempt."
+      },
+      "tag": { "ja": "振り返り", "en": "Retrospective" },
+      "hero": "articles/2026/2026-07-06_amo-approved-after-two-rejections/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-06_amo-approved-after-two-rejections/",
+        "zenn": "https://zenn.dev/ishizakahiroshi/articles/20260706-amo-approved-after-two-rejections"
+      }
+    },
+    {
       "date": "2026-07-05",
       "title": {
         "ja": "plan md 1枚で走らせた結果、2時間4分でMVPが本番に立った",
