@@ -5,6 +5,23 @@
   },
   "articles": [
     {
+      "date": "2026-07-07",
+      "title": {
+        "ja": "AIエージェント用のツールを「どのシェルからでも呼べる」設計にして失敗した話",
+        "en": "How making an AI-agent helper callable from any shell backfired (Windows / Claude Code)"
+      },
+      "short": {
+        "ja": "Windows で AI エージェント（Claude Code）に日時を取らせる小さな処理が毎回赤いエラーを出していました。回避のラッパーを足しても直らず、原因は呼び方ではなく設計。外部スクリプトに整形を持たせて『どのシェルからでも呼べる』を目指したのが火種でした。Git Bash と WSL でパス規約が違うため共通コマンドは原理的に作れず、組み込みとすでに渡っている情報に寄せて根治した記録です。",
+        "en": "A tiny helper that gave an AI agent the current date kept erroring on Windows. Adding a wrapper didn't help because the problem was the design: routing date formatting through external scripts to be callable from any shell. Since Git Bash and WSL use different path rules, no single command works in both. The fix was to stop calling out and use shell built-ins plus info the agent already has."
+      },
+      "tag": { "ja": "失敗談", "en": "Failure story" },
+      "hero": "articles/2026/2026-07-07_ai-agent-datetime-native/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-07_ai-agent-datetime-native/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/c934bbf321f68e2d2d77"
+      }
+    },
+    {
       "date": "2026-07-06",
       "title": {
         "ja": "個人開発の Web 進路サービスに Supabase + LINE + Cloudflare Pages を組み合わせて起きた落とし穴の記録",
