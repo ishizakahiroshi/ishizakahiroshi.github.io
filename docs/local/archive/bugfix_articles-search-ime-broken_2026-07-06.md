@@ -1,6 +1,6 @@
 ---
 type: bugfix
-status: in-progress
+status: done
 tags: [articles, search, ime]
 owner: ishizakahiroshi
 review_status: draft
@@ -8,7 +8,7 @@ related: []
 last_reviewed: 2026-07-06
 ---
 
-# [対応中] 障害対応記録: ARTICLES 検索欄で IME 入力が1文字目以降反映されず削除もできない
+# [完了] 障害対応記録: ARTICLES 検索欄で IME 入力が1文字目以降反映されず削除もできない
 
 ## 症状
 
