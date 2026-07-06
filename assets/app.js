@@ -16,6 +16,16 @@
  * @property {number} [npm30d]        npm 直近 30 日 DL 数
  * @property {number[]} [sparkReleases]  30 日 sparkline 用の Releases 系列（古い順）
  *
+ * @typedef {Object} WorkFeature  詳細ページ「何ができる」1 項目
+ * @property {string} icon   記号 1 文字（絵文字ではなく幾何記号）
+ * @property {L10n} title
+ * @property {L10n} desc
+ *
+ * @typedef {Object} WorkUsage  詳細ページ「使い方」
+ * @property {string} [install]  インストール用コマンド（1 行）
+ * @property {string} [run]      起動用コマンド（1 行）
+ * @property {L10n[]} [steps]    補足ステップ（順序付き）
+ *
  * @typedef {Object} Work  作品（カード／詳細ページ共通）
  * @property {string} id        URLスラッグ兼表示名
  * @property {string} initials  バッジ表示の略号
@@ -29,6 +39,10 @@
  * @property {string} [store]   任意：ストア等の外部リンク（あればボタン追加）
  * @property {string} [live]    任意：ライブデモ等のリンク
  * @property {WorkDl} [dl]      任意：dl-stats から動的に詰める DL 情報
+ * @property {L10n} [tagline]      詳細ページ：ヒーローの一言キャッチ
+ * @property {string[]} [shots]    詳細ページ：スクショ／GIF の画像パス（works/<id>/ 配下）
+ * @property {WorkFeature[]} [features]  詳細ページ：「何ができる」3 項目
+ * @property {WorkUsage} [usage]        詳細ページ：使い方（install / run / steps）
  */
 
 /**
@@ -109,6 +123,16 @@ const WORKS = [
     },
     tech: ["JavaScript", "Node.js", "Web Dashboard"],
     repo: "https://github.com/ishizakahiroshi/many-ai-cli",
+    tagline: {
+      ja: "複数の AI コーディング CLI を並列で走らせ、承認をブラウザ 1 タブに集約。スマホからでも。",
+      en: "Run multiple AI coding CLIs in parallel and approve every session from one browser tab — even on your phone.",
+    },
+    shots: [],
+    features: [
+      { icon: "▦", title: { ja: "並列セッション管理", en: "Parallel sessions" }, desc: { ja: "Claude Code・Codex・Copilot・Cursor・Grok を同時に走らせ、状態を 1 画面で監視。", en: "Run Claude Code, Codex, Copilot, Cursor, and Grok at once, monitored in one view." } },
+      { icon: "✓", title: { ja: "承認を 1 タブに集約", en: "Approvals in one tab" }, desc: { ja: "各 CLI の承認待ちをまとめて捌ける。ターミナルの往復が消える。", en: "Handle every CLI's approval prompts in one place — no more terminal hopping." } },
+      { icon: "▤", title: { ja: "スマホから操作", en: "Approve from your phone" }, desc: { ja: "ローカル Web ダッシュボードなので、離席中もスマホで承認できる。", en: "It's a local web dashboard, so you can approve from your phone while away." } },
+    ],
   },
   {
     id: "offline-md-editor-viewer",
@@ -126,6 +150,16 @@ const WORKS = [
     },
     tech: ["HTML", "JavaScript", "CSS"],
     repo: "https://github.com/ishizakahiroshi/offline-md-editor-viewer",
+    tagline: {
+      ja: "ネット不要・単一 HTML で完結する Markdown エディタ／ビューア。",
+      en: "An offline Markdown editor/viewer that lives in a single HTML file.",
+    },
+    shots: [],
+    features: [
+      { icon: "◇", title: { ja: "単一 HTML で完結", en: "One HTML file" }, desc: { ja: "ネット接続不要、1 ファイルだけで動く Markdown エディタ／ビューア。", en: "A Markdown editor/viewer that runs from a single file, fully offline." } },
+      { icon: "⬒", title: { ja: "ポータブル exe", en: "Portable exe" }, desc: { ja: "Windows 向けには持ち運べるポータブル exe も提供。", en: "A portable Windows executable is also available." } },
+      { icon: "⚑", title: { ja: "データは手元に", en: "Your data stays local" }, desc: { ja: "依存ゼロ・ローカル保存。どこでも開けて安心。", en: "Zero dependencies, local storage — open it anywhere." } },
+    ],
   },
   {
     id: "ai-audit-prompts",
@@ -161,6 +195,16 @@ const WORKS = [
     tech: ["JavaScript", "Chrome Extension API"],
     repo: "https://github.com/ishizakahiroshi/always-pinned",
     store: "https://chromewebstore.google.com/detail/always-pinned/cpgbmadjjabkmdapeknmnpfmknbncdie",
+    tagline: {
+      ja: "大事なタブを、ウィンドウ単位で自動ピン留めし続ける Chrome 拡張。",
+      en: "A Chrome extension that keeps your important tabs pinned, per window.",
+    },
+    shots: [],
+    features: [
+      { icon: "⚲", title: { ja: "自動ピン留め", en: "Auto-pin" }, desc: { ja: "指定したタブを常にピン留め状態に保つ。", en: "Keeps chosen tabs pinned at all times." } },
+      { icon: "◱", title: { ja: "ウィンドウ単位制御", en: "Per-window control" }, desc: { ja: "ウィンドウごとに対象タブを個別に制御できる。", en: "Control which tabs are pinned on a per-window basis." } },
+      { icon: "✓", title: { ja: "誤操作を防ぐ", en: "Prevents mishaps" }, desc: { ja: "大事なタブを閉じてしまう・見失う事故を防ぐ。", en: "Stops you from losing or accidentally closing key tabs." } },
+    ],
   },
   {
     id: "setpanel",
@@ -196,6 +240,16 @@ const WORKS = [
     tech: ["React", "TypeScript", "Hono", "Cloudflare Workers", "KV", "D1", "Vite", "Tailwind CSS"],
     repo: "https://github.com/ishizakahiroshi/dl-stats",
     live: "https://dl-stats.ishizakahiroshi.workers.dev",
+    tagline: {
+      ja: "自作 OSS の DL・Star を、Cloudflare 無料枠だけでリアルタイム可視化。",
+      en: "Real-time downloads & stars for my OSS — all on Cloudflare's free tier.",
+    },
+    shots: [],
+    features: [
+      { icon: "◷", title: { ja: "リアルタイム集計", en: "Real-time metrics" }, desc: { ja: "npm・GitHub Releases・Star を自動ディスカバリで 1 画面に集計。", en: "Auto-discovers and aggregates npm, GitHub Releases, and stars in one view." } },
+      { icon: "☁", title: { ja: "無料枠で完全運用", en: "Runs free" }, desc: { ja: "Cloudflare Workers + KV + D1 + Cron Triggers。完全無料で運用。", en: "Cloudflare Workers + KV + D1 + Cron Triggers — zero cost." } },
+      { icon: "▤", title: { ja: "日次スナップショット", en: "Daily snapshots" }, desc: { ja: "Cron Triggers で定期取得し、推移をグラフ化。", en: "Cron Triggers capture daily snapshots to chart the trend." } },
+    ],
   },
   {
     id: "ShotTTL",
@@ -213,6 +267,205 @@ const WORKS = [
     },
     tech: ["Cross-platform", "CLI"],
     repo: "https://github.com/ishizakahiroshi/ShotTTL",
+  },
+  {
+    id: "docsweep",
+    initials: "do",
+    c: "#7a9e2f",
+    stars: 0,
+    cat: { ja: "CLI / Python", en: "CLI / Python" },
+    short: {
+      ja: "AI が量産する plan / bugfix の Markdown を、腐らせず自動で片付けるクロスプラットフォーム CLI。",
+      en: "A cross-platform CLI that keeps the plan/bugfix Markdown logs AI agents generate from rotting.",
+    },
+    long: {
+      ja: "Claude Code や Codex などの AI コーディングツールが生成する plan_*.md / bugfix_*.md / pending_*.md は、放っておくと溜まり続けて陳腐化します。docsweep は H1 ステータスラベル（[完了] / [計画] 等）や frontmatter を機械的に読み取り、完了したものを各プロジェクトの archive/ へ自動移送し、古くなったものを「要判断」フラグで可視化。複数プロジェクトを横断 INDEX で一望できます。",
+      en: "AI coding tools like Claude Code and Codex generate plan/bugfix/pending Markdown files that pile up and go stale. docsweep reads H1 status labels and frontmatter, auto-archives finished docs, flags stale ones for review, and gives a cross-project index.",
+    },
+    tech: ["Python", "CLI", "Web UI", "SQLite", "MCP"],
+    repo: "https://github.com/ishizakahiroshi/docsweep",
+    tagline: {
+      ja: "AI が量産する作業ログ Markdown を、腐らせず自動で片付ける。",
+      en: "Keep the work-log Markdown your AI agents generate from rotting.",
+    },
+    shots: [],
+    features: [
+      { icon: "⌦", title: { ja: "完了を自動アーカイブ", en: "Auto-archive finished docs" }, desc: { ja: "H1 ステータスラベルや frontmatter を読み、完了した md を archive/ へ移送。", en: "Reads status labels/frontmatter and moves finished docs to archive/." } },
+      { icon: "⚑", title: { ja: "陳腐化を可視化", en: "Surface stale docs" }, desc: { ja: "古くなったドキュメントを「要判断」フラグで検出して一覧化。", en: "Flags outdated docs as “needs review.”" } },
+      { icon: "▤", title: { ja: "横断 INDEX", en: "Cross-project index" }, desc: { ja: "複数プロジェクトの plan / bugfix / pending を 1 画面で一望。", en: "See plan/bugfix/pending across all projects in one view." } },
+    ],
+    usage: {
+      install: "pip install docsweep",
+      run: "python -m docsweep triage",
+      steps: [
+        { ja: "pip でインストール（Web UI 込みは 'docsweep[all]'）。", en: "Install via pip (use 'docsweep[all]' for the web UI)." },
+        { ja: "plan / bugfix の md がある開発ルートで triage を実行。", en: "Run triage in the dev root that holds your plan/bugfix docs." },
+        { ja: "完了は archive へ自動移送、陳腐化は要判断フラグで確認。", en: "Finished docs auto-archive; stale ones show up as review flags." },
+      ],
+    },
+  },
+  {
+    id: "PlainSheet",
+    initials: "pl",
+    c: "#c85b8e",
+    stars: 0,
+    cat: { ja: "アプリ / TypeScript", en: "App / TypeScript" },
+    short: {
+      ja: "人と AI のためのローカルファーストなプレーンテキスト表計算エディタ。",
+      en: "A local-first plain text spreadsheet editor for humans and AI.",
+    },
+    long: {
+      ja: "CSV・TSV・Markdown テーブル・JSON 配列・YAML リストを、きれいな編集可能シートとして開き、バイナリの表計算形式に変換せずプレーンテキストのまま保存するエディタです。データは常に手元（ローカル）に置き、サーバー送信も AI API 呼び出しもしません。Tauri によるデスクトップアプリと Web デモの両方を提供しています。",
+      en: "Opens CSV, TSV, Markdown tables, JSON arrays, and YAML lists as a clean editable sheet and saves back to plain text instead of a binary format. Local-first: no server upload, no AI API calls. Ships as a Tauri desktop app and a web demo.",
+    },
+    tech: ["TypeScript", "Tauri", "Bun", "Web"],
+    repo: "https://github.com/ishizakahiroshi/PlainSheet",
+    tagline: {
+      ja: "人と AI のための、ローカルファーストなプレーンテキスト表計算。",
+      en: "A local-first plain text spreadsheet, for humans and AI.",
+    },
+    shots: [],
+    features: [
+      { icon: "▤", title: { ja: "プレーンテキストのまま", en: "Stays plain text" }, desc: { ja: "CSV / TSV / Markdown / JSON / YAML を表として開き、そのまま保存。", en: "Open CSV/TSV/Markdown/JSON/YAML as a table and save back as-is." } },
+      { icon: "⚑", title: { ja: "ローカルファースト", en: "Local-first" }, desc: { ja: "サーバー送信なし・AI API 呼び出しなし。データは手元だけ。", en: "No server upload, no AI API calls — your data stays local." } },
+      { icon: "⬒", title: { ja: "デスクトップ & Web", en: "Desktop & Web" }, desc: { ja: "Tauri アプリと Web デモの両方。ドラッグ&ドロップ対応。", en: "Both a Tauri app and a web demo, with drag-and-drop." } },
+    ],
+  },
+  {
+    id: "worklog-bridge",
+    initials: "wb",
+    c: "#3a8fd6",
+    stars: 0,
+    cat: { ja: "CLI / 業務自動化", en: "CLI / Automation" },
+    short: {
+      ja: "PC・git・SSH・AI ログなどローカルの痕跡から実働時間を復元し、Google Sheets に書き出すローカル CLI。",
+      en: "A local CLI that reconstructs real working hours from local signals (PC/git/SSH/AI logs) and writes to Google Sheets.",
+    },
+    long: {
+      ja: "打刻と実際の稼働時間のズレを、ローカルのシグナル（PC 稼働・git・SSH・Claude・サーバー）から実働時間を再構成して埋めるローカル専用 CLI です。集計結果は Google Sheets に書き出します。",
+      en: "Bridges the gap between time-clock entries and actual work by reconstructing real working time from local signals (PC, git, SSH, Claude, servers) and writing it to Google Sheets. Local-only.",
+    },
+    tech: ["JavaScript", "Node.js", "Google Sheets API"],
+    repo: "https://github.com/ishizakahiroshi/worklog-bridge",
+  },
+  {
+    id: "syncway",
+    initials: "sy",
+    c: "#3fa8a0",
+    stars: 0,
+    cat: { ja: "CLI / Windows", en: "CLI / Windows" },
+    short: {
+      ja: "ローカル Windows と開発サーバー間を ssh 越しに双方向同期する PowerShell ツール。",
+      en: "Bidirectional rsync over ssh between local Windows and a dev server.",
+    },
+    long: {
+      ja: "ローカルの Windows と開発サーバーの間を、ssh 越しの rsync で双方向に同期する PowerShell ツールです。編集した側を安全に相手へ反映します。",
+      en: "A PowerShell tool that syncs a local Windows machine and a dev server bidirectionally via rsync over ssh.",
+    },
+    tech: ["PowerShell", "rsync", "ssh"],
+    repo: "https://github.com/ishizakahiroshi/syncway",
+  },
+  {
+    id: "many-tab",
+    initials: "mt",
+    c: "#e0664a",
+    stars: 0,
+    cat: { ja: "Chrome拡張", en: "Chrome Extension" },
+    short: {
+      ja: "同一 Chrome プロファイルのまま、同じサイトの複数アカウントを別タブで同時ログイン状態に保つ拡張 (MV3)。",
+      en: "Keep multiple accounts of the same site logged in across tabs, in one Chrome profile (MV3).",
+    },
+    long: {
+      ja: "同じ Chrome プロファイルのまま、同一サイトの複数アカウントを別タブで同時にログイン状態に保つ Chrome 拡張 (Manifest V3) です。100% ローカルで動作し、テレメトリはありません。",
+      en: "A Chrome extension (MV3) that keeps multiple accounts of the same site logged in simultaneously across separate tabs, without switching profiles. 100% local, no telemetry.",
+    },
+    tech: ["JavaScript", "Chrome Extension API", "MV3"],
+    repo: "https://github.com/ishizakahiroshi/many-tab",
+  },
+  {
+    id: "tab-title-prefix",
+    initials: "tt",
+    c: "#8a63c9",
+    stars: 0,
+    cat: { ja: "ブラウザ拡張", en: "Browser Extension" },
+    short: {
+      ja: "コンテナ（Firefox）や URL ルール（Chrome）でタブのタイトルに接頭辞を付ける拡張。",
+      en: "Prefix tab titles by container (Firefox) or URL rules (Chrome).",
+    },
+    long: {
+      ja: "タブのタイトルに、コンテナ（Firefox）や URL ルール（Chrome）ベースで接頭辞を付けるブラウザ拡張です。似たタブが並んでも一目で見分けられます。",
+      en: "A browser extension that prefixes tab titles based on containers (Firefox) or URL rules (Chrome), so similar tabs stay easy to tell apart.",
+    },
+    tech: ["JavaScript", "WebExtension"],
+    repo: "https://github.com/ishizakahiroshi/tab-title-prefix",
+  },
+  {
+    id: "nextcloud-safe-html-viewer",
+    initials: "ns",
+    c: "#c99a3a",
+    stars: 0,
+    cat: { ja: "Nextcloud アプリ / PHP", en: "Nextcloud App / PHP" },
+    short: {
+      ja: "厳格な CSP サンドボックス下で HTML を安全にプレビューする Nextcloud アプリ。秘匿値のマスク付き。",
+      en: "A Nextcloud app to safely preview HTML under a strict CSP sandbox, with best-effort secret redaction.",
+    },
+    long: {
+      ja: "Nextcloud 上の HTML ファイルを、厳格な CSP サンドボックスの中で安全にプレビューするアプリです。ベストエフォートで秘匿値をマスクし、うっかり漏洩を防ぎます。",
+      en: "A Nextcloud app that previews HTML files inside a strict CSP sandbox, with best-effort redaction of secrets to avoid accidental leaks.",
+    },
+    tech: ["PHP", "Nextcloud", "CSP"],
+    repo: "https://github.com/ishizakahiroshi/nextcloud-safe-html-viewer",
+  },
+  {
+    id: "manabi-map",
+    initials: "mm",
+    c: "#4aa3a0",
+    stars: 0,
+    cat: { ja: "Web サービス / TypeScript", en: "Web Service / TypeScript" },
+    short: {
+      ja: "住所を起点に通える高校を地図で見て、親子で比較・記録・検討できる進路管理サービス（群馬版 MVP・OSS）。",
+      en: "Map nearby high schools from your address and compare, record, and plan together — a career-planning service (Gunma MVP, OSS).",
+    },
+    long: {
+      ja: "自宅の住所を起点に、通える範囲の高校を地図で見ながら、親子で比較・記録・検討できる進路管理サービスです。群馬版の MVP として OSS で公開しています。",
+      en: "A career-planning service that maps commutable high schools from your home address and lets parent and child compare, record, and think it through together. Open-sourced as a Gunma-area MVP.",
+    },
+    tech: ["TypeScript", "Map", "Web"],
+    repo: "https://github.com/ishizakahiroshi/manabi-map",
+  },
+  {
+    id: "ai-log-clean",
+    initials: "al",
+    c: "#6f8a9e",
+    stars: 0,
+    cat: { ja: "CLI / クロスプラットフォーム", en: "CLI / Cross-platform" },
+    short: {
+      ja: "Claude Code・Codex・Copilot・Cursor・opencode・Grok の古いセッションログを自動で掃除する CLI。",
+      en: "Trim old session logs from Claude Code, Codex, Copilot, Cursor, opencode, and Grok — daily auto-clean.",
+    },
+    long: {
+      ja: "各種 AI コーディング CLI（Claude Code / Codex / Copilot / Cursor / opencode / Grok）が溜め込む古いセッションログを、保持期間を設定して毎日自動で掃除するクロスプラットフォーム CLI です。",
+      en: "A cross-platform CLI that trims the old session logs accumulated by AI coding CLIs (Claude Code, Codex, Copilot, Cursor, opencode, Grok), with configurable retention and daily auto-clean.",
+    },
+    tech: ["JavaScript", "Node.js", "CLI"],
+    repo: "https://github.com/ishizakahiroshi/ai-log-clean",
+  },
+  {
+    id: "claude-code-context-diet",
+    initials: "cc",
+    c: "#b0785a",
+    stars: 0,
+    cat: { ja: "ノウハウ / Claude Code", en: "Know-how / Claude Code" },
+    short: {
+      ja: "Claude Code の常駐 context をスリム化する手順集と簡易スキル。効くキーを見極めた実践知。",
+      en: "A guide and small skill for slimming down Claude Code's resident context — the keys that actually work.",
+    },
+    long: {
+      ja: "Claude Code の常駐 context を実際に減らすための手順集と簡易スキルです。permissions.deny では context は減らない、といった見落としがちな要点を、効くキーに絞って整理しています。",
+      en: "A guide and small skill for actually reducing Claude Code's resident context. It focuses on the keys that genuinely work — e.g. permissions.deny does not cut context — instead of folklore.",
+    },
+    tech: ["Claude Code", "Documentation"],
+    repo: "https://github.com/ishizakahiroshi/claude-code-context-diet",
   },
 ];
 
@@ -353,7 +606,9 @@ const I18N = {
     "about.p2": "X では、取り繕わずに思っていることをそのまま書いています。整えた発信より、実際に何を考えている人間かを見てもらった方が早い。尖って見える部分も含めて自分なので、合う方と気持ちよく組めればと思っています。",
     "footer.copy": "© 2026 ishizakahiroshi — 業務委託・受注のご相談はお気軽に。",
     "detail.back": "一覧へ戻る", "detail.overview": "Overview", "detail.tech": "Tech Stack", "detail.viewRepo": "GitHubで見る", "detail.viewStore": "Chrome ウェブストアで見る", "detail.viewLive": "ダッシュボードを開く",
+    "detail.screenshots": "スクリーンショット", "detail.features": "何ができる？", "detail.usage": "使い方", "detail.articles": "この作品について書いた記事",
     "detail.notfound": "作品が見つかりませんでした。",
+    "works.title": "すべての作品", "works.lead": "公開しているものを一覧にしています。トップには主要なものだけ出しています。", "works.back": "トップへ戻る", "works.count": "{n} 作品",
   },
   en: {
     "nav.works": "Works", "nav.experience": "Experience", "nav.cando": "Can Do", "nav.about": "About", "nav.person": "Life", "nav.articles": "Articles", "nav.contact": "Contact", "nav.stats": "Downloads",
@@ -392,7 +647,9 @@ const I18N = {
     "about.p2": "On X, I write what I actually think, unpolished. Rather than a curated feed, it's faster to just show you what kind of person I really am. The edges are part of me too — I'd rather work with people who genuinely fit.",
     "footer.copy": "© 2026 ishizakahiroshi — Open to contract work. Feel free to reach out.",
     "detail.back": "Back to list", "detail.overview": "Overview", "detail.tech": "Tech Stack", "detail.viewRepo": "View on GitHub", "detail.viewStore": "View on Chrome Web Store", "detail.viewLive": "Open dashboard",
+    "detail.screenshots": "Screenshots", "detail.features": "What it does", "detail.usage": "How to use", "detail.articles": "Articles about this",
     "detail.notfound": "Work not found.",
+    "works.title": "All works", "works.lead": "Everything I've published. The homepage shows only the highlights.", "works.back": "Back to home", "works.count": "{n} works",
   },
 };
 
@@ -513,51 +770,87 @@ function renderWorkStats(w, lang) {
   return { metaHtml, sparkHtml };
 }
 
-/** @param {Lang} lang */
+/* index（トップ）のカードに出す主要作品。この順で 9 枚並べ、10 枚目は「もっと見る」
+ * カード（works.html へ）にする。ここに無い作品は works.html（全作品）にのみ出る。 */
+const FEATURED_IDS = [
+  "many-ai-cli", "offline-md-editor-viewer", "dl-stats", "docsweep",
+  "ai-audit-prompts", "always-pinned", "PlainSheet", "setpanel", "ShotTTL",
+];
+
+/**
+ * 作品カード 1 枚（index / works.html 共通）。
+ * @param {Work} w
+ * @param {Lang} lang
+ * @param {number} i  アニメーション遅延用インデックス
+ * @returns {HTMLAnchorElement}
+ */
+function workCardEl(w, lang, i) {
+  const a = document.createElement("a");
+  a.className = "card reveal";
+  a.href = `work.html?id=${encodeURIComponent(w.id)}`;
+  a.style.setProperty("--c", w.c);
+  a.style.animationDelay = i * 0.06 + "s";
+  const { metaHtml, sparkHtml } = renderWorkStats(w, lang);
+  a.innerHTML =
+    badgeHtml(w) +
+    `<div class="cat">${w.cat[lang]}</div>` +
+    `<h3>${w.id}</h3>` +
+    `<p>${w.short[lang]}</p>` +
+    metaHtml +
+    sparkHtml +
+    `<span class="go">${t("card.go", lang)} <span class="arrow">→</span></span>`;
+  return a;
+}
+
+/**
+ * 10 枚目「もっと見る」カード。残りの作品を色バッジで予告し works.html へ誘導する。
+ * @param {Work[]} rest  featured に含まれない残りの作品
+ * @param {Lang} lang
+ * @param {number} i
+ * @returns {HTMLAnchorElement}
+ */
+function moreCardEl(rest, lang, i) {
+  const a = document.createElement("a");
+  a.className = "card card-more reveal";
+  a.href = "works.html";
+  a.style.animationDelay = i * 0.06 + "s";
+  const chips = rest
+    .map((w) => `<span class="mchip" style="background:${w.c}">${w.initials}</span>`)
+    .join("");
+  const unit = lang === "ja" ? "作品" : rest.length === 1 ? "work" : "works";
+  const desc = lang === "ja"
+    ? "拡張機能・CLI・自社インフラ系のツールたち。まだまだ作ってます。"
+    : "Extensions, CLIs, and self-hosted tooling — and more on the way.";
+  const cta = lang === "ja" ? "すべての作品を見る" : "See all works";
+  a.innerHTML =
+    `<div class="mcluster">${chips}</div>` +
+    `<div class="mcount">+${rest.length}<small>${unit}</small></div>` +
+    `<p>${desc}</p>` +
+    `<span class="go">${cta} <span class="arrow">→</span></span>`;
+  return a;
+}
+
+/** index（トップ）の WORKS：主要 9 枚 ＋ もっと見るカード
+ *  @param {Lang} lang */
 function renderWorks(lang) {
   const grid = document.getElementById("works-grid");
   if (!grid) return;
   grid.innerHTML = "";
-  WORKS.forEach((w, i) => {
-    const a = document.createElement("a");
-    a.className = "card reveal";
-    a.href = `work.html?id=${encodeURIComponent(w.id)}`;
-    a.style.setProperty("--c", w.c);
-    a.style.animationDelay = i * 0.06 + "s";
-    const { metaHtml, sparkHtml } = renderWorkStats(w, lang);
-    a.innerHTML =
-      badgeHtml(w) +
-      `<div class="cat">${w.cat[lang]}</div>` +
-      `<h3>${w.id}</h3>` +
-      `<p>${w.short[lang]}</p>` +
-      metaHtml +
-      sparkHtml +
-      `<span class="go">${t("card.go", lang)} <span class="arrow">→</span></span>`;
-    grid.appendChild(a);
-  });
-  // dl-stats ダッシュボードへの直リンク CTA カード（詳細ページではなく稼働中ダッシュボードを新タブで開く）
-  const cta = document.createElement("a");
-  cta.className = "card card-cta reveal";
-  cta.href = "https://dl-stats.ishizakahiroshi.workers.dev";
-  cta.target = "_blank";
-  cta.rel = "noopener";
-  cta.style.setProperty("--c", "#ff7a3d");
-  cta.style.animationDelay = WORKS.length * 0.06 + "s";
-  cta.setAttribute("aria-label", t("cta.stats.title", lang));
-  const ctaDesc = dlStatsCache
-    ? fillTemplate(t("cta.stats.descLive", lang), {
-        dl: dlStatsCache.cumulativeInstalls.toLocaleString(lang === "ja" ? "ja-JP" : "en-US"),
-        stars: dlStatsCache.totalStars,
-      })
-    : t("cta.stats.desc", lang);
-  cta.innerHTML =
-    `<div class="badge" style="--c:#ff7a3d">DL</div>` +
-    `<div class="cat">${t("cta.stats.cat", lang)}</div>` +
-    `<h3>${t("cta.stats.title", lang)}</h3>` +
-    `<p>${ctaDesc}</p>` +
-    `<div class="meta"></div>` +
-    `<span class="go">${t("cta.stats.go", lang)} <span class="arrow">→</span></span>`;
-  grid.appendChild(cta);
+  const featured = /** @type {Work[]} */ (
+    FEATURED_IDS.map((id) => WORKS.find((w) => w.id === id)).filter(Boolean)
+  );
+  featured.forEach((w, i) => grid.appendChild(workCardEl(w, lang, i)));
+  const rest = WORKS.filter((w) => !FEATURED_IDS.includes(w.id));
+  if (rest.length > 0) grid.appendChild(moreCardEl(rest, lang, featured.length));
+}
+
+/** works.html（全作品）の WORKS：全件を配列順に描画
+ *  @param {Lang} lang */
+function renderWorksAll(lang) {
+  const grid = document.getElementById("works-grid-all");
+  if (!grid) return;
+  grid.innerHTML = "";
+  WORKS.forEach((w, i) => grid.appendChild(workCardEl(w, lang, i)));
 }
 
 /** @param {Lang} lang */
@@ -1080,6 +1373,7 @@ async function fetchDlStats() {
     const lang = getLang();
     renderStats(lang);
     renderWorks(lang);
+    renderWorksAll(lang);
     renderDetail(lang);
   } catch (e) {
     console.warn("dl-stats fetch failed", e);
@@ -1133,6 +1427,27 @@ function renderPersona(lang) {
   });
 }
 
+/**
+ * 記事が作品に関連するかを、記事の文言（タイトル / 概要 / タグ ja+en）に
+ * 作品名が含まれるかで判定する。判定キーは 3 種:
+ *   - 作品 id そのまま（例 "many-ai-cli"・大文字小文字無視）
+ *   - ハイフン/アンダースコアを空白にした形（"many ai cli"）
+ *   - 記号を除去した圧縮形（"manyaicli"／5 文字以上のときだけ・短い id の誤爆防止）
+ * @param {Article} a
+ * @param {Work} w
+ * @returns {boolean}
+ */
+function articleMatchesWork(a, w) {
+  const id = w.id.toLowerCase();
+  const spaced = id.replace(/[-_]/g, " ");
+  const compact = id.replace(/[-_\s]/g, "");
+  const hay = [a.title?.ja, a.title?.en, a.short?.ja, a.short?.en, a.tag?.ja, a.tag?.en]
+    .filter(Boolean).join(" ").toLowerCase();
+  if (hay.includes(id) || hay.includes(spaced)) return true;
+  if (compact.length >= 5 && hay.replace(/[-_\s]/g, "").includes(compact)) return true;
+  return false;
+}
+
 /** @param {Lang} lang */
 function renderDetail(lang) {
   const root = document.getElementById("detail-root");
@@ -1148,17 +1463,81 @@ function renderDetail(lang) {
   document.title = `${w.id} — ${PROFILE.nameEn}`;
   root.style.setProperty("--c", w.c);
   const { metaHtml, sparkHtml } = renderWorkStats(w, lang);
-  root.innerHTML =
+
+  // ヒーロー（tagline は任意）
+  const taglineHtml = w.tagline ? `<p class="detail-tagline">${w.tagline[lang]}</p>` : "";
+  const head =
     `<div class="detail-head" style="--c:${w.c}">` +
     badgeHtml(w) +
-    `<div><div class="cat">${w.cat[lang]}</div><h1>${w.id}</h1>${metaHtml}${sparkHtml}</div>` +
-    `</div>` +
+    `<div><div class="cat">${w.cat[lang]}</div><h1>${w.id}</h1>${taglineHtml}${metaHtml}${sparkHtml}</div>` +
+    `</div>`;
+
+  // スクリーンショット（任意・shots が 1 枚以上あるときだけ）
+  let shotsHtml = "";
+  if (Array.isArray(w.shots) && w.shots.length > 0) {
+    const imgs = w.shots
+      .map((src) => `<figure class="dshot"><img src="${src}" alt="" loading="lazy" decoding="async"></figure>`)
+      .join("");
+    shotsHtml = `<h2>${t("detail.screenshots", lang)}</h2><div class="dshots">${imgs}</div>`;
+  }
+
+  // 何ができる（任意）
+  let featsHtml = "";
+  if (Array.isArray(w.features) && w.features.length > 0) {
+    const cards = w.features
+      .map((f) => `<div class="dfeat"><div class="dfeat-ic">${f.icon}</div><h4>${f.title[lang]}</h4><p>${f.desc[lang]}</p></div>`)
+      .join("");
+    featsHtml = `<h2>${t("detail.features", lang)}</h2><div class="dfeats">${cards}</div>`;
+  }
+
+  // 使い方（任意）
+  let usageHtml = "";
+  if (w.usage) {
+    const u = w.usage;
+    const lines = [];
+    if (u.install) lines.push(`<code class="cline">${u.install}</code>`);
+    if (u.run) lines.push(`<code class="cline">${u.run}</code>`);
+    const codeBlock = lines.length ? `<div class="dcode">${lines.join("")}</div>` : "";
+    const steps = Array.isArray(u.steps) && u.steps.length > 0
+      ? `<ol class="dsteps">${u.steps.map((s) => `<li>${s[lang]}</li>`).join("")}</ol>`
+      : "";
+    usageHtml = `<h2>${t("detail.usage", lang)}</h2>${codeBlock}${steps}`;
+  }
+
+  // 関連記事（自動）：articles.json（articlesList）から作品名の文言マッチで抽出する。
+  // 作品側・記事側に手作業は不要。記事を articles.json に足すだけで自動で紐づく。
+  let artsHtml = "";
+  const matched = Array.isArray(articlesList) ? articlesList.filter((a) => articleMatchesWork(a, w)) : [];
+  if (matched.length > 0) {
+    const platLabels = { zenn: "Zenn", note: "note", qiita: "Qiita", html: lang === "ja" ? "HTML版" : "HTML" };
+    const rows = matched
+      .map((a) => {
+        const url = primaryArticleLink(a.links);
+        if (!url) return "";
+        const badges = articlePlatforms(a.links)
+          .map((p) => `<span class="dpf dpf-${p}">${platLabels[p]}</span>`)
+          .join("");
+        const ext = url.startsWith("articles/") ? "" : ` target="_blank" rel="noopener noreferrer"`;
+        return `<a class="dart" href="${url}"${ext}><span class="dpfs">${badges}</span>` +
+          `<span class="dart-t">${a.title[lang] || a.title.ja}</span><span class="dart-ar" aria-hidden="true">▶</span></a>`;
+      })
+      .join("");
+    artsHtml = `<h2>${t("detail.articles", lang)}</h2><div class="darts">${rows}</div>`;
+  }
+
+  const body =
     `<div class="detail-body" style="--c:${w.c}">` +
+    shotsHtml +
     `<h2>${t("detail.overview", lang)}</h2><p>${w.long[lang]}</p>` +
+    featsHtml +
+    usageHtml +
     `<h2>${t("detail.tech", lang)}</h2><div class="tech-tags">${w.tech.map((x) => `<span class="chip">${x}</span>`).join("")}</div>` +
+    artsHtml +
     `<div class="detail-cta"><a class="btn primary" href="${w.repo}" target="_blank" rel="noopener">${t("detail.viewRepo", lang)} <span class="arrow">→</span></a>` +
     (w.store ? `<a class="btn ghost" href="${w.store}" target="_blank" rel="noopener">${t("detail.viewStore", lang)} <span class="arrow">→</span></a>` : "") +
     (w.live ? `<a class="btn ghost" href="${w.live}" target="_blank" rel="noopener">${t("detail.viewLive", lang)} <span class="arrow">→</span></a>` : "") +
     `</div>` +
     `</div>`;
+
+  root.innerHTML = head + body;
 }

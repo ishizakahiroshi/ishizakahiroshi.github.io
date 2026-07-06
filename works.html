@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Work — ishizakahiroshi</title>
-<meta name="description" content="ishizakahiroshi のポートフォリオ作品詳細。実務18年のシステムエンジニア。バックエンド・インフラ・AI連携。業務委託・受注 受付中。">
+<title>All Works — ishizakahiroshi</title>
+<meta name="description" content="ishizakahiroshi が公開しているすべての作品一覧。CLI・ブラウザ拡張・Web ダッシュボード・自社インフラ系ツールまで。">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <meta property="og:type" content="website">
-<meta property="og:title" content="ishizakahiroshi — Software Engineer Portfolio">
-<meta property="og:description" content="実務18年のシステムエンジニア。バックエンド・インフラ・AI連携。業務委託・受注 受付中。">
+<meta property="og:title" content="All Works — ishizakahiroshi">
+<meta property="og:description" content="公開しているすべての作品一覧。">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,8 +36,12 @@
 
 <section class="detail">
   <div class="wrap">
-    <a class="back" href="index.html#works">← <span data-i18n="detail.back">一覧へ戻る</span></a>
-    <div id="detail-root"></div>
+    <a class="back" href="index.html#works">← <span data-i18n="works.back">トップへ戻る</span></a>
+    <div class="works-head">
+      <h1 data-i18n="works.title">すべての作品</h1>
+      <p data-i18n="works.lead">公開しているものを一覧にしています。トップには主要なものだけ出しています。</p>
+    </div>
+    <div class="grid" id="works-grid-all"></div>
   </div>
 </section>
 
@@ -61,13 +65,12 @@
   document.getElementById("link-note").href = PROFILE.note;
   document.getElementById("link-github").href = PROFILE.github;
 
+  // 言語切替時に全作品グリッドを再描画
   window.__rerender = function (lang) {
-    renderDetail(lang);
+    renderWorksAll(lang);
   };
-  initLangToggle();
-  fetchDlStats();
-  // 記事データを読み込み、完了後に詳細ページを再描画（関連記事を articles.json から自動抽出）
-  loadArticles().then(() => renderDetail(getLang()));
+  initLangToggle();   // 初回描画も __rerender 経由で走る
+  fetchDlStats();     // stars / DL 取得後に再描画
 </script>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b17fba99b7794695bff268ab90824f71"}'></script><!-- End Cloudflare Web Analytics -->
 </body>

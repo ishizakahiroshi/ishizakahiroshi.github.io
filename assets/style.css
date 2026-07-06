@@ -339,3 +339,66 @@ footer a.pill:hover, .links a.pill:hover { transform: translate(-2px,-2px); box-
   transition: transform 0.15s, box-shadow 0.15s, background 0.15s, color 0.15s;
 }
 .loadmore-btn:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--accent); }
+
+/* ===== 10 枚目「もっと見る」カード（index） ===== */
+.card-more {
+  justify-content: center; align-items: flex-start; border-style: dashed;
+  background: linear-gradient(180deg, #fff8ef, var(--card));
+}
+.card-more .mcluster { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+.card-more .mchip {
+  width: 34px; height: 34px; border-radius: 10px; border: 2px solid var(--ink);
+  box-shadow: 1px 2px 0 var(--ink); display: flex; align-items: center; justify-content: center;
+  font-family: var(--display); font-weight: 800; font-size: 0.7rem; color: #fff; letter-spacing: -0.02em;
+}
+.card-more .mcount { font-family: var(--display); font-weight: 800; font-size: 2.1rem; line-height: 1; margin-bottom: 8px; }
+.card-more .mcount small { font-size: 0.9rem; margin-left: 6px; color: var(--ink-soft); font-weight: 700; }
+.card-more p { font-size: 0.9rem; color: var(--ink-soft); flex: 0; margin-bottom: 16px; }
+
+/* ===== スマホ：作品カードを横スワイプ（scroll-snap）にする =====
+ * index の #works-grid のみ対象。works.html の #works-grid-all は通常グリッドのまま。 */
+@media (max-width: 560px) {
+  #works-grid {
+    display: flex; grid-template-columns: none; zoom: 1;
+    gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory;
+    margin: 0 -18px; padding: 4px 18px 16px; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  #works-grid::-webkit-scrollbar { display: none; }
+  #works-grid > .card { flex: 0 0 80%; scroll-snap-align: start; }
+}
+
+/* ===== 詳細ページ リッチ表示（tagline / スクショ / 機能 / 使い方 / 記事） ===== */
+.detail-tagline { font-family: var(--display); font-weight: 700; font-size: 1.15rem; color: var(--ink); margin: 10px 0 12px; max-width: 640px; line-height: 1.5; }
+.dshots { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.dshots:has(figure:nth-child(2)) { grid-template-columns: 1fr 1fr; }
+.dshot { margin: 0; border: 2px solid var(--ink); border-radius: 16px; overflow: hidden; box-shadow: 4px 5px 0 var(--line); background: #fff; }
+.dshot img { display: block; width: 100%; height: auto; }
+.dfeats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.dfeat { border: 2px solid var(--ink); border-radius: 16px; padding: 18px 18px; background: var(--card); box-shadow: 4px 5px 0 color-mix(in srgb, var(--c, var(--accent)) 60%, transparent); }
+.dfeat-ic { width: 40px; height: 40px; border-radius: 12px; border: 2px solid var(--ink); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: color-mix(in srgb, var(--c, var(--accent)) 16%, #fff); margin-bottom: 12px; }
+.dfeat h4 { font-family: var(--display); font-weight: 700; font-size: 1.02rem; margin-bottom: 6px; }
+.dfeat p { font-size: 0.9rem; color: var(--ink-soft); }
+.dcode { background: #241f1a; color: #f4ece1; border: 2px solid var(--ink); border-radius: 14px; padding: 16px 18px; box-shadow: 4px 5px 0 var(--line); font-family: "SFMono-Regular", Consolas, monospace; font-size: 0.9rem; overflow-x: auto; }
+.dcode .cline { display: block; white-space: pre; line-height: 1.95; }
+.dcode .cline::before { content: "$ "; color: #e2a06a; }
+.dsteps { margin: 16px 0 0; padding: 0; list-style: none; counter-reset: st; }
+.dsteps li { counter-increment: st; position: relative; padding: 3px 0 12px 40px; font-size: 0.96rem; color: var(--ink); }
+.dsteps li::before { content: counter(st); position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--ink); background: var(--c, var(--accent)); color: #fff; font-family: var(--display); font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; box-shadow: 1px 2px 0 var(--ink); }
+.darts { display: flex; flex-direction: column; gap: 10px; }
+.dart { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; border: 2px solid var(--ink); border-radius: 14px; padding: 12px 16px; background: var(--card); box-shadow: 3px 4px 0 var(--line); transition: transform 0.16s, box-shadow 0.16s; }
+.dart:hover { transform: translate(-2px, -2px); box-shadow: 5px 6px 0 var(--c, var(--accent)); }
+.dpf { font-family: var(--display); font-weight: 800; font-size: 0.66rem; letter-spacing: 0.04em; text-transform: uppercase; color: #fff; padding: 3px 9px; border-radius: 8px; border: 2px solid var(--ink); flex-shrink: 0; }
+.dpfs { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; }
+.dpf-note { background: #41c9b4; } .dpf-zenn { background: #3ea8ff; } .dpf-qiita { background: #55c500; } .dpf-html { background: #7a6f63; }
+.dart-t { flex: 1; font-size: 0.95rem; }
+.dart-ar { color: var(--ink-soft); }
+
+/* ===== works.html（全作品ページ）ヘッダ ===== */
+.works-head { margin-bottom: 30px; }
+.works-head h1 { font-family: var(--display); font-weight: 700; font-size: clamp(1.8rem, 4.5vw, 2.6rem); letter-spacing: -0.01em; margin-bottom: 8px; }
+.works-head p { color: var(--ink-soft); font-size: 0.98rem; max-width: 640px; }
+
+@media (max-width: 600px) {
+  .dfeats { grid-template-columns: 1fr; }
+  .dshots:has(figure:nth-child(2)) { grid-template-columns: 1fr; }
+}
