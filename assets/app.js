@@ -697,8 +697,13 @@ function renderArticleFilters(lang) {
   const listEl = document.getElementById("articles-list");
   if (!listEl || !listEl.parentNode) return;
 
-  // 既存 bar を撤去
+  // 既存 bar を撤去。ただし検索 input 要素は再利用する（毎キーで作り直すと
+  // IME 合成状態と focus が飛び、日本語入力で「1文字だけ入って以降は反映されない・
+  // 削除も効かない」現象になるため）。
   const existing = document.getElementById("articles-filters");
+  const preservedSearchInput = /** @type {HTMLInputElement | null} */ (
+    existing ? existing.querySelector("#articles-search-input") : null
+  );
   if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
 
   if (articlesState !== "ready") return;
@@ -728,18 +733,30 @@ function renderArticleFilters(lang) {
   // 検索 input（タブ・タグと AND で重ねがけ）
   const searchRow = document.createElement("div");
   searchRow.className = "articles-search";
-  const searchInput = document.createElement("input");
-  searchInput.type = "search";
-  searchInput.id = "articles-search-input";
-  searchInput.value = searchQuery;
+  const searchInput = preservedSearchInput || document.createElement("input");
+  if (!preservedSearchInput) {
+    searchInput.type = "search";
+    searchInput.id = "articles-search-input";
+    searchInput.value = searchQuery;
+    // 合成中（IME 変換中）は再描画しない。commit（compositionend）時に一度だけ再描画。
+    let composing = false;
+    searchInput.addEventListener("compositionstart", () => { composing = true; });
+    searchInput.addEventListener("compositionend", () => {
+      composing = false;
+      searchQuery = searchInput.value;
+      resetArticleVisibleCount();
+      renderArticles(getLang());
+    });
+    searchInput.addEventListener("input", () => {
+      if (composing) return;
+      searchQuery = searchInput.value;
+      resetArticleVisibleCount();
+      renderArticles(getLang());
+    });
+  }
   searchInput.placeholder = lang === "ja"
     ? "記事を検索 (タイトル / 概要 / タグ)"
     : "Search articles (title / summary / tag)";
-  searchInput.addEventListener("input", () => {
-    searchQuery = searchInput.value;
-    resetArticleVisibleCount();
-    renderArticles(getLang());
-  });
   searchRow.appendChild(searchInput);
   bar.appendChild(searchRow);
 
