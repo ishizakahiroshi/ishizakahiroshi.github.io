@@ -7,6 +7,40 @@
     {
       "date": "2026-07-06",
       "title": {
+        "ja": "個人開発の Web 進路サービスに Supabase + LINE + Cloudflare Pages を組み合わせて起きた落とし穴の記録",
+        "en": "Pitfalls I ran into combining Supabase, LINE Login, and Cloudflare Pages in a personal web project"
+      },
+      "short": {
+        "ja": "群馬の高校を地図で選ぶ進路サービス manabi-map を、専用 API サーバーなしで Supabase + LINE + Cloudflare Pages で組み上げました。LINE 認証の HS256 問題、schools 静的化、backup workflow の password fragment 漏洩事故と split-secret 化、Supabase Free の IPv6 only 問題まで落とし穴を並べて書きました。",
+        "en": "Built manabi-map without a dedicated API server: Supabase + LINE + Cloudflare Pages. Wrote about the LINE HS256 problem, static schools.json to survive the Supabase free tier, a password-fragment leak in the backup workflow that split-secret + PGPASSWORD structurally prevents, and Supabase Free's IPv6-only direct connection."
+      },
+      "tag": { "ja": "設計判断", "en": "Design decision" },
+      "hero": "articles/2026/2026-07-06_manabi-map-supabase-line-cloudflare-lessons/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-06_manabi-map-supabase-line-cloudflare-lessons/",
+        "zenn": "https://zenn.dev/ishizakahiroshi/articles/20260706-manabi-map-supabase-line-cloudflare"
+      }
+    },
+    {
+      "date": "2026-07-06",
+      "title": {
+        "ja": "高校選び、地図とメモで家族会議しやすくしてみました（群馬版・無料）",
+        "en": "A family notebook for choosing a high school on a map (Gunma edition, free)"
+      },
+      "short": {
+        "ja": "住所を入れると通える高校が地図に出て、気になる学校をお気に入りしてメモを家族で共有できる Web サービス Manabi Map を、群馬県版として無料公開しました。中学生と保護者向け・偏差値サイトの引き算ではなく足し算の道具として作った話を書きました。",
+        "en": "Manabi Map is a free web app where entering a home address surfaces reachable high schools on a map, lets you favorite them, and share family notes per school. Wrote about why this is an addition rather than a subtraction from ranking sites."
+      },
+      "tag": { "ja": "ツール紹介", "en": "Tool intro" },
+      "hero": "articles/2026/2026-07-06_manabi-map-family-map-guide/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-06_manabi-map-family-map-guide/",
+        "note": "https://note.com/ishizakahiroshi/n/nb47913a89072"
+      }
+    },
+    {
+      "date": "2026-07-06",
+      "title": {
         "ja": "モバイルだけじゃなかった。many-ai-cli v0.4.0 に「指揮者」と子セッションを足した",
         "en": "Not just mobile: many-ai-cli v0.4.0 got a conductor and child sessions"
       },
