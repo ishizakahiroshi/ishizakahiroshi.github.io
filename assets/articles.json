@@ -7,6 +7,22 @@
     {
       "date": "2026-07-06",
       "title": {
+        "ja": "モバイルだけじゃなかった。many-ai-cli v0.4.0 に「指揮者」と子セッションを足した",
+        "en": "Not just mobile: many-ai-cli v0.4.0 got a conductor and child sessions"
+      },
+      "short": {
+        "ja": "v0.4.0 で入れたのはスマホ画面の刷新だけではありません。1 本の Claude Code を指揮者にして子セッションを spawn できる軽量オーケストレーション、Grok と opencode を足して 6 provider 対応にした話、Workbench と内蔵チャットプロキシの撤去で Sonnet 5 の 1M context が Hub 経由でも戻ってきた副次効果までを 1 本でまとめました。",
+        "en": "v0.4.0 shipped more than the mobile rework: a light orchestration API that lets a conductor session spawn child sessions, added Grok Build CLI and opencode to reach 6 providers, and retired the Workbench tab and Hub-internal chat proxy — which as a side effect brought back Sonnet 5's default 1M context window under the Hub."
+      },
+      "tag": { "ja": "ツール紹介", "en": "Tool intro" },
+      "hero": "articles/2026/2026-07-06_many-ai-cli-orchestration-and-providers-v040/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-06_many-ai-cli-orchestration-and-providers-v040/"
+      }
+    },
+    {
+      "date": "2026-07-06",
+      "title": {
         "ja": "初めての Firefox 拡張、2 回落ちてから 3 日で公開された",
         "en": "My first Firefox extension: rejected twice, published 3 days later"
       },
