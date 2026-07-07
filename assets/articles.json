@@ -7,6 +7,23 @@
     {
       "date": "2026-07-07",
       "title": {
+        "ja": "echo password | sudo -S は危ない。認証キャッシュでパスワードがファイルに漏れることがある",
+        "en": "echo password | sudo -S is dangerous: the sudo auth cache can leak your password into the served file"
+      },
+      "short": {
+        "ja": "パスワードとファイルの中身を同じ標準入力に混ぜて sudo -S に渡すと、認証キャッシュが効いている時に 1 行目のパスワードが消費されず、公開ファイルにそのまま書き込まれて外部露出することがあります。実際にやってしまった事故から、sudo -S の挙動と認証キャッシュの関係、そして一時ファイル + sudo cp で経路を分ける直し方までを記録しました。",
+        "en": "Piping a password and file content into the same stdin for sudo -S can leak the password: when the sudo auth cache is warm, sudo does not consume the first line, so the password gets written into a publicly served file. A log of why it happens and how splitting the paths with a temp file and sudo cp fixes it."
+      },
+      "tag": { "ja": "失敗談", "en": "Failure story" },
+      "hero": "articles/2026/2026-07-07_sudo-s-stdin-password-leak/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-07_sudo-s-stdin-password-leak/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/b8cf987e4d3f9bd3a678"
+      }
+    },
+    {
+      "date": "2026-07-07",
+      "title": {
         "ja": "PHP 8.3 の JIT に「string を渡したのに string 型じゃない」と怒られて全ページ 500 になった話",
         "en": "PHP 8.3 JIT miscompiled a function and threw 'must be of type string, string given', taking down every page with HTTP 500"
       },
