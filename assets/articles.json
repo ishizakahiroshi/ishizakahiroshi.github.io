@@ -7,6 +7,39 @@
     {
       "date": "2026-07-07",
       "title": {
+        "ja": "PHP 8.3 の JIT に「string を渡したのに string 型じゃない」と怒られて全ページ 500 になった話",
+        "en": "PHP 8.3 JIT miscompiled a function and threw 'must be of type string, string given', taking down every page with HTTP 500"
+      },
+      "short": {
+        "ja": "朝いちで Nextcloud が全ページ 500。きっかけはアプリを入れた直後でしたが、犯人はアプリではなく PHP 8.3 の JIT でした。opcache との違いから、JIT が theming の色取得コードを誤コンパイルして『string を渡したのに string 型じゃない』と怒る仕組み、そして JIT を切ってよい理由までを切り分けの記録としてまとめました。",
+        "en": "One morning Nextcloud returned HTTP 500 on every page, right after installing an app. But the culprit was not the app, it was PHP 8.3's JIT. Starting from how JIT differs from opcache, this is a debugging log of how the JIT miscompiled the theming color code and threw the self-contradictory 'must be of type string, string given', and why turning JIT off is the right call."
+      },
+      "tag": { "ja": "失敗談", "en": "Debug story" },
+      "hero": "articles/2026/2026-07-07_php83-jit-preg-match-bug/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-07_php83-jit-preg-match-bug/",
+        "zenn": "https://zenn.dev/ishizakahiroshi/articles/20260707-php83-jit-preg-match-bug"
+      }
+    },
+    {
+      "date": "2026-07-07",
+      "title": {
+        "ja": "OneDrive を消したのにデスクトップが OneDrive のまま。犯人はレジストリの既知フォルダー設定だった",
+        "en": "OneDrive uninstalled but the Desktop still points to OneDrive: the culprit was a leftover Known Folder registry setting"
+      },
+      "short": {
+        "ja": "Windows 11 で OneDrive をアンインストールした後、クイックアクセスに登録した「デスクトップ」が別のフォルダーを開く二重状態になりました。GetFolderPath は OneDrive 側を返すのにクイックアクセスは別を開く。原因は Known Folder（User Shell Folders）の参照先が OneDrive 配下を指したまま取り残されていたことで、レジストリ 1 行で直した切り分けの記録です。",
+        "en": "After uninstalling OneDrive on Windows 11, the 'Desktop' pinned to Quick Access opened a different folder. GetFolderPath returned the OneDrive side while Quick Access opened another. The cause was a leftover Known Folder (User Shell Folders) entry still pointing under OneDrive. A single registry line fixed it."
+      },
+      "tag": { "ja": "失敗談", "en": "Failure story" },
+      "hero": "articles/2026/2026-07-07_onedrive-desktop/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-07_onedrive-desktop/"
+      }
+    },
+    {
+      "date": "2026-07-07",
+      "title": {
         "ja": "AIエージェント用のツールを「どのシェルからでも呼べる」設計にして失敗した話",
         "en": "How making an AI-agent helper callable from any shell backfired (Windows / Claude Code)"
       },
