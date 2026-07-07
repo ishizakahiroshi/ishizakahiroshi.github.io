@@ -7,7 +7,7 @@
 <meta name="description" content="Windows 11 で OneDrive をアンインストールした後、クイックアクセスの『デスクトップ』が別フォルダーを開く二重状態に。原因は Known Folder（User Shell Folders）が OneDrive 側を指したまま残っていたこと。レジストリ 1 行で直した切り分けの記録です。">
 <meta name="author" content="ishizakahiroshi">
 
-<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-07-07_onedrive-desktop/">
+<link rel="canonical" href="https://qiita.com/ishizakahiroshi/items/91489b13b6983043e39e">
 
 <meta property="og:title" content="OneDrive を消したのにデスクトップが OneDrive のまま。犯人はレジストリの既知フォルダー設定だった">
 <meta property="og:description" content="OneDrive をアンインストールした後にデスクトップの参照先が二重になった。原因は既知フォルダー（User Shell Folders）の設定残りで、レジストリ 1 行で直した話。">
@@ -36,7 +36,7 @@
   "datePublished": "2026-07-07",
   "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
   "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
-  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-07-07_onedrive-desktop/"
+  "mainEntityOfPage": "https://qiita.com/ishizakahiroshi/items/91489b13b6983043e39e"
 }
 </script>
 
@@ -76,6 +76,14 @@
   .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
   .info{margin:14px 0 22px;padding:12px 18px;border-radius:12px;
         background:#fffdf8;border:2px dashed var(--line);color:var(--ink-soft);font-size:0.92rem}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;
+             padding:7px 16px;border-radius:999px;font-family:var(--display);
+             font-weight:700;font-size:0.86rem;text-decoration:none;
+             border:2px solid var(--ink);color:#fff;
+             box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-qiita{background:#55c500}
   .figwrap{margin:22px 0;border:2px solid var(--ink);border-radius:16px;overflow:hidden;
            box-shadow:4px 5px 0 var(--line)}
   .figwrap img{display:block;width:100%;height:auto}
@@ -105,13 +113,8 @@
 Windows 11 で OneDrive をアンインストールした後、クイックアクセスに登録した「デスクトップ」が別のフォルダーを開く二重状態に。原因は Known Folder（既知フォルダー）の設定が OneDrive 側を指したまま残っていたことでした。レジストリ 1 行で直した切り分けの記録です。
 </p>
 
-<!-- 各プラットフォーム導線（投稿後ヘルパーで有効化） -->
-<!-- <div class="plat-row">
-  <a class="plat-pill plat-zenn" href="__ZENN_URL_TBD__" target="_blank" rel="noopener">Zenn で読む →</a>
-</div> -->
-
-<div class="info">
-Zenn 投稿予定です。投稿後に各プラットフォームへの導線を追記します。
+<div class="plat-row">
+  <a class="plat-pill plat-qiita" href="https://qiita.com/ishizakahiroshi/items/91489b13b6983043e39e" target="_blank" rel="noopener">Qiita で読む →</a>
 </div>
 
 <h2>何が起きたか</h2>
