@@ -7,7 +7,7 @@
 <meta name="description" content="朝いちで Nextcloud が全ページ 500。きっかけはアプリを入れた直後。でも犯人はアプリではなく PHP 8.3 の JIT でした。opcache との違いから、JIT が theming を誤コンパイルして『string を渡したのに string 型じゃない』と怒る仕組み、そして JIT を切ってよい理由までを切り分けの記録として書きました。">
 <meta name="author" content="ishizakahiroshi">
 
-<link rel="canonical" href="https://zenn.dev/ishizakahiroshi/articles/20260707-php83-jit-preg-match-bug">
+<link rel="canonical" href="https://qiita.com/ishizakahiroshi/items/b8d5bb5e323f03ec8200">
 
 <meta property="og:title" content="PHP 8.3 の JIT に「string を渡したのに string 型じゃない」と怒られて全ページ 500 になった話">
 <meta property="og:description" content="きっかけはアプリを入れた直後。でも犯人は PHP 8.3 の JIT でした。opcache との違いから、JIT を切ってよい理由までを切り分けの記録として。">
@@ -36,7 +36,7 @@
   "datePublished": "2026-07-07",
   "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
   "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
-  "mainEntityOfPage": "https://zenn.dev/ishizakahiroshi/articles/20260707-php83-jit-preg-match-bug"
+  "mainEntityOfPage": "https://qiita.com/ishizakahiroshi/items/b8d5bb5e323f03ec8200"
 }
 </script>
 
@@ -82,6 +82,7 @@
              box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
   .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
   .plat-zenn{background:#3ea8ff}
+  .plat-qiita{background:#55c500}
   .figrow{margin:22px 0}
   .figrow img{display:block;width:100%;height:auto;border:2px solid var(--ink);border-radius:14px}
   .figcap{font-size:0.86rem;color:var(--ink-soft);margin-top:6px}
@@ -111,7 +112,7 @@
 </p>
 
 <div class="plat-row">
-  <a class="plat-pill plat-zenn" href="https://zenn.dev/ishizakahiroshi/articles/20260707-php83-jit-preg-match-bug" target="_blank" rel="noopener">Zenn で読む →</a>
+  <a class="plat-pill plat-qiita" href="https://qiita.com/ishizakahiroshi/items/b8d5bb5e323f03ec8200" target="_blank" rel="noopener">Qiita で読む →</a>
 </div>
 
 <h2>この記事のテーマ</h2>
