@@ -5,6 +5,23 @@
   },
   "articles": [
     {
+      "date": "2026-07-08",
+      "title": {
+        "ja": "Claude Fable 5 でも 30% でコンテキスト汚染は起きた ― 前回の Opus 4.8 続編、jsonl 検証と Anthropic への issue 報告まで",
+        "en": "Claude Fable 5 also hit context pollution at 30%: a jsonl-verified log of self-turn hallucination, from incident to Anthropic issue report"
+      },
+      "short": {
+        "ja": "前作の Opus 4.8 記事の続編です。Fable 5 のセッションが 30%（304.8k / 1M）を超えたあたりで、応答末尾に『私の口調』の偽ユーザー発言が生成される事故に遭遇しました。jsonl を追って生成時の自走だと確定させ、なぜ起きるかを 5 つの仕組みで整理し、Anthropic 公式 issue #67606 / #64260 / #68722 と Chroma 2025 論文『Context Rot』で裏を取り、Anthropic に issue #75655 として報告するところまで書いた記録です。",
+        "en": "Sequel to the Opus 4.8 context-pollution piece. Claude Fable 5, at roughly 30% of the 1M context (304.8k tokens), started emitting a fake first-person user turn at the end of its own assistant response, and then treated that fabricated request as a real user intent in the next turn. Verified via direct jsonl grep. This piece breaks down why it happens (5 mechanics: next-token prior, attention dilution, role-boundary drift, narrative lock-in, mode-transition ignition), corroborates with Anthropic issues #67606 / #64260 / #68722 and Chroma's 2025 Context Rot paper, and closes with the report I filed as Anthropic issue #75655."
+      },
+      "tag": { "ja": "失敗談", "en": "Failure story" },
+      "hero": "articles/2026/2026-07-08_fable5-context-pollution-sequel/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-08_fable5-context-pollution-sequel/",
+        "note": "https://note.com/ishizakahiroshi"
+      }
+    },
+    {
       "date": "2026-07-07",
       "title": {
         "ja": "echo password | sudo -S は危ない。認証キャッシュでパスワードがファイルに漏れることがある",
