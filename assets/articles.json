@@ -7,6 +7,23 @@
     {
       "date": "2026-07-08",
       "title": {
+        "ja": "Windows の Codex CLI が WSL bash を勝手に使う問題を、Git Bash に固定して解決する",
+        "en": "Codex CLI on Windows grabs WSL bash by mistake: pinning it to Git Bash with agent_shell"
+      },
+      "short": {
+        "ja": "Windows で Codex CLI に .sh を実行させたら、Git Bash が PATH に居るのに WSL bash が起動して CRLF で失敗。原因は PATH を見ない bash 解決(公式 issue #3159)でした。config.toml の [windows] agent_shell = \"git-bash\"(issue #16717 で実装)で固定し、グローバル AGENTS.md の WSL 禁止指示を保険にする二重対策と、uname による検証方法をまとめました。",
+        "en": "Asking Codex CLI to run a .sh script on Windows launched WSL bash even though Git Bash was on PATH, and the script failed on CRLF. The cause: Codex resolves bash without consulting PATH (issue #3159). Pinning the shell with [windows] agent_shell = \"git-bash\" in config.toml (implemented via issue #16717), plus a WSL-ban note in the global AGENTS.md as a backstop, and verifying with uname."
+      },
+      "tag": { "ja": "小ネタ", "en": "Quick tip" },
+      "hero": "articles/2026/2026-07-08_codex-wsl-bash-gitbash/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-08_codex-wsl-bash-gitbash/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/acec7f7c24db713cfcbe"
+      }
+    },
+    {
+      "date": "2026-07-08",
+      "title": {
         "ja": "Obsidian を見送った続き: 組織の暗黙知は 4 枚の CSV で足りている",
         "en": "After passing on Obsidian: four thin CSVs cover a team's tacit knowledge"
       },
