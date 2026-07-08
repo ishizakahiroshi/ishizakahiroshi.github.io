@@ -7,6 +7,23 @@
     {
       "date": "2026-07-08",
       "title": {
+        "ja": "Obsidian を見送った続き: 組織の暗黙知は 4 枚の CSV で足りている",
+        "en": "After passing on Obsidian: four thin CSVs cover a team's tacit knowledge"
+      },
+      "short": {
+        "ja": "個人で始めた「薄いマスタデータ」運用を 3 人のチームに広げて 3 週間。組織の資料に落ちていないメタ情報（担当・呼称・連携関係）を、4 枚の CSV 台帳と 3 層分離（住所録・金庫・引き出し）、AI の話題トリガー参照で全員と AI が使える形にしました。事実が合っていても答えの向きがズレる問題には、会社の設計思想・顧客ごとの対応思想・人のスタンスを md の層として追加。この 2 層構成が CSV 単体運用からの一番の精度向上でした。orgkb として OSS 化準備中です。",
+        "en": "Three weeks after extending my thin-master-data setup to a three-person team: four CSV ledgers, a three-way split (address book / safe / drawer), and topic-triggered AI lookups made the org's undocumented meta information usable by everyone, including AI. Adding a second layer of markdown for design philosophy, per-customer engagement stances, and decision-makers' thinking fixed the 'facts right, direction wrong' failure and became the biggest accuracy gain. Being open-sourced as orgkb."
+      },
+      "tag": { "ja": "設計判断", "en": "Design note" },
+      "hero": "articles/2026/2026-07-08_thin-master-data-for-teams/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-08_thin-master-data-for-teams/",
+        "zenn": "https://zenn.dev/ishizakahiroshi/articles/20260708-thin-master-data-for-teams"
+      }
+    },
+    {
+      "date": "2026-07-08",
+      "title": {
         "ja": "Claude Fable 5 でも 30% でコンテキスト汚染は起きた ― 前回の Opus 4.8 続編、jsonl 検証と Anthropic への issue 報告まで",
         "en": "Claude Fable 5 also hit context pollution at 30%: a jsonl-verified log of self-turn hallucination, from incident to Anthropic issue report"
       },
