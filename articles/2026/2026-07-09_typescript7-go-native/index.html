@@ -7,8 +7,7 @@
 <meta name="description" content="2026 年 7 月 8 日に TypeScript 7.0 が GA。コンパイラの Go ネイティブ化で型チェックは約 10 倍、でもエンドユーザーは 1 ミリも嬉しくならない。速くなるのは開発者の待ち時間。制限 3 つと導入タイミングの判断を整理します。">
 <meta name="author" content="ishizakahiroshi">
 
-<!-- canonical: Qiita 投稿後にヘルパー/手動で Qiita URL へ差し替える（pre-post 運用） -->
-<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-07-09_typescript7-go-native/">
+<link rel="canonical" href="https://qiita.com/ishizakahiroshi/items/cc1a155894db8a90087d">
 
 <meta property="og:title" content="TypeScript 7（Go 移植版）がリリース。何が速くなって、誰が嬉しいのかを整理する">
 <meta property="og:description" content="TypeScript 7.0 GA。Go ネイティブ化で型チェック約 10 倍。速くなるのは開発者の待ち時間で、エンドユーザーへの影響はゼロ。導入タイミングの判断まで整理。">
@@ -37,7 +36,7 @@
   "datePublished": "2026-07-09",
   "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
   "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
-  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-07-09_typescript7-go-native/"
+  "mainEntityOfPage": "https://qiita.com/ishizakahiroshi/items/cc1a155894db8a90087d"
 }
 </script>
 
@@ -112,14 +111,9 @@
 2026 年 7 月 8 日、TypeScript 7.0 が GA になりました。コンパイラの Go ネイティブ化で型チェックは約 10 倍。でも TypeScript 製アプリのエンドユーザーは 1 ミリも嬉しくなりません。速くなるのは開発者のビルド・型チェック・エディタの待ち時間です。制限 3 つと、既存 3 か月後・新規は最初から 7 という導入判断を整理しました。
 </p>
 
-<div class="info">
-Qiita 投稿予定です。投稿後に各プラットフォームへの導線を追記します。
+<div class="plat-row">
+  <a class="plat-pill plat-qiita" href="https://qiita.com/ishizakahiroshi/items/cc1a155894db8a90087d" target="_blank" rel="noopener">Qiita で読む →</a>
 </div>
-
-<!-- 各プラットフォーム導線（投稿後ヘルパーで有効化） -->
-<!-- <div class="plat-row">
-  <a class="plat-pill plat-qiita" href="__QIITA_URL_TBD__" target="_blank" rel="noopener">Qiita で読む →</a>
-</div> -->
 
 <h2>この記事のテーマ</h2>
 <p>TypeScript のコンパイラが JavaScript 実装から Go ネイティブ実装（コードネーム Corsa、通称 tsgo）に置き換わった TypeScript 7.0 の解説です。10 倍高速化の中身（ネイティブ化と並列化が半分ずつ）、エンドユーザーへの影響がゼロである理由（出力される JS は同じ）、GA 時点の制限 3 つ（安定 API 未公開・Vue 系未対応・emit は ES2021 まで）を一次情報付きで整理し、最後に「新規は最初から 7、既存は 3 か月後」という自分の導入判断とその理由を書いています。</p>
