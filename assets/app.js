@@ -658,7 +658,8 @@ const I18N = {
 function getLang() {
   const saved = localStorage.getItem("lang");
   if (saved === "ja" || saved === "en") return saved;
-  return (navigator.language || "").toLowerCase().startsWith("ja") ? "ja" : "ja";
+  // 未保存時: ブラウザ言語が日本語なら ja、それ以外は en
+  return (navigator.language || "").toLowerCase().startsWith("ja") ? "ja" : "en";
 }
 /** @param {Lang} lang */
 function setLang(lang) {
@@ -694,17 +695,68 @@ function initLangToggle() {
 }
 
 /* ===== 描画ヘルパー ===== */
-/** @param {Work} w */
-function badgeHtml(w) {
-  return `<div class="badge" style="--c:${w.c}">${w.initials}</div>`;
+
+/**
+ * HTML テキストノード向けエスケープ（innerHTML 挿入口の防御）。
+ * データは原則作者管理だが、`<` や `&` を含む文言（例: "&lt;1 yr"）が
+ * タグとして解釈されて UI が壊れる事故を防ぐ。
+ * @param {unknown} value
+ * @returns {string}
+ */
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 /**
- * dl-stats から取得した合計値のキャッシュ。
- * 同一セッション内で言語切替時に再 fetch しないため。
- * @type {{ cumulativeInstalls: number, totalStars: number } | null}
+ * 属性値向けエスケープ（href / src / style 等）。
+ * @param {unknown} value
+ * @returns {string}
  */
-let dlStatsCache = null;
+function escapeAttr(value) {
+  return escapeHtml(value);
+}
+
+/**
+ * 安全なリンク先だけ通す（javascript: / data: 等を拒否）。
+ * 許可: http(s) 絶対 URL、サイト内相対 path、#fragment。
+ * @param {unknown} url
+ * @returns {string} 不正時は "#"
+ */
+function safeUrl(url) {
+  if (typeof url !== "string") return "#";
+  const u = url.trim();
+  if (!u) return "#";
+  // パストラバーサル・制御文字を簡易拒否
+  if (u.includes("..") || /[\u0000-\u001F\u007F]/.test(u)) return "#";
+  if (u.startsWith("#")) return u;
+  if (/^https?:\/\//i.test(u)) return u;
+  // scheme 付きは http(s) 以外すべて拒否（javascript: / data: / vbscript: 等）
+  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(u)) return "#";
+  // サイト内相対 path（articles/…, works/…, assets/…, ./…, /…）
+  return u;
+}
+
+/**
+ * CSS 色として安全な値だけ通す（主に WORKS[].c の hex）。
+ * @param {unknown} color
+ * @returns {string}
+ */
+function safeCssColor(color) {
+  if (typeof color === "string" && /^#[0-9a-fA-F]{3,8}$/.test(color.trim())) {
+    return color.trim();
+  }
+  return "#888888";
+}
+
+/** @param {Work} w */
+function badgeHtml(w) {
+  return `<div class="badge" style="--c:${escapeAttr(safeCssColor(w.c))}">${escapeHtml(w.initials)}</div>`;
+}
 
 /**
  * 30 日 sparkline 用の軽量 SVG を生成する。
@@ -717,6 +769,7 @@ function sparklineSvg(values, color) {
   for (const v of values) {
     if (typeof v !== "number" || !Number.isFinite(v)) return "";
   }
+  const safeColor = safeCssColor(color);
   const W = 80, H = 20, pad = 2;
   const n = values.length;
   let min = values[0], max = values[0];
@@ -729,19 +782,7 @@ function sparklineSvg(values, color) {
     return `${x.toFixed(1)},${y.toFixed(1)}`;
   }).join(" ");
   return `<svg class="spark-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">` +
-    `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-}
-
-/**
- * 単純なプレースホルダ置換（`{key}` 形式）。
- * @param {string} template
- * @param {Record<string, string | number>} vars
- */
-function fillTemplate(template, vars) {
-  return template.replace(/\{(\w+)\}/g, (m, key) => {
-    const v = vars[key];
-    return v === undefined || v === null ? m : String(v);
-  });
+    `<polyline points="${points}" fill="none" stroke="${escapeAttr(safeColor)}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
 
 /**
@@ -756,12 +797,12 @@ function fillTemplate(template, vars) {
 function renderWorkStats(w, lang) {
   /** @type {string[]} */
   const parts = [];
-  if (w.stars > 0) parts.push(`<span class="star">★ ${w.stars}</span>`);
+  if (w.stars > 0) parts.push(`<span class="star">★ ${escapeHtml(w.stars)}</span>`);
   if (w.dl && typeof w.dl.releases === "number") {
-    parts.push(`<span class="dl" aria-label="${t("card.dl.aria", lang)}"><span class="arrow">↓</span> ${w.dl.releases}</span>`);
+    parts.push(`<span class="dl" aria-label="${escapeAttr(t("card.dl.aria", lang))}"><span class="arrow">↓</span> ${escapeHtml(w.dl.releases)}</span>`);
   }
   if (w.dl && typeof w.dl.npm30d === "number") {
-    parts.push(`<span class="dl npm" aria-label="${t("card.npm.aria", lang)}"><span class="arrow">↻</span> ${w.dl.npm30d} 30d</span>`);
+    parts.push(`<span class="dl npm" aria-label="${escapeAttr(t("card.npm.aria", lang))}"><span class="arrow">↻</span> ${escapeHtml(w.dl.npm30d)} 30d</span>`);
   }
   const meta = parts.join(`<span class="sep">·</span>`);
   const metaHtml = `<div class="meta">${meta}</div>`;
@@ -788,17 +829,17 @@ function workCardEl(w, lang, i) {
   const a = document.createElement("a");
   a.className = "card reveal";
   a.href = `work.html?id=${encodeURIComponent(w.id)}`;
-  a.style.setProperty("--c", w.c);
+  a.style.setProperty("--c", safeCssColor(w.c));
   a.style.animationDelay = i * 0.06 + "s";
   const { metaHtml, sparkHtml } = renderWorkStats(w, lang);
   a.innerHTML =
     badgeHtml(w) +
-    `<div class="cat">${w.cat[lang]}</div>` +
-    `<h3>${w.id}</h3>` +
-    `<p>${w.short[lang]}</p>` +
+    `<div class="cat">${escapeHtml(w.cat[lang])}</div>` +
+    `<h3>${escapeHtml(w.id)}</h3>` +
+    `<p>${escapeHtml(w.short[lang])}</p>` +
     metaHtml +
     sparkHtml +
-    `<span class="go">${t("card.go", lang)} <span class="arrow">→</span></span>`;
+    `<span class="go">${escapeHtml(t("card.go", lang))} <span class="arrow">→</span></span>`;
   return a;
 }
 
@@ -815,7 +856,7 @@ function moreCardEl(rest, lang, i) {
   a.href = "works.html";
   a.style.animationDelay = i * 0.06 + "s";
   const chips = rest
-    .map((w) => `<span class="mchip" style="background:${w.c}">${w.initials}</span>`)
+    .map((w) => `<span class="mchip" style="background:${escapeAttr(safeCssColor(w.c))}">${escapeHtml(w.initials)}</span>`)
     .join("");
   const unit = lang === "ja" ? "作品" : rest.length === 1 ? "work" : "works";
   const desc = lang === "ja"
@@ -824,9 +865,9 @@ function moreCardEl(rest, lang, i) {
   const cta = lang === "ja" ? "すべての作品を見る" : "See all works";
   a.innerHTML =
     `<div class="mcluster">${chips}</div>` +
-    `<div class="mcount">+${rest.length}<small>${unit}</small></div>` +
-    `<p>${desc}</p>` +
-    `<span class="go">${cta} <span class="arrow">→</span></span>`;
+    `<div class="mcount">+${rest.length}<small>${escapeHtml(unit)}</small></div>` +
+    `<p>${escapeHtml(desc)}</p>` +
+    `<span class="go">${escapeHtml(cta)} <span class="arrow">→</span></span>`;
   return a;
 }
 
@@ -861,11 +902,11 @@ function renderExperience(lang) {
   EXPERIENCE.forEach((e) => {
     const div = document.createElement("div");
     div.className = "exp";
-    const tag = e.current ? `<span class="tag-current">${t("exp.current", lang)}</span>` : "";
+    const tag = e.current ? `<span class="tag-current">${escapeHtml(t("exp.current", lang))}</span>` : "";
     div.innerHTML =
-      `<div class="role">${e.role[lang]}${tag}</div>` +
-      `<div class="org">${e.org[lang]}</div>` +
-      `<p>${e.desc[lang]}</p>`;
+      `<div class="role">${escapeHtml(e.role[lang])}${tag}</div>` +
+      `<div class="org">${escapeHtml(e.org[lang])}</div>` +
+      `<p>${escapeHtml(e.desc[lang])}</p>`;
     list.appendChild(div);
   });
 }
@@ -878,15 +919,15 @@ function renderCanDo(lang) {
   CANDO.forEach((c) => {
     const div = document.createElement("div");
     div.className = "cando";
-    div.innerHTML = `<h4>${c.title[lang]}</h4><p>${c.desc[lang]}</p>`;
+    div.innerHTML = `<h4>${escapeHtml(c.title[lang])}</h4><p>${escapeHtml(c.desc[lang])}</p>`;
     grid.appendChild(div);
   });
   const chips = document.getElementById("stack-chips");
   if (chips) {
     chips.innerHTML = SKILLS.map((tier) => {
       const cls = tier.highlight ? "skill-tier hot" : "skill-tier";
-      const items = tier.items.map((s) => `<span class="chip">${s}</span>`).join("");
-      return `<div class="${cls}"><span class="ylabel">${tier.years[lang]}</span><div class="schips">${items}</div></div>`;
+      const items = tier.items.map((s) => `<span class="chip">${escapeHtml(s)}</span>`).join("");
+      return `<div class="${cls}"><span class="ylabel">${escapeHtml(tier.years[lang])}</span><div class="schips">${items}</div></div>`;
     }).join("");
   }
 }
@@ -896,7 +937,7 @@ function renderStats(lang) {
   const el = document.getElementById("stats");
   if (!el) return;
   el.innerHTML = STATS.map((s) =>
-    `<div class="stat"><div class="snum">${s.num}<span class="sunit">${s.unit[lang]}</span></div><div class="slabel">${s.label[lang]}</div></div>`
+    `<div class="stat"><div class="snum">${escapeHtml(s.num)}<span class="sunit">${escapeHtml(s.unit[lang])}</span></div><div class="slabel">${escapeHtml(s.label[lang])}</div></div>`
   ).join("");
 }
 
@@ -1202,12 +1243,18 @@ function renderArticles(lang) {
     const thumb = document.createElement("div");
     thumb.className = "article-thumb" + (a.hero ? "" : " empty");
     if (a.hero) {
-      const img = document.createElement("img");
-      img.src = a.hero;
-      img.alt = "";
-      img.loading = "lazy";
-      img.decoding = "async";
-      thumb.appendChild(img);
+      const safeHero = safeUrl(a.hero);
+      if (safeHero !== "#") {
+        const img = document.createElement("img");
+        img.src = safeHero;
+        img.alt = "";
+        img.loading = "lazy";
+        img.decoding = "async";
+        thumb.appendChild(img);
+      } else {
+        thumb.classList.add("empty");
+        thumb.textContent = lang === "ja" ? "hero なし" : "no hero";
+      }
     } else {
       thumb.textContent = lang === "ja" ? "hero なし" : "no hero";
     }
@@ -1222,8 +1269,9 @@ function renderArticles(lang) {
     const primary = primaryArticleLink(a.links);
     if (primary) {
       const titleLink = document.createElement("a");
-      titleLink.href = primary;
-      if (!primary.startsWith("articles/")) {
+      const safePrimary = safeUrl(primary);
+      titleLink.href = safePrimary;
+      if (safePrimary !== "#" && !safePrimary.startsWith("articles/") && !safePrimary.startsWith("/")) {
         titleLink.target = "_blank";
         titleLink.rel = "noopener noreferrer";
       }
@@ -1248,12 +1296,13 @@ function renderArticles(lang) {
       if (!url) continue;
       const pill = document.createElement("a");
       pill.className = `lpill lpill-${key}`;
-      pill.href = url;
-      if (!url.startsWith("articles/")) {
+      const safe = safeUrl(url);
+      pill.href = safe;
+      if (safe !== "#" && !safe.startsWith("articles/") && !safe.startsWith("/")) {
         pill.target = "_blank";
         pill.rel = "noopener noreferrer";
       }
-      pill.innerHTML = `${labels[key]} <span aria-hidden="true">▶</span>`;
+      pill.innerHTML = `${escapeHtml(labels[key])} <span aria-hidden="true">▶</span>`;
       links.appendChild(pill);
     }
     col.appendChild(links);
@@ -1338,13 +1387,6 @@ async function fetchDlStats() {
     if (dlEntry && typeof data.cumulativeInstalls === "number") {
       dlEntry.num = data.cumulativeInstalls.toLocaleString();
     }
-    // 合計値を CTA カードの動的文言用にキャッシュ
-    if (typeof data.cumulativeInstalls === "number" && typeof data.totals?.stars === "number") {
-      dlStatsCache = {
-        cumulativeInstalls: data.cumulativeInstalls,
-        totalStars: data.totals.stars,
-      };
-    }
     // Update individual work star counts / DL counts / sparkline
     // dl-stats API の tool.repo は owner プレフィックス無しの末尾セグメントだけ
     // （例: "many-ai-cli"）。WORKS[].repo は完全な GitHub URL なので、末尾
@@ -1384,7 +1426,7 @@ async function fetchDlStats() {
 function renderContact(lang) {
   const list = document.getElementById("welcome-list");
   if (list) {
-    list.innerHTML = CONTACT_WELCOME.map((w) => `<li>${w[lang]}</li>`).join("");
+    list.innerHTML = CONTACT_WELCOME.map((w) => `<li>${escapeHtml(w[lang])}</li>`).join("");
   }
   const x = /** @type {HTMLAnchorElement | null} */ (document.getElementById("c-x"));
   const note = /** @type {HTMLAnchorElement | null} */ (document.getElementById("c-note"));
@@ -1422,7 +1464,7 @@ function renderPersona(lang) {
     const div = document.createElement("div");
     div.className = "fact reveal";
     div.style.animationDelay = i * 0.05 + "s";
-    div.innerHTML = `<span class="fe">${p.emoji}</span><span>${p[lang]}</span>`;
+    div.innerHTML = `<span class="fe">${escapeHtml(p.emoji)}</span><span>${escapeHtml(p[lang])}</span>`;
     grid.appendChild(div);
   });
 }
@@ -1456,38 +1498,43 @@ function renderDetail(lang) {
   const id = params.get("id");
   const w = WORKS.find((x) => x.id === id);
   if (!w) {
-    root.innerHTML = `<p>${t("detail.notfound", lang)}</p>`;
+    root.innerHTML = `<p>${escapeHtml(t("detail.notfound", lang))}</p>`;
     document.title = PROFILE.nameEn;
     return;
   }
   document.title = `${w.id} — ${PROFILE.nameEn}`;
-  root.style.setProperty("--c", w.c);
+  const color = safeCssColor(w.c);
+  root.style.setProperty("--c", color);
   const { metaHtml, sparkHtml } = renderWorkStats(w, lang);
 
   // ヒーロー（tagline は任意）
-  const taglineHtml = w.tagline ? `<p class="detail-tagline">${w.tagline[lang]}</p>` : "";
+  const taglineHtml = w.tagline ? `<p class="detail-tagline">${escapeHtml(w.tagline[lang])}</p>` : "";
   const head =
-    `<div class="detail-head" style="--c:${w.c}">` +
+    `<div class="detail-head" style="--c:${escapeAttr(color)}">` +
     badgeHtml(w) +
-    `<div><div class="cat">${w.cat[lang]}</div><h1>${w.id}</h1>${taglineHtml}${metaHtml}${sparkHtml}</div>` +
+    `<div><div class="cat">${escapeHtml(w.cat[lang])}</div><h1>${escapeHtml(w.id)}</h1>${taglineHtml}${metaHtml}${sparkHtml}</div>` +
     `</div>`;
 
   // スクリーンショット（任意・shots が 1 枚以上あるときだけ）
   let shotsHtml = "";
   if (Array.isArray(w.shots) && w.shots.length > 0) {
     const imgs = w.shots
-      .map((src) => `<figure class="dshot"><img src="${src}" alt="" loading="lazy" decoding="async"></figure>`)
+      .map((src) => {
+        const safeSrc = safeUrl(src);
+        if (safeSrc === "#") return "";
+        return `<figure class="dshot"><img src="${escapeAttr(safeSrc)}" alt="" loading="lazy" decoding="async"></figure>`;
+      })
       .join("");
-    shotsHtml = `<h2>${t("detail.screenshots", lang)}</h2><div class="dshots">${imgs}</div>`;
+    if (imgs) shotsHtml = `<h2>${escapeHtml(t("detail.screenshots", lang))}</h2><div class="dshots">${imgs}</div>`;
   }
 
   // 何ができる（任意）
   let featsHtml = "";
   if (Array.isArray(w.features) && w.features.length > 0) {
     const cards = w.features
-      .map((f) => `<div class="dfeat"><div class="dfeat-ic">${f.icon}</div><h4>${f.title[lang]}</h4><p>${f.desc[lang]}</p></div>`)
+      .map((f) => `<div class="dfeat"><div class="dfeat-ic">${escapeHtml(f.icon)}</div><h4>${escapeHtml(f.title[lang])}</h4><p>${escapeHtml(f.desc[lang])}</p></div>`)
       .join("");
-    featsHtml = `<h2>${t("detail.features", lang)}</h2><div class="dfeats">${cards}</div>`;
+    featsHtml = `<h2>${escapeHtml(t("detail.features", lang))}</h2><div class="dfeats">${cards}</div>`;
   }
 
   // 使い方（任意）
@@ -1495,13 +1542,13 @@ function renderDetail(lang) {
   if (w.usage) {
     const u = w.usage;
     const lines = [];
-    if (u.install) lines.push(`<code class="cline">${u.install}</code>`);
-    if (u.run) lines.push(`<code class="cline">${u.run}</code>`);
+    if (u.install) lines.push(`<code class="cline">${escapeHtml(u.install)}</code>`);
+    if (u.run) lines.push(`<code class="cline">${escapeHtml(u.run)}</code>`);
     const codeBlock = lines.length ? `<div class="dcode">${lines.join("")}</div>` : "";
     const steps = Array.isArray(u.steps) && u.steps.length > 0
-      ? `<ol class="dsteps">${u.steps.map((s) => `<li>${s[lang]}</li>`).join("")}</ol>`
+      ? `<ol class="dsteps">${u.steps.map((s) => `<li>${escapeHtml(s[lang])}</li>`).join("")}</ol>`
       : "";
-    usageHtml = `<h2>${t("detail.usage", lang)}</h2>${codeBlock}${steps}`;
+    usageHtml = `<h2>${escapeHtml(t("detail.usage", lang))}</h2>${codeBlock}${steps}`;
   }
 
   // 関連記事（自動）：articles.json（articlesList）から作品名の文言マッチで抽出する。
@@ -1514,28 +1561,30 @@ function renderDetail(lang) {
       .map((a) => {
         const url = primaryArticleLink(a.links);
         if (!url) return "";
+        const safe = safeUrl(url);
+        if (safe === "#") return "";
         const badges = articlePlatforms(a.links)
-          .map((p) => `<span class="dpf dpf-${p}">${platLabels[p]}</span>`)
+          .map((p) => `<span class="dpf dpf-${p}">${escapeHtml(platLabels[p])}</span>`)
           .join("");
-        const ext = url.startsWith("articles/") ? "" : ` target="_blank" rel="noopener noreferrer"`;
-        return `<a class="dart" href="${url}"${ext}><span class="dpfs">${badges}</span>` +
-          `<span class="dart-t">${a.title[lang] || a.title.ja}</span><span class="dart-ar" aria-hidden="true">▶</span></a>`;
+        const ext = safe.startsWith("articles/") || safe.startsWith("/") ? "" : ` target="_blank" rel="noopener noreferrer"`;
+        return `<a class="dart" href="${escapeAttr(safe)}"${ext}><span class="dpfs">${badges}</span>` +
+          `<span class="dart-t">${escapeHtml(a.title[lang] || a.title.ja)}</span><span class="dart-ar" aria-hidden="true">▶</span></a>`;
       })
       .join("");
-    artsHtml = `<h2>${t("detail.articles", lang)}</h2><div class="darts">${rows}</div>`;
+    if (rows) artsHtml = `<h2>${escapeHtml(t("detail.articles", lang))}</h2><div class="darts">${rows}</div>`;
   }
 
   const body =
-    `<div class="detail-body" style="--c:${w.c}">` +
+    `<div class="detail-body" style="--c:${escapeAttr(color)}">` +
     shotsHtml +
-    `<h2>${t("detail.overview", lang)}</h2><p>${w.long[lang]}</p>` +
+    `<h2>${escapeHtml(t("detail.overview", lang))}</h2><p>${escapeHtml(w.long[lang])}</p>` +
     featsHtml +
     usageHtml +
-    `<h2>${t("detail.tech", lang)}</h2><div class="tech-tags">${w.tech.map((x) => `<span class="chip">${x}</span>`).join("")}</div>` +
+    `<h2>${escapeHtml(t("detail.tech", lang))}</h2><div class="tech-tags">${w.tech.map((x) => `<span class="chip">${escapeHtml(x)}</span>`).join("")}</div>` +
     artsHtml +
-    `<div class="detail-cta"><a class="btn primary" href="${w.repo}" target="_blank" rel="noopener">${t("detail.viewRepo", lang)} <span class="arrow">→</span></a>` +
-    (w.store ? `<a class="btn ghost" href="${w.store}" target="_blank" rel="noopener">${t("detail.viewStore", lang)} <span class="arrow">→</span></a>` : "") +
-    (w.live ? `<a class="btn ghost" href="${w.live}" target="_blank" rel="noopener">${t("detail.viewLive", lang)} <span class="arrow">→</span></a>` : "") +
+    `<div class="detail-cta"><a class="btn primary" href="${escapeAttr(safeUrl(w.repo))}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("detail.viewRepo", lang))} <span class="arrow">→</span></a>` +
+    (w.store ? `<a class="btn ghost" href="${escapeAttr(safeUrl(w.store))}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("detail.viewStore", lang))} <span class="arrow">→</span></a>` : "") +
+    (w.live ? `<a class="btn ghost" href="${escapeAttr(safeUrl(w.live))}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("detail.viewLive", lang))} <span class="arrow">→</span></a>` : "") +
     `</div>` +
     `</div>`;
 
