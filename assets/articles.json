@@ -5,6 +5,22 @@
   },
   "articles": [
     {
+      "date": "2026-07-09",
+      "title": {
+        "ja": "TypeScript 7（Go 移植版）がリリース。何が速くなって、誰が嬉しいのかを整理する",
+        "en": "TypeScript 7 (the Go-native compiler) is GA: what gets faster, and who actually benefits"
+      },
+      "short": {
+        "ja": "2026-07-08 に TypeScript 7.0 が GA。コンパイラの Go ネイティブ化（tsgo / Corsa）で型チェックは約 10 倍、メモリは半減。でもエンドユーザーは 1 ミリも嬉しくならない。速くなるのは開発者のビルド・型チェック・エディタの待ち時間だけです。GA 時点の制限 3 つ（安定 API 未公開・Vue 系未対応・emit は ES2021 まで）を一次情報付きで整理し、「新規は最初から 7・既存は 3 か月後」という導入判断とその理由を書きました。",
+        "en": "TypeScript 7.0 went GA on 2026-07-08 with the Go-native compiler (tsgo / Corsa): roughly 10x faster type-checking and half the memory. End users of TS-built apps gain nothing, though; the emitted JS is identical. The wins are developer wait times: builds, type checks, and editor responsiveness. I go through the three GA-time limitations (no stable API until 7.1, no Vue-family support, emit only down to ES2021) with primary sources, and explain my adoption call: new projects start on 7, existing ones migrate in three months."
+      },
+      "tag": { "ja": "設計判断", "en": "Design note" },
+      "hero": "articles/2026/2026-07-09_typescript7-go-native/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-09_typescript7-go-native/"
+      }
+    },
+    {
       "date": "2026-07-08",
       "title": {
         "ja": "Windows の Codex CLI が WSL bash を勝手に使う問題を、Git Bash に固定して解決する",
