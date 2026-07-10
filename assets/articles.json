@@ -7,6 +7,26 @@
     {
       "date": "2026-07-10",
       "title": {
+        "ja": "30 個のスキルを積んだ Claude Code に /doctor をかけて、棚卸ししてみた",
+        "en": "Running /doctor on Claude Code with 30 skills: inventory notes and skill-shelf ops tips"
+      },
+      "short": {
+        "ja": "Claude Code の /doctor を 30 スキル環境で走らせた。掃除はほぼ不要で、skillUsage から高頻度 5〜6 個が 8 割・0 使用は保険、という構造が見えた。日本語起動語・薄い SKILL.md・正本 1 箇所 + ジャンクションの運用 tips 付き。",
+        "en": "I ran Claude Code /doctor in a 30-skill setup. Cleanup was almost nil; skillUsage showed a pyramid where a handful of high-frequency skills do 80% of the work and zero-use skills are insurance. Includes ops tips: Japanese launch phrases, thin SKILL.md files, and one source of truth via junctions."
+      },
+      "tag": {
+        "ja": "ツール紹介",
+        "en": "Tool intro"
+      },
+      "hero": "articles/2026/2026-07-10_claude-code-doctor/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-10_claude-code-doctor/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/c114346e08dc1f382b0e"
+      }
+    },
+    {
+      "date": "2026-07-10",
+      "title": {
         "ja": "NotebookLM の音声概要を YouTube へ自動投稿する。ffmpeg + YouTube Data API v3 の小さなパイプライン",
         "en": "Auto-publishing NotebookLM audio overviews to YouTube: a tiny pipeline with ffmpeg and the YouTube Data API v3"
       },
@@ -14,7 +34,10 @@
         "ja": "記事 md を NotebookLM で音声化したら、YouTube にも置きたくなった。音声 m4a + ヘッダー画像 1 枚 → 静止画動画化（ffmpeg の -loop 1 -tune stillimage -r 1）→ Data API v3 でアップロード、をコマンド 2 発に仕組み化。ハマったのはコードではなく OAuth のコンソール設定側で、シークレットの 1 回限り表示・テストユーザー未登録の 403・テストステータスのトークン 7 日失効、の 3 つの罠と回避策をまとめました。",
         "en": "After NotebookLM turned an article into a radio-style audio overview, I wanted it on YouTube too. The pipeline is two commands: ffmpeg turns one header image plus the m4a into a still-image video (-loop 1 -tune stillimage -r 1), then the YouTube Data API v3 uploads it. The real traps were all in the OAuth console setup: the show-once client secret, 403 access_denied without a registered test user, and refresh tokens expiring in 7 days while the consent screen stays in testing."
       },
-      "tag": { "ja": "ツール紹介", "en": "Tool intro" },
+      "tag": {
+        "ja": "ツール紹介",
+        "en": "Tool intro"
+      },
       "hero": "articles/2026/2026-07-10_youtube-audio-auto-deploy/hero.png",
       "links": {
         "html": "articles/2026/2026-07-10_youtube-audio-auto-deploy/",
@@ -32,7 +55,10 @@
         "ja": "AI コーディング CLI が 6 本並立し、Agent Skills（SKILL.md）の置き場がバラバラに。コピー運用は同期作業で必ず破綻します。skill はディスク上の手順書であり、製品差は実質「どのディレクトリをスキャンするか」だけ。正本フォルダを 1 つ決めて git 管理し、各 CLI の公式パスにはジャンクション（symlink）で見せる設計に落ち着くまでの判断と、製品同梱 skill を壊さない等の注意点をまとめました。",
         "en": "With six AI coding CLIs side by side, Agent Skills (SKILL.md folders) ended up scattered across product-specific paths. Copying dies in maintenance. A skill is just an instruction file on disk; the real product difference is only which directory gets scanned. So: keep one git-managed source-of-truth folder and expose it to each CLI's official path via junctions (symlinks), while never overwriting bundled skill directories."
       },
-      "tag": { "ja": "設計判断", "en": "Design note" },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
       "hero": "articles/2026/2026-07-10_cross-cli-skill-shelf/hero.png",
       "links": {
         "html": "articles/2026/2026-07-10_cross-cli-skill-shelf/",
@@ -50,7 +76,10 @@
         "ja": "2026-07-08 に TypeScript 7.0 が GA。コンパイラの Go ネイティブ化（tsgo / Corsa）で型チェックは約 10 倍、メモリは半減。でもエンドユーザーは 1 ミリも嬉しくならない。速くなるのは開発者のビルド・型チェック・エディタの待ち時間だけです。GA 時点の制限 3 つ（安定 API 未公開・Vue 系未対応・emit は ES2021 まで）を一次情報付きで整理し、「新規は最初から 7・既存は 3 か月後」という導入判断とその理由を書きました。",
         "en": "TypeScript 7.0 went GA on 2026-07-08 with the Go-native compiler (tsgo / Corsa): roughly 10x faster type-checking and half the memory. End users of TS-built apps gain nothing, though; the emitted JS is identical. The wins are developer wait times: builds, type checks, and editor responsiveness. I go through the three GA-time limitations (no stable API until 7.1, no Vue-family support, emit only down to ES2021) with primary sources, and explain my adoption call: new projects start on 7, existing ones migrate in three months."
       },
-      "tag": { "ja": "設計判断", "en": "Design note" },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
       "hero": "articles/2026/2026-07-09_typescript7-go-native/hero.png",
       "links": {
         "html": "articles/2026/2026-07-09_typescript7-go-native/",
@@ -67,7 +96,10 @@
         "ja": "Windows で Codex CLI に .sh を実行させたら、Git Bash が PATH に居るのに WSL bash が起動して CRLF で失敗。原因は PATH を見ない bash 解決(公式 issue #3159)でした。config.toml の [windows] agent_shell = \"git-bash\"(issue #16717 で実装)で固定し、グローバル AGENTS.md の WSL 禁止指示を保険にする二重対策と、uname による検証方法をまとめました。",
         "en": "Asking Codex CLI to run a .sh script on Windows launched WSL bash even though Git Bash was on PATH, and the script failed on CRLF. The cause: Codex resolves bash without consulting PATH (issue #3159). Pinning the shell with [windows] agent_shell = \"git-bash\" in config.toml (implemented via issue #16717), plus a WSL-ban note in the global AGENTS.md as a backstop, and verifying with uname."
       },
-      "tag": { "ja": "小ネタ", "en": "Quick tip" },
+      "tag": {
+        "ja": "小ネタ",
+        "en": "Quick tip"
+      },
       "hero": "articles/2026/2026-07-08_codex-wsl-bash-gitbash/hero.png",
       "links": {
         "html": "articles/2026/2026-07-08_codex-wsl-bash-gitbash/",
@@ -84,7 +116,10 @@
         "ja": "個人で始めた「薄いマスタデータ」運用を 3 人のチームに広げて 3 週間。組織の資料に落ちていないメタ情報（担当・呼称・連携関係）を、4 枚の CSV 台帳と 3 層分離（住所録・金庫・引き出し）、AI の話題トリガー参照で全員と AI が使える形にしました。事実が合っていても答えの向きがズレる問題には、会社の設計思想・顧客ごとの対応思想・人のスタンスを md の層として追加。この 2 層構成が CSV 単体運用からの一番の精度向上でした。orgkb として OSS 化準備中です。",
         "en": "Three weeks after extending my thin-master-data setup to a three-person team: four CSV ledgers, a three-way split (address book / safe / drawer), and topic-triggered AI lookups made the org's undocumented meta information usable by everyone, including AI. Adding a second layer of markdown for design philosophy, per-customer engagement stances, and decision-makers' thinking fixed the 'facts right, direction wrong' failure and became the biggest accuracy gain. Being open-sourced as orgkb."
       },
-      "tag": { "ja": "設計判断", "en": "Design note" },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
       "hero": "articles/2026/2026-07-08_thin-master-data-for-teams/hero.png",
       "links": {
         "html": "articles/2026/2026-07-08_thin-master-data-for-teams/",
@@ -101,7 +136,10 @@
         "ja": "前作の Opus 4.8 記事の続編です。Fable 5 のセッションが 30%（304.8k / 1M）を超えたあたりで、応答末尾に『私の口調』の偽ユーザー発言が生成される事故に遭遇しました。jsonl を追って生成時の自走だと確定させ、なぜ起きるかを 5 つの仕組みで整理し、Anthropic 公式 issue #67606 / #64260 / #68722 と Chroma 2025 論文『Context Rot』で裏を取り、Anthropic に issue #75655 として報告するところまで書いた記録です。",
         "en": "Sequel to the Opus 4.8 context-pollution piece. Claude Fable 5, at roughly 30% of the 1M context (304.8k tokens), started emitting a fake first-person user turn at the end of its own assistant response, and then treated that fabricated request as a real user intent in the next turn. Verified via direct jsonl grep. This piece breaks down why it happens (5 mechanics: next-token prior, attention dilution, role-boundary drift, narrative lock-in, mode-transition ignition), corroborates with Anthropic issues #67606 / #64260 / #68722 and Chroma's 2025 Context Rot paper, and closes with the report I filed as Anthropic issue #75655."
       },
-      "tag": { "ja": "失敗談", "en": "Failure story" },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Failure story"
+      },
       "hero": "articles/2026/2026-07-08_fable5-context-pollution-sequel/hero.png",
       "links": {
         "html": "articles/2026/2026-07-08_fable5-context-pollution-sequel/",
@@ -118,7 +156,10 @@
         "ja": "パスワードとファイルの中身を同じ標準入力に混ぜて sudo -S に渡すと、認証キャッシュが効いている時に 1 行目のパスワードが消費されず、公開ファイルにそのまま書き込まれて外部露出することがあります。実際にやってしまった事故から、sudo -S の挙動と認証キャッシュの関係、そして一時ファイル + sudo cp で経路を分ける直し方までを記録しました。",
         "en": "Piping a password and file content into the same stdin for sudo -S can leak the password: when the sudo auth cache is warm, sudo does not consume the first line, so the password gets written into a publicly served file. A log of why it happens and how splitting the paths with a temp file and sudo cp fixes it."
       },
-      "tag": { "ja": "失敗談", "en": "Failure story" },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Failure story"
+      },
       "hero": "articles/2026/2026-07-07_sudo-s-stdin-password-leak/hero.png",
       "links": {
         "html": "articles/2026/2026-07-07_sudo-s-stdin-password-leak/",
@@ -135,7 +176,10 @@
         "ja": "朝いちで Nextcloud が全ページ 500。きっかけはアプリを入れた直後でしたが、犯人はアプリではなく PHP 8.3 の JIT でした。opcache との違いから、JIT が theming の色取得コードを誤コンパイルして『string を渡したのに string 型じゃない』と怒る仕組み、そして JIT を切ってよい理由までを切り分けの記録としてまとめました。",
         "en": "One morning Nextcloud returned HTTP 500 on every page, right after installing an app. But the culprit was not the app, it was PHP 8.3's JIT. Starting from how JIT differs from opcache, this is a debugging log of how the JIT miscompiled the theming color code and threw the self-contradictory 'must be of type string, string given', and why turning JIT off is the right call."
       },
-      "tag": { "ja": "失敗談", "en": "Debug story" },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Debug story"
+      },
       "hero": "articles/2026/2026-07-07_php83-jit-preg-match-bug/hero.png",
       "links": {
         "html": "articles/2026/2026-07-07_php83-jit-preg-match-bug/",
@@ -152,7 +196,10 @@
         "ja": "Windows 11 で OneDrive をアンインストールした後、クイックアクセスに登録した「デスクトップ」が別のフォルダーを開く二重状態になりました。GetFolderPath は OneDrive 側を返すのにクイックアクセスは別を開く。原因は Known Folder（User Shell Folders）の参照先が OneDrive 配下を指したまま取り残されていたことで、レジストリ 1 行で直した切り分けの記録です。",
         "en": "After uninstalling OneDrive on Windows 11, the 'Desktop' pinned to Quick Access opened a different folder. GetFolderPath returned the OneDrive side while Quick Access opened another. The cause was a leftover Known Folder (User Shell Folders) entry still pointing under OneDrive. A single registry line fixed it."
       },
-      "tag": { "ja": "失敗談", "en": "Failure story" },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Failure story"
+      },
       "hero": "articles/2026/2026-07-07_onedrive-desktop/hero.png",
       "links": {
         "html": "articles/2026/2026-07-07_onedrive-desktop/",
@@ -169,7 +216,10 @@
         "ja": "Windows で AI エージェント（Claude Code）に日時を取らせる小さな処理が毎回赤いエラーを出していました。回避のラッパーを足しても直らず、原因は呼び方ではなく設計。外部スクリプトに整形を持たせて『どのシェルからでも呼べる』を目指したのが火種でした。Git Bash と WSL でパス規約が違うため共通コマンドは原理的に作れず、組み込みとすでに渡っている情報に寄せて根治した記録です。",
         "en": "A tiny helper that gave an AI agent the current date kept erroring on Windows. Adding a wrapper didn't help because the problem was the design: routing date formatting through external scripts to be callable from any shell. Since Git Bash and WSL use different path rules, no single command works in both. The fix was to stop calling out and use shell built-ins plus info the agent already has."
       },
-      "tag": { "ja": "失敗談", "en": "Failure story" },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Failure story"
+      },
       "hero": "articles/2026/2026-07-07_ai-agent-datetime-native/hero.png",
       "links": {
         "html": "articles/2026/2026-07-07_ai-agent-datetime-native/",
@@ -186,7 +236,10 @@
         "ja": "群馬の高校を地図で選ぶ進路サービス manabi-map を、専用 API サーバーなしで Supabase + LINE + Cloudflare Pages で組み上げました。LINE 認証の HS256 問題、schools 静的化、backup workflow の password fragment 漏洩事故と split-secret 化、Supabase Free の IPv6 only 問題まで落とし穴を並べて書きました。",
         "en": "Built manabi-map without a dedicated API server: Supabase + LINE + Cloudflare Pages. Wrote about the LINE HS256 problem, static schools.json to survive the Supabase free tier, a password-fragment leak in the backup workflow that split-secret + PGPASSWORD structurally prevents, and Supabase Free's IPv6-only direct connection."
       },
-      "tag": { "ja": "設計判断", "en": "Design decision" },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design decision"
+      },
       "hero": "articles/2026/2026-07-06_manabi-map-supabase-line-cloudflare-lessons/hero.png",
       "links": {
         "html": "articles/2026/2026-07-06_manabi-map-supabase-line-cloudflare-lessons/",
@@ -203,7 +256,10 @@
         "ja": "住所を入れると通える高校が地図に出て、気になる学校をお気に入りしてメモを家族で共有できる Web サービス Manabi Map を、群馬県版として無料公開しました。中学生と保護者向け・偏差値サイトの引き算ではなく足し算の道具として作った話を書きました。",
         "en": "Manabi Map is a free web app where entering a home address surfaces reachable high schools on a map, lets you favorite them, and share family notes per school. Wrote about why this is an addition rather than a subtraction from ranking sites."
       },
-      "tag": { "ja": "ツール紹介", "en": "Tool intro" },
+      "tag": {
+        "ja": "ツール紹介",
+        "en": "Tool intro"
+      },
       "hero": "articles/2026/2026-07-06_manabi-map-family-map-guide/hero.png",
       "links": {
         "html": "articles/2026/2026-07-06_manabi-map-family-map-guide/",
@@ -220,7 +276,10 @@
         "ja": "v0.4.0 で入れたのはスマホ画面の刷新だけではありません。1 本の Claude Code を指揮者にして子セッションを spawn できる軽量オーケストレーション、Grok と opencode を足して 6 provider 対応にした話、Workbench と内蔵チャットプロキシの撤去で Sonnet 5 の 1M context が Hub 経由でも戻ってきた副次効果までを 1 本でまとめました。",
         "en": "v0.4.0 shipped more than the mobile rework: a light orchestration API that lets a conductor session spawn child sessions, added Grok Build CLI and opencode to reach 6 providers, and retired the Workbench tab and Hub-internal chat proxy — which as a side effect brought back Sonnet 5's default 1M context window under the Hub."
       },
-      "tag": { "ja": "ツール紹介", "en": "Tool intro" },
+      "tag": {
+        "ja": "ツール紹介",
+        "en": "Tool intro"
+      },
       "hero": "articles/2026/2026-07-06_many-ai-cli-orchestration-and-providers-v040/hero.png",
       "links": {
         "html": "articles/2026/2026-07-06_many-ai-cli-orchestration-and-providers-v040/"
@@ -236,7 +295,10 @@
         "ja": "X の複数アカウント運用のためにコンテナ名をタブタイトルへ差し込む Firefox 拡張を作り、AMO の検証に 2 回落ちてから 3 日後に承認・公開されました。実装は最終的に 3 ファイル・100 行程度に収まり、権限も 3 つまで絞り込みました。Chrome での挫折から拡張の公開までの 3 本の記事を、この記事で一区切りにします。",
         "en": "A Firefox extension that prefixes tab titles with the container name, built for running multiple X accounts side by side, got rejected twice by AMO review and was approved 3 days later. The final implementation came in around 100 lines across 3 files, with permissions trimmed to just 3. This closes out a 3-part series that started with a failed Chrome extension attempt."
       },
-      "tag": { "ja": "振り返り", "en": "Retrospective" },
+      "tag": {
+        "ja": "振り返り",
+        "en": "Retrospective"
+      },
       "hero": "articles/2026/2026-07-06_amo-approved-after-two-rejections/hero.png",
       "links": {
         "html": "articles/2026/2026-07-06_amo-approved-after-two-rejections/",
@@ -253,7 +315,10 @@
         "ja": "plan md 1 枚に 11 の仕掛けを仕込んで AI エージェントに実装を任せた実験の結果編。実装開始から 2:04:55 で v0.1.0 の MVP が本番に立ち、LINE ログインも通った。予想した停止条件はほぼ発動せず、実際に止まったのは管理画面の不調・スマホの 2 段階認証・他社サービス同士の仕様のズレという「plan に書きようがない壁」だった。",
         "en": "The results of letting an AI agent run from a single plan.md packed with 11 mechanisms: the v0.1.0 MVP went live in 2h04m55s, LINE login included. The 3 planned stop conditions barely fired; what actually stopped the run were walls no plan could cover: a stuck dashboard, phone 2FA, and a spec mismatch between third-party services."
       },
-      "tag": { "ja": "振り返り", "en": "Retrospective" },
+      "tag": {
+        "ja": "振り返り",
+        "en": "Retrospective"
+      },
       "hero": "articles/2026/2026-07-05_goal-autonomous-run-result/hero.png",
       "links": {
         "html": "articles/2026/2026-07-05_goal-autonomous-run-result/",
@@ -270,7 +335,10 @@
         "ja": "Claude Code の /goal に自作アプリの実装を任せる前に、plan md 1 枚に 11 の仕掛けを仕込んだ土曜の午後の記録。案 B（半自律・停止条件 3 つ）とサブエージェント 3 本の並列 spawn で、時間軸の 95% は自動、末尾の 5% だけ手動介入する形に整えた。まだ走らせていないが、動かなかったら plan md を書き換えて再チャレンジできる。",
         "en": "A Saturday afternoon writing a single plan.md packed with 11 mechanisms before letting Claude Code /goal take over the implementation. Plan B (semi-autonomous, only 3 stop conditions) plus three parallel sub-agents leaves 95% of the timeline automated and only the last 5% for manual work. Not yet run, but if it fails, rewrite the plan and retry."
       },
-      "tag": { "ja": "設計判断", "en": "Design note" },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
       "hero": "articles/2026/2026-07-05_goal-autonomous-run/hero.png",
       "links": {
         "html": "articles/2026/2026-07-05_goal-autonomous-run/",
@@ -287,7 +355,10 @@
         "ja": "25プロジェクトに408個溜まっていたplan_*.md / bugfix_*.md / pending_*.mdを畳むためのCLI + Web UIツール docsweep を作り、PyPIに初リリースしました。ラベルを立てるのは人、運ぶのは機械という設計と、リリース当日に自分のツールで非公開ログを公開リポジトリへ移送しかけたヒヤリハットの話。",
         "en": "I built and released docsweep, a CLI + Web UI tool to keep 408 accumulated plan/bugfix/pending markdown files from rotting across 25 projects. The design principle: humans set the label, the machine moves the file. Plus a near-miss on release day where my own tool almost moved private logs into a public repo."
       },
-      "tag": { "ja": "ツール紹介", "en": "Tool intro" },
+      "tag": {
+        "ja": "ツール紹介",
+        "en": "Tool intro"
+      },
       "hero": "articles/2026/2026-07-03_docsweep-first-release/hero.png",
       "links": {
         "html": "articles/2026/2026-07-03_docsweep-first-release/",
@@ -304,7 +375,10 @@
         "ja": "8GBのGPU(RTX4060)でローカルLLMにClaude Codeを喋らせる検証の続編。メモリを32GBから64GB超に増設してフリーズは解消したものの、今度は500エラー・トークン数を数えるAPIの食い違い・21分の応答待ちという新しい壁にぶつかりました。原因は「Claude Codeというハーネスが毎回持ち込む巨大なシステムプロンプト」で、モデル単体なら10〜30秒で答えが返ることも分かりました。",
         "en": "A sequel to my local-LLM-with-Claude-Code experiment on an 8GB RTX4060. Upgrading RAM from 32GB to 64GB+ solved the freezing, but a new wall appeared: 500 errors, a mismatch in how servers handle the token-counting API, and a 21-minute wait for a correct answer. The real cause turned out to be Claude Code's own heavyweight system prompt, not the model itself (which answers in 10-30 seconds standalone)."
       },
-      "tag": { "ja": "失敗談", "en": "Failure story" },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Failure story"
+      },
       "hero": "articles/2026/2026-07-03_local-llm-defeat2/hero.png",
       "links": {
         "html": "articles/2026/2026-07-03_local-llm-defeat2/",
@@ -321,7 +395,10 @@
         "ja": "自作のオフライン Markdown エディタ v0.2.0 の振り返り。ユーザーに見える変更は「npx 1 コマンドで開ける」だけ。でも npm に GUI アプリは置けないので、パッケージは同梱 HTML を既定ブラウザで開くだけのランチャー（依存ゼロ・4 ファイル）にしました。winget や Homebrew を検討して見送った配布チャネルの絞り方、同名ファイル同時作成でデータが消える隙を塞ぐなどの見えない監査修正、公開済みの正本 ZIP から checksum 照合して取り出す npm 自動公開（Trusted Publishing・トークンレス・来歴付き）まで、1 回のリリースに詰め込んだ中身を全部書きました。",
         "en": "A retrospective on v0.2.0 of my offline Markdown editor. The only user-visible change: it now opens with a single npx command. Since a GUI app has no place on npm, the package is a zero-dependency four-file launcher that just opens the bundled single-file HTML in the default browser. Also covered: why winget and Homebrew were deliberately skipped, invisible audit fixes like closing a window where concurrent file creation could silently destroy data, and a tag-driven npm publish that extracts the HTML from the already-published canonical ZIP with checksum verification, via tokenless Trusted Publishing with provenance."
       },
-      "tag": { "ja": "振り返り", "en": "Retrospective" },
+      "tag": {
+        "ja": "振り返り",
+        "en": "Retrospective"
+      },
       "hero": "articles/2026/2026-07-03_rarely-updated-app-v020-npx/hero.png",
       "links": {
         "html": "articles/2026/2026-07-03_rarely-updated-app-v020-npx/",
@@ -338,7 +415,10 @@
         "ja": "Nextcloud 上の HTML ファイルを CSP sandbox で安全にプレビューするアプリ「Safe HTML Viewer」を作り、Nextcloud App Store に公開しました。証明書申請、アプリ登録 API の signature は base64 化必須だった話、description が HTML ではなく Markdown 記法だった話、info.xml の screenshot 要素が XSD の順序違反だった話、公開前の実機検証を使い捨て Docker コンテナで行った話、タグを打つだけで公開まで自動化する CI の組み方まで、公開までにハマったポイントをまとめました。",
         "en": "Built and published \"Safe HTML Viewer\", a Nextcloud app that previews HTML files inside a strict CSP sandbox with best-effort secret redaction. A record of the gotchas hit along the way to the Nextcloud App Store: the certificate request PR, a base64 encoding trap in the app registration API, discovering the description field is Markdown (not HTML), an XSD ordering bug in the screenshot element, disposable Docker containers for pre-release verification, and a tag-driven CI pipeline that fully automates publishing after the first release."
       },
-      "tag": { "ja": "ツール紹介", "en": "Tool release" },
+      "tag": {
+        "ja": "ツール紹介",
+        "en": "Tool release"
+      },
       "hero": "articles/2026/2026-07-03_nextcloud-app-store-koukai/hero.png",
       "links": {
         "html": "articles/2026/2026-07-03_nextcloud-app-store-koukai/",
@@ -355,7 +435,10 @@
         "ja": "コンテナで開いたタブが全部「ホーム / X」で見分けがつかない問題を 95 行の自作拡張 tab-title-prefix で解決し、初めて AMO に提出した記録。実装より提出でつまずきました。2026 年から新規拡張に必須になった data_collection_permissions（収集ゼロでも宣言必須・ローカル開発では見えない）と、検証失敗でも下書きが残ることで起きる「重複したアドオン ID」エラーの正体、ライセンス表明が提出フォームにしかない話、tabs 権限が実は不要だった話まで、次に Firefox 拡張を作る人向けのチェックリストにまとめています。前日公開の Multi-Account Containers 移行記の続編です。",
         "en": "Container tabs all read 'Home / X', so I wrote a 95-line Firefox extension (tab-title-prefix) that prefixes tab titles with the container name, and submitted it to AMO for the first time. Shipping was harder than coding: the newly mandatory data_collection_permissions declaration (required even when you collect nothing, and invisible in local about:debugging), and a baffling 'duplicate add-on ID' error caused by AMO keeping a draft even after a failed validation. Plus: the license can only be declared in the submission form, and the tabs permission turned out to be unnecessary. A checklist for the next Firefox extension author, sequel to the previous day's Multi-Account Containers migration story."
       },
-      "tag": { "ja": "失敗談", "en": "Postmortem" },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Postmortem"
+      },
       "hero": "articles/2026/2026-07-03_amo-first-submission-rejected-twice/hero.png",
       "links": {
         "html": "articles/2026/2026-07-03_amo-first-submission-rejected-twice/",
@@ -372,7 +455,10 @@
         "ja": "Obsidian の vault を骨格まで作り、実運用に踏み出す前に手を止めました。廃止ではなく保留です。AI の進化速度が個人ナレッジの陳腐化を超え、貯めた情報を AI に読ませるほどトークンは無駄になる。今の自分に必要なのは薄くて重要なマスタデータだけで、それは既に CSV と TOML で持っていました。長期研究や連続執筆を持つ人には Obsidian が刺さる、というリスペクトも含めた設計判断メモ。姉妹編として同日公開の X 複数垢 Firefox 移行記録と対の位置づけで、「自作で情報蓄積も勝てない」を語ります。",
         "en": "I built the skeleton of an Obsidian vault (four directories, cloud sync, junction plumbing, an eight-chapter plan md) and stopped before actually running it. Not abandoned, but on hold. AI is now evolving faster than personal notes can stay fresh; feeding stale md to an AI just wastes tokens and injects false facts. What I actually need is thin master data (family names, servers, credentials) that stays true for years, and I already keep it in CSVs and TOMLs. The article also respects that Obsidian is the right answer for researchers and long-form writers whose knowledge graphs actually pay off. Sister piece to the same-day Firefox Multi-Account Containers migration article: both admit that hand-rolled boundary work loses to platform-native tools."
       },
-      "tag": { "ja": "エッセイ", "en": "Essay" },
+      "tag": {
+        "ja": "エッセイ",
+        "en": "Essay"
+      },
       "hero": "articles/2026/2026-07-02_declined-obsidian-for-now/hero.png",
       "links": {
         "html": "articles/2026/2026-07-02_declined-obsidian-for-now/",
@@ -389,7 +475,10 @@
         "ja": "X の 3 垢を 1 ウィンドウで運用したくて Chrome プロファイル切替を試したがウィンドウが 3 個立ち上がって回らない。次にタブ単位で Cookie と localStorage を分離する Chrome 拡張 many-tab を自作したが、X には届かなかった。現代 SaaS の identity は Cookie と localStorage の上に IndexedDB / Service Worker / fingerprinting が積まれていて、拡張の下 2 層だけの分離では上 3 層で identity が繋がったままになる。最終的に Firefox の Multi-Account Containers というブラウザレベル分離に落ち着いた紆余曲折の記録と、そこで残った「タブが見分けつかない」問題への次の一手 tab-title-prefix 構想までを含む設計判断メモ。",
         "en": "I wanted three X accounts in a single window. Chrome profiles spawn three separate windows, too heavy for daily use. My hand-built Chrome extension (many-tab) that split cookies and localStorage per-tab worked for small internal SaaS, but X broke through the split via IndexedDB and Service Workers. Modern SaaS identity sits on a five-layer stack — Cookie, localStorage, IndexedDB, Service Worker + Cache API, fingerprinting — and only browser-level partitioning like Firefox Multi-Account Containers reaches all five. This is the trip, the loss, and the landing, plus the small remaining UX problem (tabs are indistinguishable) that turned into the next tiny project."
       },
-      "tag": { "ja": "失敗談", "en": "Postmortem" },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Postmortem"
+      },
       "hero": "articles/2026/2026-07-02_x-multi-account-firefox-container/hero.png",
       "links": {
         "html": "articles/2026/2026-07-02_x-multi-account-firefox-container/",
@@ -406,7 +495,10 @@
         "ja": "取引先の方から教わった「戦略と戦術の違い」が、太平洋戦争のMO作戦・珊瑚海海戦の話で腹落ちしました。日本側は戦術的勝利と言われつつ、作戦目標のポートモレスビー海上攻略は取り下げ、その先の米豪連絡・補給路への圧迫にも届かなかった。これがシステム設計・システム導入で「機能は増えたのに業務が楽にならない」「AI を入れたのに成果が見えない」として現れる仕組みを、目的・目標・戦略・戦術・手段の 5 階層フレームと 4 例で整理し、要件定義でそのまま使えるチェックリストにしました。",
         "en": "A friend explained strategy vs tactics via the MO Operation and the Battle of the Coral Sea: Japan scored a tactical win but never took Port Moresby by sea and never squeezed the Australia-US supply line. Same pattern shows up in system rollouts as 'features grew but ops did not get easier' or 'we shipped AI but see no outcome'. Structured as a five-layer frame (purpose / target / strategy / tactics / means) with a copy-paste requirements-doc checklist."
       },
-      "tag": { "ja": "設計判断", "en": "Design note" },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
       "hero": "articles/2026/2026-07-01_strategy-vs-tactics/hero.png",
       "links": {
         "html": "articles/2026/2026-07-01_strategy-vs-tactics/",
@@ -423,7 +515,10 @@
         "ja": "楽天モバイルで子どもの誕生日にちなんだ番号を検索したところから、3回線案・1回線案・2回線案と方針が動きます。楽天経済圏の主回線・番号資産・実用回線を1本に兼務させると意思決定が破綻するので、役割を1つずつに切り分けて2回線構成へ。2回線目は楽天で長期維持せずポイント回収後にpovoへ退避、高校生になったら本人名義へ変更、という運用ルールまでまとめた設計判断メモです。書き終えた朝、マイナンバーのオンライン本人認証で1回線目の申し込みと eSIM 開通、Rakuten LINK の通話テストまで完了させました。",
         "en": "Started from searching Rakuten Mobile for a memorable number for my kids. The plan moved through three-line, one-line, and finally a two-line setup. Each line takes exactly one role: the primary line spins the Rakuten ecosystem, the second line is a short-term point-farming line that MNPs to povo, and a separate line handles daily data. The order 'Rakuten → change owner → povo' matters because povo is weak at ownership transfer."
       },
-      "tag": { "ja": "エッセイ", "en": "Essay" },
+      "tag": {
+        "ja": "エッセイ",
+        "en": "Essay"
+      },
       "hero": "articles/2026/2026-07-01_kids-mobile-line-plan/hero.png",
       "links": {
         "html": "articles/2026/2026-07-01_kids-mobile-line-plan/",
@@ -440,7 +535,10 @@
         "ja": "Claude Code を半年使ったら ~/.claude/projects/ が 1.41 GB。Codex CLI も Cursor Agent も opencode も Grok Build も、入れた瞬間から会話履歴を書き残しはじめて消す仕掛けを持たない。Antigravity に至っては settings.json に retention のキー枠すら無い。7 種類の AI コーディング CLI のログを 60 日で日次自動掃除する小さな CLI、もうすぐリリースです。",
         "en": "Claude Code piled 1.41 GB of session logs over half a year. Codex CLI, Cursor Agent, opencode, Grok Build, all of them keep writing transcripts forever. Antigravity has no retention key in settings.json at all. ai-log-clean is a small cross-platform CLI that trims them all on a 60-day rolling retention. Release is imminent."
       },
-      "tag": { "ja": "ツール紹介", "en": "Tool" },
+      "tag": {
+        "ja": "ツール紹介",
+        "en": "Tool"
+      },
       "hero": "articles/2026/2026-07-01_ai-log-clean-promo/hero.png",
       "links": {
         "html": "articles/2026/2026-07-01_ai-log-clean-promo/",
@@ -457,7 +555,10 @@
         "ja": "メルカリの一方的キャンセル体験シリーズの完結編。群馬県消費生活センターからの回答は『規約 13 条 1 項 + 民法 412 条の 2 第 1 項』の整理で、合理的理由なしとはいえずあっせんも行わない、というものでした。違法ではないことと、利用者として体験的に納得できるかは別の話。その線を残してシリーズを閉じます。",
         "en": "Final installment of the unilateral Mercari cancel trilogy. The Gunma consumer-affairs center built the answer on Article 13(1) of Mercari's terms and Article 412-2(1) of the Civil Code: not unreasonable, no mediation. Legal and acceptable are not the same line, and that distinction is what I keep."
       },
-      "tag": { "ja": "振り返り", "en": "Retro" },
+      "tag": {
+        "ja": "振り返り",
+        "en": "Retro"
+      },
       "hero": "articles/2026/2026-06-30_mercari-unilateral-cancel-final/hero.png",
       "links": {
         "html": "articles/2026/2026-06-30_mercari-unilateral-cancel-final/",
@@ -474,7 +575,10 @@
         "ja": "2 銘柄しか持っていないのに、同じ信託銀行から別の封筒で 2 通届く。封筒を出している主体が銘柄ごとの発行会社で、信託銀行は株主名簿管理人として代行しているだけ、という構造的理由。電子提供制度・議決権電子行使プラットフォーム・マイナポータルが受け取りハブになる未来までを辿ったエッセイ。",
         "en": "Why the same trust bank sends two separate envelopes for two stocks. The issuer is the legal sender, the bank only acts as the registrar — a structural reason why dividend notices and AGM letters cannot be merged. An essay reaching toward a Mynaportal-as-hub future."
       },
-      "tag": { "ja": "エッセイ", "en": "Essay" },
+      "tag": {
+        "ja": "エッセイ",
+        "en": "Essay"
+      },
       "hero": "articles/2026/2026-06-28_why-no-shareholder-mail-hub/hero.png",
       "links": {
         "html": "articles/2026/2026-06-28_why-no-shareholder-mail-hub/",
@@ -491,7 +595,10 @@
         "ja": "前回（メルカリで約9.6万円の取引が購入者の同意なくキャンセル成立）の続編。事務局問い合わせで7項目に整理し直してようやく見えた運用、ブロック・評価・利用枠拘束に救済がないこと、群馬県の消費生活センターへ「求めなかったこと／求めたこと」に分けて送った相談内容の記録。",
         "en": "Sequel to the unilateral Mercari cancel post. After seven structured questions to support, the shape of buyer-side options emerged — none. Includes the filing sent to Gunma's consumer affairs center, split into 'what I did not ask for' and 'what I did'."
       },
-      "tag": { "ja": "振り返り", "en": "Retro" },
+      "tag": {
+        "ja": "振り返り",
+        "en": "Retro"
+      },
       "hero": "articles/2026/2026-06-28_mercari-unilateral-cancel-followup/hero.png",
       "links": {
         "html": "articles/2026/2026-06-28_mercari-unilateral-cancel-followup/",
