@@ -5,6 +5,23 @@
   },
   "articles": [
     {
+      "date": "2026-07-10",
+      "title": {
+        "ja": "Claude Code / Codex / Cursor / Copilot / OpenCode で同じ Agent Skills を共有する。正本 1 箇所 + リンクの設計",
+        "en": "Sharing one Agent Skills shelf across Claude Code, Codex, Cursor, Copilot and OpenCode: one source of truth plus links"
+      },
+      "short": {
+        "ja": "AI コーディング CLI が 6 本並立し、Agent Skills（SKILL.md）の置き場がバラバラに。コピー運用は同期作業で必ず破綻します。skill はディスク上の手順書であり、製品差は実質「どのディレクトリをスキャンするか」だけ。正本フォルダを 1 つ決めて git 管理し、各 CLI の公式パスにはジャンクション（symlink）で見せる設計に落ち着くまでの判断と、製品同梱 skill を壊さない等の注意点をまとめました。",
+        "en": "With six AI coding CLIs side by side, Agent Skills (SKILL.md folders) ended up scattered across product-specific paths. Copying dies in maintenance. A skill is just an instruction file on disk; the real product difference is only which directory gets scanned. So: keep one git-managed source-of-truth folder and expose it to each CLI's official path via junctions (symlinks), while never overwriting bundled skill directories."
+      },
+      "tag": { "ja": "設計判断", "en": "Design note" },
+      "hero": "articles/2026/2026-07-10_cross-cli-skill-shelf/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-10_cross-cli-skill-shelf/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/6821655d5af59a32e50c"
+      }
+    },
+    {
       "date": "2026-07-09",
       "title": {
         "ja": "TypeScript 7（Go 移植版）がリリース。何が速くなって、誰が嬉しいのかを整理する",
