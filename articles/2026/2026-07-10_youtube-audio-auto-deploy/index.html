@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NotebookLM の音声概要を YouTube へ自動投稿する。ffmpeg + YouTube Data API v3 の小さなパイプライン — 2026-07-10 — ishizakahiroshi</title>
+<meta name="description" content="記事 md を NotebookLM で音声化し、ヘッダー画像 1 枚と合わせて ffmpeg で静止画動画化、YouTube Data API v3 で自動アップロードするコマンド 2 発のパイプライン。OAuth 設定で 3 回ハマった話（ダウンロード無反応・403 access_denied・トークン 7 日失効）も。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://qiita.com/ishizakahiroshi/items/53ca710329f24f5ba3a8">
+
+<meta property="og:title" content="NotebookLM の音声概要を YouTube へ自動投稿する。ffmpeg + YouTube Data API v3 の小さなパイプライン">
+<meta property="og:description" content="音声 m4a + ヘッダー画像 → YouTube 公開までをコマンド 2 発に仕組み化。OAuth の 3 つの罠の回避策つき。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-10_youtube-audio-auto-deploy/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-10_youtube-audio-auto-deploy/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-10_youtube-audio-auto-deploy/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "NotebookLM の音声概要を YouTube へ自動投稿する。ffmpeg + YouTube Data API v3 の小さなパイプライン",
+  "description": "記事 md を NotebookLM で音声化し、ffmpeg の静止画動画化と YouTube Data API v3 でコマンド 2 発の自動投稿パイプラインにした話。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-07-10_youtube-audio-auto-deploy/hero.png",
+  "datePublished": "2026-07-10",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://qiita.com/ishizakahiroshi/items/53ca710329f24f5ba3a8"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8; --ok:#2e7d4f; --warn:#b8860b; --bad:#b3261e;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;
+       text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;
+     padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;
+            font-family:var(--display);font-weight:700;font-size:0.86rem;
+            padding:6px 14px;border-radius:999px;border:2px solid var(--ink);
+            background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;
+         border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;
+       font-family:var(--display);font-weight:700;font-size:0.78rem;
+       border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;
+        box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;
+             padding:7px 16px;border-radius:999px;font-family:var(--display);
+             font-weight:700;font-size:0.86rem;text-decoration:none;
+             border:2px solid var(--ink);color:#fff;
+             box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-qiita{background:#55c500}
+  .plat-youtube{background:#e62117}
+  .video-embed{margin:18px 0 8px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;
+        box-shadow:5px 6px 0 var(--line);background:#000;aspect-ratio:16/9}
+  .video-embed iframe{display:block;width:100%;height:100%;border:0}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);
+          color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">ツール紹介</span>
+  <span class="stamp">2026-07-10</span>
+</div>
+
+<h1>NotebookLM の音声概要を YouTube へ自動投稿する。ffmpeg + YouTube Data API v3 の小さなパイプライン</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="記事が、ラジオになる。NotebookLM 音声を YouTube へ自動投稿する" width="1280" height="670">
+</div>
+
+<p class="lead">
+記事を書き終えたら NotebookLM が 17 分のラジオにしてくれた。じゃあ YouTube にも置きたい。でも手作業のアップロードは続かない。音声 m4a とヘッダー画像 1 枚から、ffmpeg の静止画動画化と YouTube Data API v3 でコマンド 2 発の自動投稿にした話です。コードよりもハマったのは OAuth のコンソール設定側で、その 3 つの罠と回避策も書きました。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-qiita" href="https://qiita.com/ishizakahiroshi/items/53ca710329f24f5ba3a8" target="_blank" rel="noopener">Qiita で読む →</a>
+  <a class="plat-pill plat-youtube" href="https://youtu.be/9HOONL69hNY" target="_blank" rel="noopener">YouTube で聴く →</a>
+</div>
+
+<h2>この記事のテーマ</h2>
+<p>音声コンテンツの YouTube 展開は「静止画 1 枚の動画化」で成立します。ffmpeg の <code>-loop 1 -tune stillimage -r 1</code> が核で、映像部分は 19 分でも数 MB。アップロード側は YouTube Data API v3 + OAuth のトークン永続化で 2 回目以降は無人です。ハマりどころはコードではなくコンソール設定に集中していて、シークレットの 1 回限り表示・テストユーザー登録・テストステータスのトークン 7 日失効の 3 つを先に潰すのが近道でした。</p>
+
+<h2>音声で聴く（AI ラジオ解説・19 分）</h2>
+<div class="video-embed">
+<iframe src="https://www.youtube-nocookie.com/embed/9HOONL69hNY" title="AI 音声解説: NotebookLM の音声概要を YouTube へ自動投稿する" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
+<p>この記事を NotebookLM でラジオ風に音声化したものです。この動画自体が、記事で説明しているパイプラインで投稿されています。</p>
+
+<div class="footer">
+  公開: 2026-07-10 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

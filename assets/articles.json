@@ -7,6 +7,24 @@
     {
       "date": "2026-07-10",
       "title": {
+        "ja": "NotebookLM の音声概要を YouTube へ自動投稿する。ffmpeg + YouTube Data API v3 の小さなパイプライン",
+        "en": "Auto-publishing NotebookLM audio overviews to YouTube: a tiny pipeline with ffmpeg and the YouTube Data API v3"
+      },
+      "short": {
+        "ja": "記事 md を NotebookLM で音声化したら、YouTube にも置きたくなった。音声 m4a + ヘッダー画像 1 枚 → 静止画動画化（ffmpeg の -loop 1 -tune stillimage -r 1）→ Data API v3 でアップロード、をコマンド 2 発に仕組み化。ハマったのはコードではなく OAuth のコンソール設定側で、シークレットの 1 回限り表示・テストユーザー未登録の 403・テストステータスのトークン 7 日失効、の 3 つの罠と回避策をまとめました。",
+        "en": "After NotebookLM turned an article into a radio-style audio overview, I wanted it on YouTube too. The pipeline is two commands: ffmpeg turns one header image plus the m4a into a still-image video (-loop 1 -tune stillimage -r 1), then the YouTube Data API v3 uploads it. The real traps were all in the OAuth console setup: the show-once client secret, 403 access_denied without a registered test user, and refresh tokens expiring in 7 days while the consent screen stays in testing."
+      },
+      "tag": { "ja": "ツール紹介", "en": "Tool intro" },
+      "hero": "articles/2026/2026-07-10_youtube-audio-auto-deploy/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-10_youtube-audio-auto-deploy/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/53ca710329f24f5ba3a8",
+        "youtube": "https://youtu.be/9HOONL69hNY"
+      }
+    },
+    {
+      "date": "2026-07-10",
+      "title": {
         "ja": "Claude Code / Codex / Cursor / Copilot / OpenCode で同じ Agent Skills を共有する。正本 1 箇所 + リンクの設計",
         "en": "Sharing one Agent Skills shelf across Claude Code, Codex, Cursor, Copilot and OpenCode: one source of truth plus links"
       },
