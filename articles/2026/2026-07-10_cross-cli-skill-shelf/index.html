@@ -82,6 +82,10 @@
              box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
   .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
   .plat-qiita{background:#55c500}
+  .plat-youtube{background:#e62117}
+  .video-embed{margin:18px 0 8px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;
+        box-shadow:5px 6px 0 var(--line);background:#000;aspect-ratio:16/9}
+  .video-embed iframe{display:block;width:100%;height:100%;border:0}
   .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);
           color:var(--ink-soft);font-size:0.86rem}
   .footer a{color:var(--accent)}
@@ -109,10 +113,17 @@
 
 <div class="plat-row">
   <a class="plat-pill plat-qiita" href="https://qiita.com/ishizakahiroshi/items/6821655d5af59a32e50c" target="_blank" rel="noopener">Qiita で読む →</a>
+  <a class="plat-pill plat-youtube" href="https://youtu.be/Ei3EB3W4tvM" target="_blank" rel="noopener">YouTube で聴く →</a>
 </div>
 
 <h2>この記事のテーマ</h2>
 <p>AI コーディング CLI が並立する時代に、再利用可能な手順書（Agent Skills）をどう一元管理するか。コピー運用がメンテで破綻する理由、「skill は製品の魔法ではなく手順書である」という気づき、各 CLI のスキャンパス整理、そして「正本 1 つ + リンク」に落ち着くまでの過程を、やってはいけない 2 点（製品同梱の skill ディレクトリを上書きしない・個人環境の配線を公開リポに書かない）と合わせてまとめています。</p>
+
+<h2>音声で聴く（AI ラジオ解説・17 分）</h2>
+<div class="video-embed">
+<iframe src="https://www.youtube-nocookie.com/embed/Ei3EB3W4tvM" title="AI 音声解説: 複数の AI CLI で同じ Agent Skills を共有する" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
+<p>この記事を NotebookLM でラジオ風に音声化したものです。移動中や作業しながらでもどうぞ。</p>
 
 <div class="footer">
   公開: 2026-07-10 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>

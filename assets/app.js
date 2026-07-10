@@ -1289,8 +1289,8 @@ function renderArticles(lang) {
 
     const links = document.createElement("div");
     links.className = "article-links";
-    const order = /** @type {const} */ (["zenn", "note", "qiita", "html"]);
-    const labels = { zenn: "Zenn", note: "note", qiita: "Qiita", html: lang === "ja" ? "HTML 版" : "HTML" };
+    const order = /** @type {const} */ (["zenn", "note", "qiita", "html", "youtube"]);
+    const labels = { zenn: "Zenn", note: "note", qiita: "Qiita", html: lang === "ja" ? "HTML 版" : "HTML", youtube: lang === "ja" ? "YouTube 音声" : "YouTube" };
     for (const key of order) {
       const url = a.links[key];
       if (!url) continue;

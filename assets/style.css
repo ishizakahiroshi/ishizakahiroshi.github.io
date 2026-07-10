@@ -196,6 +196,7 @@ section.block.first { padding-top: 78px; }
 .lpill-note { background: #2cb696; color: #fff; border-color: #2cb696; }
 .lpill-qiita { background: #55c500; color: #fff; border-color: #55c500; }
 .lpill-html { background: var(--accent); color: #fff; border-color: var(--accent); }
+.lpill-youtube { background: #e62117; color: #fff; border-color: #e62117; }
 .article-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; padding-top: 6px; }
 .article-tag { font-family: var(--display); font-weight: 700; font-size: 0.74rem; color: var(--ink-soft); padding: 3px 11px; border: 1.5px solid var(--ink-soft); border-radius: 99px; background: #fff; white-space: nowrap; }
 
