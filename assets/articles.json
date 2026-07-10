@@ -89,6 +89,25 @@
     {
       "date": "2026-07-08",
       "title": {
+        "ja": "24GB VRAMの先を調べたら、GPU交換ではなくPCの思想を変える話だった",
+        "en": "Looking beyond 24GB VRAM: it was not a GPU swap, but a PC design philosophy change"
+      },
+      "short": {
+        "ja": "RTX4060の8GBでローカルLLMに全滅したあと、24GB以上のVRAMを調べた。RTX4090や業務用GPU、DGX Sparkまで見た結論は、今の省電力PCにGPUを足す話ではなく、PC全体の設計思想を変える話だった。買うGPU名より先に、動かしたいモデル規模と速度とローカルへのこだわりを決める。",
+        "en": "After failing local LLMs on an RTX 4060 8GB box, I surveyed 24GB+ options from gaming GPUs to workstation cards and DGX Spark. The takeaway: this is not a drop-in GPU upgrade for a low-power PC, but a redesign around the GPU. Decide model size, speed needs, and how local you want to stay before shopping for a card."
+      },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design note"
+      },
+      "hero": "articles/2026/2026-07-08_beyond-24gb-vram-pc-design/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-08_beyond-24gb-vram-pc-design/"
+      }
+    },
+    {
+      "date": "2026-07-08",
+      "title": {
         "ja": "Windows の Codex CLI が WSL bash を勝手に使う問題を、Git Bash に固定して解決する",
         "en": "Codex CLI on Windows grabs WSL bash by mistake: pinning it to Git Bash with agent_shell"
       },
