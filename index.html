@@ -18,6 +18,21 @@
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://ishizakahiroshi.github.io/assets/mascot-cats.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "ishizakahiroshi",
+  "url": "https://ishizakahiroshi.github.io/",
+  "jobTitle": "Software Engineer",
+  "sameAs": [
+    "https://github.com/ishizakahiroshi",
+    "https://x.com/ishizakahiroshi",
+    "https://note.com/ishizakahiroshi",
+    "https://www.youtube.com/@ishizakahiroshi-dev"
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -108,6 +123,10 @@
 <section class="block" id="articles">
   <div class="wrap">
     <div class="section-label" data-i18n="label.articles">Articles</div>
+    <p class="articles-channel">
+      <span data-i18n="articles.channel">記事の音声版を YouTube で配信中</span>
+      <a class="lpill lpill-youtube" id="articles-channel-link" target="_blank" rel="noopener" data-i18n="articles.channelBtn">チャンネルを見る →</a>
+    </p>
     <div class="articles-timeline" id="articles-list">
       <p class="articles-loading" data-i18n="articles.loading">記事を読み込んでいます。</p>
     </div>
@@ -126,6 +145,7 @@
       <a class="btn primary" id="c-x" target="_blank" rel="noopener"><span class="t">X でDMする</span> <span class="arrow">→</span></a>
       <a class="btn ghost" id="c-note" target="_blank" rel="noopener"><span class="t">note を見る</span></a>
       <a class="btn ghost" id="c-github" target="_blank" rel="noopener"><span class="t">GitHub を見る</span></a>
+      <a class="btn ghost" id="c-youtube" target="_blank" rel="noopener"><span class="t">YouTube を見る</span></a>
       <a class="btn ghost" id="c-mail" href="#" style="display:none"><span class="t">メールアドレスを表示</span></a>
     </div>
   </div>
@@ -139,6 +159,7 @@
         <a class="pill" id="link-x" href="#" target="_blank" rel="noopener">X</a>
         <a class="pill" id="link-note" href="#" target="_blank" rel="noopener">note</a>
         <a class="pill" id="link-github" href="#" target="_blank" rel="noopener">GitHub</a>
+        <a class="pill" id="link-youtube" href="#" target="_blank" rel="noopener">YouTube</a>
       </div>
     </div>
   </div>
@@ -150,6 +171,8 @@
   document.getElementById("link-x").href = PROFILE.x;
   document.getElementById("link-note").href = PROFILE.note;
   document.getElementById("link-github").href = PROFILE.github;
+  document.getElementById("link-youtube").href = PROFILE.youtube;
+  document.getElementById("articles-channel-link").href = PROFILE.youtube;
 
   window.__rerender = function (lang) {
     renderWorks(lang);

@@ -1,4 +1,5 @@
 .claude/
+docs/local/
 *.log
 .DS_Store
 Thumbs.db

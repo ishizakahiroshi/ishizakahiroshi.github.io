@@ -71,13 +71,14 @@
 
 /* ===== プロフィール / 作品 / 経歴データ（日英） ===== */
 
-/** @type {{ name: string, nameEn: string, github: string, x: string, note: string, contactEmail: [string, string] | null }} */
+/** @type {{ name: string, nameEn: string, github: string, x: string, note: string, youtube: string, contactEmail: [string, string] | null }} */
 const PROFILE = {
   name: "ishizakahiroshi",
   nameEn: "ishizakahiroshi",
   github: "https://github.com/ishizakahiroshi",
   x: "https://x.com/ishizakahiroshi",
   note: "https://note.com/ishizakahiroshi",
+  youtube: "https://www.youtube.com/@ishizakahiroshi-dev",
   // 公開ページに生メアドは置かない（スクレイピング対策）。
   // 受信専用の新規アドレスを用意したら ["user","domain.com"] の形で設定すると、
   // ボタンが出てクリック時に JS で組み立てて表示する。null の間は非表示。
@@ -587,7 +588,8 @@ const I18N = {
     "about.core": "業務を理解し、上流から運用まで一人で通せる“何でも屋”の幅。そして、それを人に教えられること。",
     "contact.lead": "業務委託・受注のご相談、歓迎します。かしこまらず、まずは X か note から気軽にどうぞ。",
     "contact.welcomeTitle": "こんな相談、歓迎です",
-    "contact.x": "X でDMする", "contact.note": "note を見る", "contact.github": "GitHub を見る", "contact.mail": "メールアドレスを表示",
+    "contact.x": "X でDMする", "contact.note": "note を見る", "contact.github": "GitHub を見る", "contact.youtube": "YouTube を見る", "contact.mail": "メールアドレスを表示",
+    "articles.channel": "記事の音声版を YouTube で配信中", "articles.channelBtn": "チャンネルを見る →",
     "hero.eyebrow": "システムエンジニア｜実務18年",
     "hero.role": "バックエンド・インフラ・AI連携",
     "hero.tagline": "現場の業務課題を、最小限の実装で、確実に動くものにする。",
@@ -628,7 +630,8 @@ const I18N = {
     "about.core": "The range of a generalist who understands the business and can carry a project end-to-end — from upstream design to operation — on their own, and the ability to teach it to others.",
     "contact.lead": "I'm open to contract and project work. No need to be formal — feel free to reach out via X or note first.",
     "contact.welcomeTitle": "Happy to talk about",
-    "contact.x": "DM me on X", "contact.note": "Read on note", "contact.github": "View GitHub", "contact.mail": "Show email address",
+    "contact.x": "DM me on X", "contact.note": "Read on note", "contact.github": "View GitHub", "contact.youtube": "Watch on YouTube", "contact.mail": "Show email address",
+    "articles.channel": "Audio versions of these articles are on YouTube", "articles.channelBtn": "Visit the channel →",
     "hero.eyebrow": "Software Engineer · 18 years",
     "hero.role": "Backend · Infrastructure · AI Integration",
     "hero.tagline": "Solving real operational problems with minimal, reliable implementations.",
@@ -947,6 +950,7 @@ function renderStats(lang) {
  * @property {string} [note]
  * @property {string} [qiita]
  * @property {string} [html]
+ * @property {string} [youtube]
  *
  * @typedef {Object} Article
  * @property {string} date         YYYY-MM-DD
@@ -1434,6 +1438,8 @@ function renderContact(lang) {
   if (x) { x.href = PROFILE.x; /** @type {HTMLElement} */ (x.querySelector(".t")).textContent = t("contact.x", lang); }
   if (note) { note.href = PROFILE.note; /** @type {HTMLElement} */ (note.querySelector(".t")).textContent = t("contact.note", lang); }
   if (gh) { gh.href = PROFILE.github; /** @type {HTMLElement} */ (gh.querySelector(".t")).textContent = t("contact.github", lang); }
+  const yt = /** @type {HTMLAnchorElement | null} */ (document.getElementById("c-youtube"));
+  if (yt) { yt.href = PROFILE.youtube; /** @type {HTMLElement} */ (yt.querySelector(".t")).textContent = t("contact.youtube", lang); }
 
   // メール：生のアドレスは HTML に置かず、クリック時に JS で組み立てて表示
   const mailBtn = /** @type {HTMLAnchorElement | null} */ (document.getElementById("c-mail"));
