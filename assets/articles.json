@@ -7,6 +7,26 @@
     {
       "date": "2026-07-11",
       "title": {
+        "ja": "口座連携なしで、保有資産をtreemapで俯瞰するローカル完結ダッシュボードの設計",
+        "en": "Designing a local-only asset dashboard: a treemap-based tool that never touches brokerage APIs"
+      },
+      "short": {
+        "ja": "証券口座 API 連携型ツールの信頼コストと、Excel での俯瞰しにくさ。その中間を狙って作った単一 HTML の自作資産ダッシュボード heatfolio の設計思想と、面白いと思っている実装ポイント 5 つ（価格取得の一点集約、原子置換保存、VBS でノーウィンドウ日次バッチ、Tailscale serve、USD/JPY 始値換算）をまとめた話。マネーフォワードの流出インシデントから考えた「そもそも家計データを他社に預ける前提を選び直す」という視点も書いた。",
+        "en": "Middle ground between the trust cost of brokerage-API dashboards and Excel's poor at-a-glance affordance: a single-HTML self-hosted asset dashboard. Five implementation notes I liked writing about (single point of price fetch, atomic file swap, no-window daily batch via VBS, Tailscale serve, USD/JPY opening-rate conversion), plus a reflection on the MoneyForward incident and 'why put household data in someone else's hands to begin with'."
+      },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design decisions"
+      },
+      "hero": "articles/2026/2026-07-11_heatfolio-treemap-dashboard/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-11_heatfolio-treemap-dashboard/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/b5da260733e416085421"
+      }
+    },
+    {
+      "date": "2026-07-11",
+      "title": {
         "ja": "サブエージェント120本が集めた学校データを本番投入したら、想定外が5連発だった話",
         "en": "Deploying school data collected by 120 AI subagents to production: five surprises in one day"
       },
