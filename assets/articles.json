@@ -7,6 +7,25 @@
     {
       "date": "2026-07-11",
       "title": {
+        "ja": "BIGLOBE 解約のその後。チャットは 2 日返事なし、電話は 3 回切られました",
+        "en": "After cancelling BIGLOBE: two days of chat silence and three dropped support calls"
+      },
+      "short": {
+        "ja": "BIGLOBE から他社への事業者変更中、切替工事日の 4 日前に「IPv6 系オプションの廃止」を確認したかっただけなのに、チャット有人窓口は 2 日間回答ゼロ、電話は 3 回とも混雑を理由に切られた。前編「BIGLOBE を解約します」の続編。期限を伝えても拾い上げられない問い合わせ窓口の 48 時間を、LINE 風の再現図つきで記録した話。",
+        "en": "While switching away from BIGLOBE, all I needed four days before the cutover was one answer about removing an IPv6 option. The support chat stayed silent for two days and three phone calls were dropped for congestion. A 48-hour record of a helpdesk that ignores deadlines, with chat-style reenactment figures. Sequel to the previous BIGLOBE cancellation article."
+      },
+      "tag": {
+        "ja": "体験談",
+        "en": "Experience report"
+      },
+      "hero": "articles/2026/2026-07-11_biglobe-kaiyaku-zokuhen/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-11_biglobe-kaiyaku-zokuhen/"
+      }
+    },
+    {
+      "date": "2026-07-11",
+      "title": {
         "ja": "サブエージェント約120本を指揮して、東日本13道県・約1,300校の学校データ整備を2日で終えた話",
         "en": "Directing ~120 AI subagents: building school data for 13 prefectures of eastern Japan in two days"
       },
