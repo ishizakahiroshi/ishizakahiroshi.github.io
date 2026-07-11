@@ -7,6 +7,26 @@
     {
       "date": "2026-07-11",
       "title": {
+        "ja": "作業そのものは無害なのに、AIの安全装置が「振り返り」で誤発火した話",
+        "en": "The work itself was harmless, yet the AI safeguard misfired on the 'recap' step"
+      },
+      "short": {
+        "ja": "Claude Fable 5 で自環境のテストをした後、セッションを要約する自作スキルを起動した瞬間に安全装置（デュアルユース検知）が誤発火し Opus 4.8 へ自動フォールバックした。個々の作業では出なかったのに、散らばったセキュリティ的な信号が「要約」で一点に濃縮されたことが引き金だった、という考察。公式が挙げる監視 4 領域に「要約された思考の抽出（distillation）」が含まれることから、要約という動作自体が表層一致した合わせ技だった可能性にも触れる。同じ誤発火は公式ヘルプ・GitHub Issue・note / Qiita / Zenn で広く報告されておりクロスリンクをまとめた。",
+        "en": "After testing my own environment with Claude Fable 5, the safeguard misfired the moment I ran a self-made session-recap skill, auto-falling back to Opus 4.8. The trigger wasn't the work itself but the recap step, where scattered security-adjacent signals got concentrated into one turn. Since the official four monitored areas include 'distillation (extracting summarized thinking)', the act of summarizing may have surface-matched too. The same false positives are widely reported across the official help article, GitHub issues, and note / Qiita / Zenn, cross-linked at the end."
+      },
+      "tag": {
+        "ja": "エッセイ",
+        "en": "Essay"
+      },
+      "hero": "articles/2026/2026-07-11_fable5-safeguard-false-positive/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-11_fable5-safeguard-false-positive/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/f2915b037e517fd2787d"
+      }
+    },
+    {
+      "date": "2026-07-11",
+      "title": {
         "ja": "4 枚の CSV の続き: 音声入力の表記ゆれは、5 枚目の「呼称索引」で吸収する",
         "en": "Sequel to the four CSVs: absorbing voice-input name variations with a fifth 'alias index' CSV"
       },
