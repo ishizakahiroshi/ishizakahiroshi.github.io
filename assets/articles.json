@@ -5,6 +5,22 @@
   },
   "articles": [
     {
+      "date": "2026-07-12",
+      "title": {
+        "ja": "「監査して」と頼んだら、コードが書き換わっていた",
+        "en": "I asked for an audit, and my source files got rewritten"
+      },
+      "short": {
+        "ja": "AI にコードを監査させるプロンプト集の続編。コミット禁止で縛っていたから安全なつもりでいたのに、「監査して」と頼んだ後の git status は modified がずらり。監査という言葉が期待させるのはレポートであって書き換えではない。修正機能は削らず、スコープ引数の既定を「フルループ」から「調査まで」へ反転し、確定 finding ごとに diff / before-after の修正案を必ず添えさせた。あわせて実行前に引数と書き換え有無を要約提示して承認を待つゲートを追加。パーミッションとは別レイヤーなので YOLO モードでも効く。",
+        "en": "A sequel to the AI code-audit prompt collection. Commits were forbidden, so it felt safe, yet git status showed a wall of modified files after every audit. The word 'audit' promises a report, not rewrites. Instead of removing the fix capability, the default scope was flipped from 'full loop' to 'investigate only', with an applicable fix proposal (diff / before-after) required per confirmed finding. Also added a pre-run approval gate that summarizes the resolved arguments and whether sources will be touched. It lives in the conversation layer, separate from tool permissions, so it works even in YOLO mode."
+      },
+      "tag": { "ja": "設計判断", "en": "Design decisions" },
+      "hero": "articles/2026/2026-07-12_audit-report-only-default/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-12_audit-report-only-default/"
+      }
+    },
+    {
       "date": "2026-07-11",
       "title": {
         "ja": "実装計画まで6時間半。遅かったのはAIではなく、渡していない「不文律」だった",
