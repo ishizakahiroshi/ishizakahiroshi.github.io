@@ -7,6 +7,26 @@
     {
       "date": "2026-07-11",
       "title": {
+        "ja": "4 枚の CSV の続き: 音声入力の表記ゆれは、5 枚目の「呼称索引」で吸収する",
+        "en": "Sequel to the four CSVs: absorbing voice-input name variations with a fifth 'alias index' CSV"
+      },
+      "short": {
+        "ja": "入力の主経路が音声になって 2 か月。同じ対象が正式名・英字・略称・誤変換の 4 通りの文字列で AI に届き、台帳が正しくても呼び名の解決が推測頼みになった。最初に足した aliases 列を同日に剥がし、表記ゆれは「事実」ではなく「索引」だと捉え直して、正体（正式名と id）を行内に同居させた縦持ちの呼称索引 CSV に分離。列で持つか専用ファイルに分けるかの判断基準と、誤変換を「直す」から「登録する」への発想の反転まで。",
+        "en": "Two months into voice-first input, the same entity reaches the AI as four different strings: official name, romanized form, in-house abbreviation, and mis-transcription. Instead of polluting the ledgers with an aliases column (added and removed the same day), name variations were reframed as an index rather than facts: a fifth vertical CSV whose rows carry the canonical name and id inline. Includes the column-vs-dedicated-file decision rule and the mindset flip from fixing mis-transcriptions to registering them."
+      },
+      "tag": {
+        "ja": "設計判断",
+        "en": "Design decisions"
+      },
+      "hero": "articles/2026/2026-07-11_alias-index-for-voice-input/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-11_alias-index-for-voice-input/",
+        "zenn": "https://zenn.dev/ishizakahiroshi/articles/20260711-alias-index-for-voice-input"
+      }
+    },
+    {
+      "date": "2026-07-11",
+      "title": {
         "ja": "口座連携なしで、保有資産をtreemapで俯瞰するローカル完結ダッシュボードの設計",
         "en": "Designing a local-only asset dashboard: a treemap-based tool that never touches brokerage APIs"
       },
