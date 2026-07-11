@@ -5,6 +5,45 @@
   },
   "articles": [
     {
+      "date": "2026-07-11",
+      "title": {
+        "ja": "サブエージェント約120本を指揮して、東日本13道県・約1,300校の学校データ整備を2日で終えた話",
+        "en": "Directing ~120 AI subagents: building school data for 13 prefectures of eastern Japan in two days"
+      },
+      "short": {
+        "ja": "学校選び地図サービスの全国展開で、東日本13道県の学校データ（1,294拠点・2,121学科）と入試実績3年分をAIサブエージェント約120本の並列指揮で2日で整備。モデルの配役でコストと品質を両立し、公的資料のみの規律を4重の機械チェックで担保。境界欠落や同名校衝突を多段パイプラインが自己検出した話。",
+        "en": "For a school-map service, ~120 AI subagents built school data for 13 prefectures of eastern Japan (1,294 sites, 2,121 departments) plus 3 years of admission stats in two days. Model casting balanced cost and quality, a public-sources-only rule was enforced by four layers of mechanical checks, and the multi-stage pipeline caught its own mistakes."
+      },
+      "tag": {
+        "ja": "振り返り",
+        "en": "Retrospective"
+      },
+      "hero": "articles/2026/2026-07-11_east-japan-multiagent/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-11_east-japan-multiagent/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/52d8085452719e8fdaea"
+      }
+    },
+    {
+      "date": "2026-07-11",
+      "title": {
+        "ja": "NotebookLMが開けない。ファミリーリンク解除でGemini Flashに振り回された話",
+        "en": "NotebookLM won't open: how Gemini Flash led me in circles around a Family Link age lock"
+      },
+      "short": {
+        "ja": "中2の娘がNotebookLMを使えるようにするだけのはずが、ファミリーリンクの13歳ロック解除でGemini Flashの「一発で解決」に7連敗。解決までのやり取りは29往復、正解はスマホアプリの一番下の1ボタンでした。設定変更やUIが絡む質問を軽量モデルに聞くと、往復時間もトークンも余計にかかるという教訓の話です。",
+        "en": "All I wanted was to let my daughter use NotebookLM. Unlocking the Family Link 13+ age lock turned into seven failed 'this will fix it' answers from Gemini Flash and 29 round-trips before it was solved; the real fix was one button at the bottom of the mobile app. Lesson: questions that must match a real, changing UI belong to a high-reasoning model like Pro, or the cheap model costs you more in round-trips and tokens."
+      },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Failure story"
+      },
+      "hero": "articles/2026/2026-07-11_gemini-flash-family-link-detour/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-11_gemini-flash-family-link-detour/"
+      }
+    },
+    {
       "date": "2026-07-10",
       "title": {
         "ja": "30 個のスキルを積んだ Claude Code に /doctor をかけて、棚卸ししてみた",
