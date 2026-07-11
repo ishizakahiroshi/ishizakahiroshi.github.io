@@ -7,6 +7,26 @@
     {
       "date": "2026-07-11",
       "title": {
+        "ja": "サブエージェント120本が集めた学校データを本番投入したら、想定外が5連発だった話",
+        "en": "Deploying school data collected by 120 AI subagents to production: five surprises in one day"
+      },
+      "short": {
+        "ja": "前編で集めた東日本13道県・約1,200校の学校データを本番 PostgreSQL に投入。県別 count(*) が前編記事の集計誤記（ちょうど+100）を暴き、既存本番データからは33校の欠落を grep で発見。外部キー制約・一意制約・サイレント NULL の3連発を DB の基本機能が止めてくれた。検収は自己申告でなく実測で、という続編。",
+        "en": "Deploying school data for 13 prefectures of eastern Japan to production PostgreSQL. Per-prefecture count(*) exposed a +100 tally error in the previous article, grep revealed 33 schools missing from existing production data, and FK constraints, a unique constraint and silent NULLs fired back to back. The DB's basic machinery saved the day: verify by measurement, not self-reports."
+      },
+      "tag": {
+        "ja": "失敗談",
+        "en": "Failure story"
+      },
+      "hero": "articles/2026/2026-07-11_east-japan-production-import/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-11_east-japan-production-import/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/0bc0767de1ba66a5fb13"
+      }
+    },
+    {
+      "date": "2026-07-11",
+      "title": {
         "ja": "BIGLOBE 解約のその後。チャットは 2 日返事なし、電話は 3 回切られました",
         "en": "After cancelling BIGLOBE: two days of chat silence and three dropped support calls"
       },

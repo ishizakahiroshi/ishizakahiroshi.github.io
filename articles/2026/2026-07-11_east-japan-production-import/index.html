@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>サブエージェント120本が集めた学校データを本番投入したら、想定外が5連発だった話 — 2026-07-11 — ishizakahiroshi</title>
+<meta name="description" content="AI サブエージェント約120本が集めた東日本13道県の学校データを本番の PostgreSQL に投入した記録。県別 count(*) が前編記事の集計誤記を暴き、既存本番データから33校の欠落を grep で発見。外部キー制約・一意制約・サイレント NULL の3連発を DB の基本機能が止めてくれた話。">
+<meta name="author" content="ishizakahiroshi">
+
+<!-- canonical: Qiita に実投稿あり（重複コンテンツ評価回避） -->
+<link rel="canonical" href="https://qiita.com/ishizakahiroshi/items/0bc0767de1ba66a5fb13">
+
+<meta property="og:title" content="サブエージェント120本が集めた学校データを本番投入したら、想定外が5連発だった話">
+<meta property="og:description" content="本番投入の日に起きた想定外5連発。集計誤記を暴いた count(*)、本番から消えていた33校、外部キー制約と一意制約とサイレント NULL。検収は自己申告でなく実測で。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-11_east-japan-production-import/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-11_east-japan-production-import/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-11_east-japan-production-import/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "サブエージェント120本が集めた学校データを本番投入したら、想定外が5連発だった話",
+  "description": "AI サブエージェント約120本が集めた東日本13道県の学校データを本番の PostgreSQL に投入した記録。集計誤記を暴いた count(*)、本番から消えていた33校、外部キー制約・一意制約・サイレント NULL の3連発。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-07-11_east-japan-production-import/hero.png",
+  "datePublished": "2026-07-11",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://qiita.com/ishizakahiroshi/items/0bc0767de1ba66a5fb13"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8; --ok:#2e7d4f; --warn:#b8860b; --bad:#b3261e;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;
+       text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;
+     padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-family:var(--display);font-weight:700;font-size:1.1rem;margin:28px 0 10px}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;
+            font-family:var(--display);font-weight:700;font-size:0.86rem;
+            padding:6px 14px;border-radius:999px;border:2px solid var(--ink);
+            background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;
+         border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;
+       font-family:var(--display);font-weight:700;font-size:0.78rem;
+       border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;
+        box-shadow:5px 6px 0 var(--line);background:#f7eccb}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;
+             padding:7px 16px;border-radius:999px;font-family:var(--display);
+             font-weight:700;font-size:0.86rem;text-decoration:none;
+             border:2px solid var(--ink);color:#fff;
+             box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-zenn{background:#3ea8ff}
+  .plat-note{background:#2cb696}
+  .plat-qiita{background:#55c500}
+  .info{margin:14px 0 22px;padding:12px 18px;border:2px dashed var(--ink);border-radius:14px;
+        background:var(--card);font-size:0.95rem;color:var(--ink-soft)}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);
+          color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">失敗談</span>
+  <span class="stamp">2026-07-11</span>
+</div>
+
+<h1>サブエージェント120本が集めた学校データを本番投入したら、想定外が5連発だった話</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="本番投入、想定外5連発。夜のデータ運用デスクと東日本の地図をモチーフにしたヒーロー画像" width="1280" height="670">
+</div>
+
+<p class="lead">
+AI サブエージェント約120本が集めた東日本13道県・約1,200校の学校データを、本番の PostgreSQL に投入した日の記録です。県別の count(*) が前編記事の集計誤記を暴き、既存の本番データからは33校の欠落が grep で見つかり、投入当日は外部キー制約・一意制約・サイレント NULL の3連発。それでも無事に終わったのは、DB の基本機能が要所で止めてくれたからでした。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-qiita" href="https://qiita.com/ishizakahiroshi/items/0bc0767de1ba66a5fb13" target="_blank" rel="noopener">Qiita で読む →</a>
+</div>
+
+<h2>この記事のテーマ</h2>
+<p>前編「サブエージェント約120本を指揮して、東日本13道県・約1,300校の学校データ整備を2日で終えた話」の続編です。集めたデータを本番に入れる工程で、AI の自己申告集計は足し算から疑うこと、エラーで止まる失敗より静かに壊れる失敗のほうが高くつくこと、そして本番に触る操作は人間の承認とバックアップを通す1つの関門に集約することを、実際に踏んだ5つの想定外とともにまとめています。</p>
+
+<div class="footer">
+  公開: 2026-07-11 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>
