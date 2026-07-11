@@ -590,6 +590,7 @@ const I18N = {
     "contact.welcomeTitle": "こんな相談、歓迎です",
     "contact.x": "X でDMする", "contact.note": "note を見る", "contact.github": "GitHub を見る", "contact.youtube": "YouTube を見る", "contact.mail": "メールアドレスを表示",
     "articles.channel": "記事の音声版を YouTube で配信中", "articles.channelBtn": "チャンネルを見る →",
+    "articles.channelSub": "AI がラジオ風に対談解説する音声版です。ながら聴きにどうぞ。最新回はこちら:",
     "hero.eyebrow": "システムエンジニア｜実務18年",
     "hero.role": "バックエンド・インフラ・AI連携",
     "hero.tagline": "現場の業務課題を、最小限の実装で、確実に動くものにする。",
@@ -632,6 +633,7 @@ const I18N = {
     "contact.welcomeTitle": "Happy to talk about",
     "contact.x": "DM me on X", "contact.note": "Read on note", "contact.github": "View GitHub", "contact.youtube": "Watch on YouTube", "contact.mail": "Show email address",
     "articles.channel": "Audio versions of these articles are on YouTube", "articles.channelBtn": "Visit the channel →",
+    "articles.channelSub": "Radio-style AI audio companions to the articles — great for listening while you work. Here's the latest:",
     "hero.eyebrow": "Software Engineer · 18 years",
     "hero.role": "Backend · Infrastructure · AI Integration",
     "hero.tagline": "Solving real operational problems with minimal, reliable implementations.",
@@ -1374,6 +1376,30 @@ async function loadArticles() {
     articlesState = "error";
   }
   renderArticles(getLang());
+  renderLatestVideoEmbed();
+}
+
+/**
+ * 最新の音声版動画（youtube リンクを持つ最新記事）を Articles セクション先頭に埋め込む。
+ * articles.json が正典なので、音声版つきの記事を追記するだけで自動的に最新回へ切り替わる。
+ * 言語切替の再描画で iframe をリロードしないよう、一度だけ生成する。
+ */
+function renderLatestVideoEmbed() {
+  const box = document.getElementById("articles-latest-video");
+  if (!box || box.dataset.loaded === "1") return;
+  const latest = articlesList.find((a) => a.links && a.links.youtube);
+  if (!latest || !latest.links.youtube) return;
+  const m = latest.links.youtube.match(/(?:youtu\.be\/|[?&]v=|\/embed\/)([A-Za-z0-9_-]{6,})/);
+  if (!m) return;
+  const iframe = document.createElement("iframe");
+  iframe.src = "https://www.youtube-nocookie.com/embed/" + m[1];
+  iframe.title = "AI 音声解説: " + latest.title.ja;
+  iframe.setAttribute("loading", "lazy");
+  iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+  iframe.setAttribute("allowfullscreen", "");
+  box.appendChild(iframe);
+  box.hidden = false;
+  box.dataset.loaded = "1";
 }
 
 async function fetchDlStats() {

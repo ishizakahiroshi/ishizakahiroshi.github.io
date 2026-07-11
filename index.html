@@ -123,10 +123,14 @@
 <section class="block" id="articles">
   <div class="wrap">
     <div class="section-label" data-i18n="label.articles">Articles</div>
-    <p class="articles-channel">
-      <span data-i18n="articles.channel">記事の音声版を YouTube で配信中</span>
-      <a class="lpill lpill-youtube" id="articles-channel-link" target="_blank" rel="noopener" data-i18n="articles.channelBtn">チャンネルを見る →</a>
-    </p>
+    <div class="articles-channel">
+      <div class="yt-embed" id="articles-latest-video" hidden></div>
+      <div class="yt-meta">
+        <p class="yt-lead" data-i18n="articles.channel">記事の音声版を YouTube で配信中</p>
+        <p class="yt-sub" data-i18n="articles.channelSub">AI がラジオ風に対談解説する音声版です。ながら聴きにどうぞ。最新回はこちら:</p>
+        <a class="lpill lpill-youtube" id="articles-channel-link" target="_blank" rel="noopener" data-i18n="articles.channelBtn">チャンネルを見る →</a>
+      </div>
+    </div>
     <div class="articles-timeline" id="articles-list">
       <p class="articles-loading" data-i18n="articles.loading">記事を読み込んでいます。</p>
     </div>
