@@ -7,6 +7,22 @@
     {
       "date": "2026-07-12",
       "title": {
+        "ja": "Cドライブの空きが謎に減るので Claude Code に調べさせたら、犯人は Claude Code 自身だった",
+        "en": "My C drive kept shrinking, so I asked Claude Code to investigate. The culprit was Claude Code itself"
+      },
+      "short": {
+        "ja": "255GB の C ドライブの空きが 50.5GB。消しても減り続ける原因を Claude Code に調べさせたら、%TEMP% に 33,966 個・37.8GB のファイルを吐いていた犯人は Claude Code 自身だった。名前パターンとサイズのグループ化、日別のタイムスタンプ集計、バイナリ内文字列、ロード中モジュールの実測で犯人を確定するまでの調査ログ。9 割超がたった 1 日（毎時約 2,900 個 × 11 時間）で生成されていた。単一バイナリ CLI が %TEMP% へ展開したまま後始末しない仕組みと、安全な削除コマンドまで。",
+        "en": "A 255GB C drive down to 50.5GB free. I asked Claude Code to find out why disk space kept vanishing, and it calmly reported: the culprit is me. 33,966 files totaling 37.8GB in %TEMP%. An investigation log using name-pattern grouping, per-day timestamp aggregation, binary string analysis, and loaded-module inspection. Over 90% was generated in a single day (about 2,900 files per hour for 11 hours). Covers how single-binary CLIs extract native modules into %TEMP% without cleanup, plus a safe removal one-liner."
+      },
+      "tag": { "ja": "失敗談", "en": "Postmortem" },
+      "hero": "articles/2026/2026-07-12_claude-code-temp-leak-40gb/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-12_claude-code-temp-leak-40gb/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/2bc449a68951386ac48e"
+      }
+    },    {
+      "date": "2026-07-12",
+      "title": {
         "ja": "「監査して」と頼んだら、コードが書き換わっていた",
         "en": "I asked for an audit, and my source files got rewritten"
       },
