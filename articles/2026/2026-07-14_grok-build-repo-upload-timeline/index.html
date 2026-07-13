@@ -7,18 +7,18 @@
 <meta name="description" content="Grok Build（xAI の AI コーディング支援 CLI）が cwd リポを Google Cloud Storage に送っていた事案の時系列と検証。X の一次ソースを 5 日間の時系列で追い、gitignore は防御にならないという設計原則までまとめた記事。">
 <meta name="author" content="ishizakahiroshi">
 
-<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-07-14_grok-build-repo-upload-timeline/">
+<link rel="canonical" href="https://zenn.dev/ishizakahiroshi/articles/20260714-grok-build-repo-upload-timeline">
 
 <meta property="og:title" content="gitignore は防御じゃない。Grok Build の repo アップロード事案から、秘密の置き場所を見直す">
 <meta property="og:description" content="Grok Build 事案の X 一次ソースを 5 日間の時系列で追い、gitignore は防御にならないという設計原則までまとめた記事。">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-14_grok-build-repo-upload-timeline/">
+<meta property="og:url" content="https://zenn.dev/ishizakahiroshi/articles/20260714-grok-build-repo-upload-timeline">
 <meta property="og:site_name" content="ishizakahiroshi">
-<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-14_grok-build-repo-upload-timeline/hero.png">
+<meta property="og:image" content="https://zenn.dev/ishizakahiroshi/articles/20260714-grok-build-repo-upload-timelinehero.png">
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="670">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-14_grok-build-repo-upload-timeline/hero.png">
+<meta name="twitter:image" content="https://zenn.dev/ishizakahiroshi/articles/20260714-grok-build-repo-upload-timelinehero.png">
 
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -32,11 +32,11 @@
   "@type": "Article",
   "headline": "gitignore は防御じゃない。Grok Build の repo アップロード事案から、秘密の置き場所を見直す",
   "description": "Grok Build 事案の X 一次ソースを 5 日間の時系列で追い、gitignore は防御にならないという設計原則までまとめた記事。",
-  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-07-14_grok-build-repo-upload-timeline/hero.png",
+  "image": "https://zenn.dev/ishizakahiroshi/articles/20260714-grok-build-repo-upload-timelinehero.png",
   "datePublished": "2026-07-14",
   "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
   "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
-  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-07-14_grok-build-repo-upload-timeline/"
+  "mainEntityOfPage": "https://zenn.dev/ishizakahiroshi/articles/20260714-grok-build-repo-upload-timeline"
 }
 </script>
 
@@ -87,7 +87,8 @@
     </p>
     <p>本編はこちらでどうぞ。</p>
     <div class="platforms">
-      <a href="https://qiita.com/ishizakahiroshi" class="qiita">Qiita で読む（公開後リンク差し替え）</a>
+      <a href="https://qiita.com/ishizakahiroshi/items/4982fc3eedc4f17389d6" class="qiita">Qiita で読む</a>
+      <a href="https://zenn.dev/ishizakahiroshi/articles/20260714-grok-build-repo-upload-timeline" class="zenn">Zenn で読む</a>
     </div>
   </div>
 

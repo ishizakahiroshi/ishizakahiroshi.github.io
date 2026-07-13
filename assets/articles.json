@@ -17,7 +17,9 @@
       "tag": { "ja": "セキュリティ", "en": "Security" },
       "hero": "articles/2026/2026-07-14_grok-build-repo-upload-timeline/hero.png",
       "links": {
-        "html": "articles/2026/2026-07-14_grok-build-repo-upload-timeline/"
+        "html": "articles/2026/2026-07-14_grok-build-repo-upload-timeline/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/4982fc3eedc4f17389d6",
+        "zenn": "https://zenn.dev/ishizakahiroshi/articles/20260714-grok-build-repo-upload-timeline"
       }
     },
     {
