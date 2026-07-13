@@ -7,6 +7,23 @@
     {
       "date": "2026-07-14",
       "title": {
+        "ja": "200 行ルールを疑って、自分の CLAUDE.md を『発火頻度』で仕分け直した話",
+        "en": "I doubted the 200-line CLAUDE.md rule and re-sorted my config by 'firing frequency' instead"
+      },
+      "short": {
+        "ja": "note で流れてきた『200 行を超えると劣化する』ルールを、Claude 4.7（1M コンテキスト + prompt caching）で計算してみたら成立しなかった。数字自体は民間伝承だが『常時ロードを軽く』の目的意識は正しい。行数目標を捨てて『発火頻度』で仕分ける方針に置き直し、251→114 行に整理した記録。ついでに Skill description 30% 圧縮と、棚卸しをデータで判断するための使用ログ収集（クロス CLI 対応）まで仕込みました。",
+        "en": "I checked the 'CLAUDE.md over 200 lines degrades' rule on Claude 4.7 (1M context + prompt caching): it doesn't hold. The number itself is folklore, but 'keep the always-loaded part light' is a valid goal. So I dropped the line-count target, re-sorted the file by 'firing frequency', and shrank it from 251 to 114 lines. Also compressed skill descriptions by 30% and installed a cross-CLI usage log to decide skill retirement by data."
+      },
+      "tag": { "ja": "設計判断", "en": "Design decisions" },
+      "hero": "articles/2026/2026-07-14_claude-md-firing-frequency/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-14_claude-md-firing-frequency/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/8ffdb968963c4e992662"
+      }
+    },
+    {
+      "date": "2026-07-14",
+      "title": {
         "ja": "自作 OSS に HTML 対応を足そうとして、100 行書いてから設計を revert した話",
         "en": "I nearly added 100 lines to my OSS parser. Then I reverted the design and pushed the rules to the generator side"
       },
