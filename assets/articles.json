@@ -7,6 +7,22 @@
     {
       "date": "2026-07-14",
       "title": {
+        "ja": "gitignore は防御じゃない。Grok Build の repo アップロード事案から、秘密の置き場所を見直す",
+        "en": "gitignore is not a defense: rethinking secret placement after the Grok Build repo upload incident"
+      },
+      "short": {
+        "ja": "Grok Build が cwd リポを Google Cloud Storage にスナップショット化して送っていた事案の X 一次ソース時系列と、自環境で 245 件の送信履歴を実測した記録。xAI の /privacy opt-out 対応と削除の trust-only の限界も踏まえ、本題として『gitignore は git の話であって AI CLI・tar・IDE 同期は尊重しない』設計原則までまとめた。",
+        "en": "A 5-day timeline of the Grok Build incident where the CLI was uploading cwd repos to Google Cloud Storage, plus local verification (245 upload events found in unified.jsonl). Covers xAI's /privacy opt-out response, the trust-only limit of deletion, and the takeaway: gitignore is a git concept, not respected by AI CLIs, tar, IDE sync, or backups. Secrets belong outside the repo."
+      },
+      "tag": { "ja": "セキュリティ", "en": "Security" },
+      "hero": "articles/2026/2026-07-14_grok-build-repo-upload-timeline/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-14_grok-build-repo-upload-timeline/"
+      }
+    },
+    {
+      "date": "2026-07-14",
+      "title": {
         "ja": "4 つの AI と一緒に、many-ai-cli v0.5.0 を出した話",
         "en": "The day I shipped many-ai-cli v0.5.0 with four AIs working together"
       },
