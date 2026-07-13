@@ -5,6 +5,23 @@
   },
   "articles": [
     {
+      "date": "2026-07-14",
+      "title": {
+        "ja": "自作 OSS に HTML 対応を足そうとして、100 行書いてから設計を revert した話",
+        "en": "I nearly added 100 lines to my OSS parser. Then I reverted the design and pushed the rules to the generator side"
+      },
+      "short": {
+        "ja": "自作の docsweep（AI が生成する plan/bugfix md を管理する CLI）に HTML 資料も認識させたくて、HTML コメントの meta パーサ・synthetic TypeDef 合成・状態語彙のエイリアスと 100 行以上のコアを拡張した。テストは 533 件通っていた。でも進捗を報告した瞬間に『増やす場所を間違えてる』と気づいて、コア側の追加をほぼ revert し、生成側の skill をファイル名規約と標準語彙に合わせる方向へ設計転換した。パーサに機能を足す前に生成側を疑う、を強く実感した記録。",
+        "en": "I extended docsweep (a CLI I built to manage plan/bugfix md files that AI coding tools generate) to also recognize HTML documents. I added over 100 lines of core changes: an HTML-comment meta parser, synthetic TypeDef assembly, and state-vocab aliases. All 533 tests passed. But the moment I reported progress, I realized I was extending the wrong side. I reverted most of the core additions and pushed the responsibility to the generator (skill) side by aligning filenames and vocabulary. A record of the value of doubting the generator before extending the parser."
+      },
+      "tag": { "ja": "設計判断", "en": "Design decisions" },
+      "hero": "articles/2026/2026-07-14_docsweep-html-meta-refactor/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-14_docsweep-html-meta-refactor/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/f0b3bfa30f11c70842a4"
+      }
+    },
+    {
       "date": "2026-07-12",
       "title": {
         "ja": "Cドライブの空きが謎に減るので Claude Code に調べさせたら、犯人は Claude Code 自身だった",
