@@ -7,6 +7,22 @@
     {
       "date": "2026-07-14",
       "title": {
+        "ja": "コマンドパレット足しました",
+        "en": "I added a command palette"
+      },
+      "short": {
+        "ja": "自作のオフライン Markdown エディタ offline-md-editor-viewer に、コマンドパレットや Zen モードなど地味に効く機能を足した話。",
+        "en": "Added a command palette, Zen mode, and a few other small-but-useful features to my offline Markdown editor, offline-md-editor-viewer."
+      },
+      "tag": { "ja": "小ネタ", "en": "Quick note" },
+      "hero": "articles/2026/2026-07-14_command-palette-added/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-14_command-palette-added/"
+      }
+    },
+    {
+      "date": "2026-07-14",
+      "title": {
         "ja": "gitignore は防御じゃない。Grok Build の repo アップロード事案から、秘密の置き場所を見直す",
         "en": "gitignore is not a defense: rethinking secret placement after the Grok Build repo upload incident"
       },
