@@ -5,6 +5,22 @@
   },
   "articles": [
     {
+      "date": "2026-07-16",
+      "title": {
+        "ja": "AIが残すplan・bugfixを自動で片付けるdocsweepの始め方",
+        "en": "Getting started with docsweep: automatically organizing AI-generated plan and bugfix logs"
+      },
+      "short": {
+        "ja": "AIコーディングツールが残すplan・bugfix・pendingのMarkdownを、判断できる状態に保って安全にarchiveするPython CLI、docsweepの導入ガイド。インストール、基本操作、manual_release記録の取りこぼしを直した今回の改修までまとめました。",
+        "en": "A practical introduction to docsweep, a Python CLI that keeps AI-generated plan, bugfix, and pending Markdown actionable and archives only explicitly completed work. Covers installation, core commands, and the manual_release recognition fix."
+      },
+      "tag": { "ja": "ツール紹介", "en": "Tool guide" },
+      "hero": "articles/2026/2026-07-16_docsweep-ai-worklog-cleanup/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-16_docsweep-ai-worklog-cleanup/"
+      }
+    },
+    {
       "date": "2026-07-14",
       "title": {
         "ja": "「工事後に自動で解約されます」と言われたのに、IPoE が残って乗り換え先の v6 プラスが始まらなかった話",
