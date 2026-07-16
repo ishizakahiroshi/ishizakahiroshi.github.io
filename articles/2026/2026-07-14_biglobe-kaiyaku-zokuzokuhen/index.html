@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>「工事後に自動で解約されます」と言われたのに、IPoE が残って乗り換え先の v6 プラスが始まらなかった話 — 2026-07-14 — ishizakahiroshi</title>
+<meta name="description" content="BIGLOBE から他社への事業者変更。工事前日にオペレーターから『登録が残存することはございません』と断定されたのに、工事後もIPoEは残り、移転先のv6プラスが『申込中』から動かない。7/12は電話7連敗、7/14はチャットがセッション切れ。それでも解約してよかったと今も思っている話。">
+<meta name="author" content="ishizakahiroshi">
+
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-07-14_biglobe-kaiyaku-zokuzokuhen/">
+
+<meta property="og:title" content="「自動で解約されます」と言われたIPoEが残って、乗り換え先のv6プラスが始まらなかった話">
+<meta property="og:description" content="工事前日に『残存することはございません』と断定された旧IPoEが、工事後もそのまま残った。電話は3日で通算11回全部切断、返信すればセッション切れ。それでも解約してよかったと思っている理由。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-14_biglobe-kaiyaku-zokuzokuhen/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-14_biglobe-kaiyaku-zokuzokuhen/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-14_biglobe-kaiyaku-zokuzokuhen/hero.png">
+
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "「工事後に自動で解約されます」と言われたのに、IPoE が残って乗り換え先の v6 プラスが始まらなかった話",
+  "description": "工事前日に『残存することはございません』と断定された旧IPoEが、工事後もそのまま残った。電話は3日で通算11回全部切断、返信すればセッション切れ。それでも解約してよかったと思っている理由。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-07-14_biglobe-kaiyaku-zokuzokuhen/hero.png",
+  "datePublished": "2026-07-14",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-07-14_biglobe-kaiyaku-zokuzokuhen/"
+}
+</script>
+
+<style>
+  :root {
+    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
+    --accent:#ff7a3d; --card:#fffdf8;
+    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
+    --body:'Zen Maru Gothic',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
+  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em;line-height:1.35}
+  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  p,li{font-size:1rem}
+  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:0.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
+  .nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
+  .tag-accent{background:var(--accent);color:#fff}
+  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#16213a}
+  .hero img{display:block;width:100%;height:auto}
+  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
+  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:0.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
+  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .plat-note{background:#2cb696}
+  .plat-youtube{background:#c4302b}
+  .yt{margin:18px 0 24px;border:2px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:4px 5px 0 var(--line);background:#000;aspect-ratio:16/9}
+  .yt iframe{display:block;width:100%;height:100%;border:0}
+  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:0.95rem}
+  .figs{display:grid;gap:18px;margin:18px 0}
+  .figs figure{margin:0;border:2px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:4px 5px 0 var(--line);background:#16213a}
+  .figs img{display:block;width:100%;height:auto}
+  .figs figcaption{padding:10px 14px;font-size:0.9rem;background:var(--card);color:var(--ink-soft)}
+  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:0.86rem}
+  .footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+
+<div class="head-row">
+  <span class="tag tag-accent">体験談</span>
+  <span class="stamp">2026-07-14</span>
+</div>
+
+<h1>「工事後に自動で解約されます」と言われたのに、IPoE が残って乗り換え先の v6 プラスが始まらなかった話</h1>
+
+<div class="hero">
+  <img src="hero.png" alt="夜の在宅デスクに置かれた固定電話の受話器とラップトップ。落ち着いたネイビーの背景に、Wi-Fiルーターのアンバーのランプが灯る。タイトル『BIGLOBE 解約 その後の後 / 「自動で解約されます」の、その先』が上部に配置されたヒーロー画像" width="1280" height="670">
+</div>
+
+<p class="lead">
+BIGLOBE から他社への事業者変更。工事前日にオペレーターから「事業者変更完了後にIPv6オプションは自動で解約される」「BIGLOBEにご登録が残存することはございません」と断定されました。しかし工事後、旧IPoEは残ったまま。移転先のv6プラスは「申込中」から動かず、通信経路は依然として BIGLOBE 経由。3日間で電話は通算11回、一度もつながりませんでした。それでも解約してよかったと今も思っている、という話です。
+</p>
+
+<div class="plat-row">
+  <a class="plat-pill plat-youtube" href="https://youtu.be/6dC5X66Ab_g" target="_blank" rel="noopener">YouTube で聴く（15 分）→</a>
+</div>
+
+<div class="info">
+note 投稿予定です。投稿後に note の導線を追記します。
+</div>
+
+<h2>記事の要約（インフォグラフィック）</h2>
+<figure style="margin:0 0 24px;border:2px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:4px 5px 0 var(--line);background:#fff">
+  <img src="infographic.png" alt="記事全体を1枚にまとめたインフォグラフィック（NotebookLM 生成）。工事前日にBIGLOBEから『残存することはございません』と断定されたIPoEが工事後も残り、移転先のv6プラスが『申込中』から動かない。電話は3日で通算11回全部切断。それでも安心代として毎月の差額に納得している、という要約" style="display:block;width:100%;height:auto">
+</figure>
+
+<h2>AI ラジオ解説（15 分）</h2>
+<div class="yt">
+  <iframe src="https://www.youtube-nocookie.com/embed/6dC5X66Ab_g" title="在宅エンジニアが回線を人質にされた話【AI音声解説】" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<h2>この記事のテーマ</h2>
+<p>前々編は情報漏洩を踏んで退会を決めた話、前編はサポート窓口が3日返事をよこさなかった話。今回は「回答は来た、ただし内容が実際の状態と合っていなかった」段階の記録です。共通するのは、利用者側の期限と、事業者側の処理の間に橋が渡っていない、ということ。</p>
+
+<h2>物語線と、実際に見えたもの（12枚の図で辿る）</h2>
+<div class="figs">
+  <figure>
+    <img src="fig1.png" alt="3本の記事を貫く物語線。前々編(6月・漏洩と退会判断)・前編(7/9-11・サポート応答なし)・今回(7/12-14・回答は来たが実態と食い違い)。共通項は「利用者の期限と事業者の処理の間に橋が渡っていない」" loading="lazy">
+    <figcaption>3本を貫く同じ形。「期限のある問い合わせが期限どおりに処理されない」</figcaption>
+  </figure>
+  <figure>
+    <img src="fig2.png" alt="7月9日到着メール。件名『【移転先ISP】v6プラスお申し込み受付け完了のご連絡』。変更元事業者のIPoE接続サービスが廃止できていない場合、v6プラスの利用が開始できず通信不能期間が発生する、との警告と依頼" loading="lazy">
+    <figcaption>移転先ISP からの、はっきりした事前警告。この1通が全部の始まり</figcaption>
+  </figure>
+  <figure>
+    <img src="fig3.png" alt="3日間のチャット返信を『回答部分だけ抜き出し』で並べた表。7/9夜『順次回答』7/10夜『明日以降回答』7/11電話へ切替『返信なし』7/12午前『履歴消失』。回答文字数はすべて0" loading="lazy">
+    <figcaption>3日間、返ってきたのは全部「待て」だけ。回答は0文字</figcaption>
+  </figure>
+  <figure>
+    <img src="fig4.png" alt="7月11日の電話ログ。10時・11時・12時の3回、全部『混み合っております』のアナウンス後に一方的に切断。通話成立0件・保留待ち0秒" loading="lazy">
+    <figcaption>7月11日、電話3連敗。順番待ちの列に入る手前で終わる</figcaption>
+  </figure>
+  <figure>
+    <img src="fig5.png" alt="7月12日の電話ログ。10時から16時まで1時間おきに7回、全部同じアナウンスで切断。この日の発信7件、通話成立0件、保留列に並べた回数0回。日曜日でも工事日はやってくる" loading="lazy">
+    <figcaption>7月12日、電話7連敗。10時から1時間おきに、全部同じ結果</figcaption>
+  </figure>
+  <figure>
+    <img src="fig6.png" alt="7月12日のチャット窓口の時系列。10:51に数日分の履歴消失（1回目）、10:52に再送信、21:17にようやくオペレーターから具体的な回答、21:44にオペレーターが返信を求めた状態のまま会話終了扱い（2回目）" loading="lazy">
+    <figcaption>案内どおり「会話の終了」を押していないのに、会話が2度終わっていた</figcaption>
+  </figure>
+  <figure>
+    <img src="fig7.png" alt="7月12日21:17に届いた回答の4問4答。Q1『IPv6オプションを契約中』Q2『現時点では廃止手続きは承っていない』Q3『日付は事前に伝えられない』Q4『残存することはございません』" loading="lazy">
+    <figcaption>Q4 の答えは「残る可能性があります」ではなく「残存することはございません」の断定</figcaption>
+  </figure>
+  <figure>
+    <img src="fig8.png" alt="同じ回答に同居していた4つの発言。A.自動で解約 / B.窓口でも受付可能 / C.日付は言えない / D.残存しない。この4つが同時に立っている状態では、利用者は判断を組み立てられない" loading="lazy">
+    <figcaption>「自動」「手動」「日付不明」「残存しない」が、同じ回答に同居する</figcaption>
+  </figure>
+  <figure>
+    <img src="fig9.png" alt="工事後の2つの画面。左：外部の接続確認サービスではISP判定が依然BIGLOBE、逆引きホスト名も…tky.mesh.ad.jp。右：移転先ISPマイページは『ご利用開始』表示だが、v6プラスは『申込中』・開始日空欄" loading="lazy">
+    <figcaption>契約上は開通、しかし通信経路はまだ移転前のまま</figcaption>
+  </figure>
+  <figure>
+    <img src="fig10.png" alt="通算電話11回（7/11=3回・7/12=7回・7/14=1回）、通話成立0件・保留待ち0秒。それでも解約してよかった理由：契約情報照会に3日以上待たされない、期限が拾い上げられる、断定が実態と一致する、会話終了ボタンが機能する、電話が順番待ちの列に入る、これらへの支払いを『安心代』と考えている" loading="lazy">
+    <figcaption>通算11回、一度も繋がらない。差額は安心代として払っている</figcaption>
+  </figure>
+</div>
+
+<h2>関連リンク</h2>
+<ul>
+  <li><a href="https://note.com/ishizakahiroshi/n/n8eece30f8ca8" target="_blank" rel="noopener">前編: BIGLOBE 解約のその後。チャットは2日返事なし、電話は3回切られました（note）</a></li>
+  <li><a href="/articles/2026/2026-07-11_biglobe-kaiyaku-zokuhen/">前編の図解版ページ（このサイト内）</a></li>
+  <li><a href="https://note.com/ishizakahiroshi/n/nd9ff54e7e766" target="_blank" rel="noopener">前々編: BIGLOBE を解約します。漏洩そのものより、事後対応で見限った（note）</a></li>
+</ul>
+
+<div class="footer">
+  公開: 2026-07-14 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
+  <a href="/">トップへ戻る</a>
+</div>
+
+</div>
+</body>
+</html>

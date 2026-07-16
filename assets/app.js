@@ -38,6 +38,7 @@
  * @property {string} repo
  * @property {string} [store]   任意：ストア等の外部リンク（あればボタン追加）
  * @property {string} [live]    任意：ライブデモ等のリンク
+ * @property {string} [guide]   任意：使い方ガイドページのリンク（あれば「使い方を見る」ボタン追加）
  * @property {WorkDl} [dl]      任意：dl-stats から動的に詰める DL 情報
  * @property {L10n} [tagline]      詳細ページ：ヒーローの一言キャッチ
  * @property {string[]} [shots]    詳細ページ：スクショ／GIF の画像パス（works/<id>/ 配下）
@@ -133,6 +134,34 @@ const WORKS = [
       { icon: "▦", title: { ja: "並列セッション管理", en: "Parallel sessions" }, desc: { ja: "Claude Code・Codex・Copilot・Cursor・Grok を同時に走らせ、状態を 1 画面で監視。", en: "Run Claude Code, Codex, Copilot, Cursor, and Grok at once, monitored in one view." } },
       { icon: "✓", title: { ja: "承認を 1 タブに集約", en: "Approvals in one tab" }, desc: { ja: "各 CLI の承認待ちをまとめて捌ける。ターミナルの往復が消える。", en: "Handle every CLI's approval prompts in one place — no more terminal hopping." } },
       { icon: "▤", title: { ja: "スマホから操作", en: "Approve from your phone" }, desc: { ja: "ローカル Web ダッシュボードなので、離席中もスマホで承認できる。", en: "It's a local web dashboard, so you can approve from your phone while away." } },
+    ],
+  },
+  {
+    id: "many-ai-usage",
+    initials: "mu",
+    c: "#4a8fc9",
+    stars: 0,
+    cat: { ja: "ブラウザ拡張 / Chrome + Firefox", en: "Browser Extension / Chrome + Firefox" },
+    short: {
+      ja: "複数の AI サブスクの使用量（残枠・レート）を 1 画面で一覧するブラウザ拡張。",
+      en: "A browser extension that shows every AI subscription's remaining quota on a single dashboard.",
+    },
+    long: {
+      ja: "Claude / ChatGPT / Grok / Gemini / GitHub Copilot / Cursor など複数の AI サービスの残枠・レート上限を、1 画面のダッシュボードで一覧できるブラウザ拡張（Manifest V3・Chrome / Firefox ハイブリッド）です。プロバイダ定義は同梱せず、ユーザーが usage ページで数値を 1 回クリックして教える teach-mode（CSS selector + DOM fingerprint を保存）を主経路にしています。解析はブラウザ内のみで、ページ HTML を外部 AI に送らず、サーバー・アカウント・クラウド同期もありません。",
+      en: "A Manifest V3 browser extension (Chrome/Firefox hybrid) that shows the remaining rate limits of multiple AI subscriptions — Claude, ChatGPT, Grok, Gemini, GitHub Copilot, Cursor, and more — on a single dashboard. Providers are not bundled: users teach the extension by clicking a number on the usage page once (a CSS selector and DOM fingerprint are stored). Everything runs in the browser — no server, no account, no cloud sync.",
+    },
+    tech: ["TypeScript", "WebExtension", "Manifest V3", "Chrome", "Firefox"],
+    repo: "https://github.com/ishizakahiroshi/many-ai-usage",
+    guide: "articles/many-ai-usage/usage.html",
+    tagline: {
+      ja: "複数の AI サブスクの残枠を、1 画面で。ログインしたまま、ブラウザ内だけで完結。",
+      en: "See every AI subscription's remaining quota in one view — all inside your browser, no accounts.",
+    },
+    shots: [],
+    features: [
+      { icon: "▦", title: { ja: "1 画面で一覧", en: "One-view dashboard" }, desc: { ja: "Claude / ChatGPT / Grok / Gemini / Copilot / Cursor などの残枠を 1 タブに集約。", en: "Aggregate remaining quota for Claude/ChatGPT/Grok/Gemini/Copilot/Cursor into one tab." } },
+      { icon: "✓", title: { ja: "クリックで教える teach-mode", en: "Teach by one click" }, desc: { ja: "usage ページの数値を 1 回クリックするだけで登録。プロバイダ知識は同梱せずユーザー側に開く。", en: "Click a number on the usage page once to register it — no bundled provider knowledge." } },
+      { icon: "⚑", title: { ja: "ブラウザ内で完結", en: "Fully in-browser" }, desc: { ja: "ページ HTML を外部 AI に送らず、サーバー・アカウント・クラウド同期は無し。", en: "Page HTML never leaves your browser. No server, no account, no cloud sync." } },
     ],
   },
   {
@@ -608,7 +637,7 @@ const I18N = {
     "about.p1": "新しい技術を追うこと自体が目的ではありません。目の前の課題を解くための手段として、AI・モダンスタック・自社運用インフラまで幅広く使い分けています。製造業の業務システム設計から、人材派遣業の社内システム開発まで、立ち上げから運用まで一貫して関わってきました。",
     "about.p2": "X では、取り繕わずに思っていることをそのまま書いています。整えた発信より、実際に何を考えている人間かを見てもらった方が早い。尖って見える部分も含めて自分なので、合う方と気持ちよく組めればと思っています。",
     "footer.copy": "© 2026 ishizakahiroshi — 業務委託・受注のご相談はお気軽に。",
-    "detail.back": "一覧へ戻る", "detail.overview": "Overview", "detail.tech": "Tech Stack", "detail.viewRepo": "GitHubで見る", "detail.viewStore": "Chrome ウェブストアで見る", "detail.viewLive": "ダッシュボードを開く",
+    "detail.back": "一覧へ戻る", "detail.overview": "Overview", "detail.tech": "Tech Stack", "detail.viewRepo": "GitHubで見る", "detail.viewStore": "Chrome ウェブストアで見る", "detail.viewLive": "ダッシュボードを開く", "detail.viewGuide": "使い方を見る",
     "detail.screenshots": "スクリーンショット", "detail.features": "何ができる？", "detail.usage": "使い方", "detail.articles": "この作品について書いた記事",
     "detail.notfound": "作品が見つかりませんでした。",
     "works.title": "すべての作品", "works.lead": "公開しているものを一覧にしています。トップには主要なものだけ出しています。", "works.back": "トップへ戻る", "works.count": "{n} 作品",
@@ -651,7 +680,7 @@ const I18N = {
     "about.p1": "Chasing new technology is not the goal. I reach for AI, modern stacks, and self-hosted infrastructure as means to solve the problem in front of me. From designing business systems in manufacturing to building in-house systems for the staffing industry, I've been involved end-to-end, from launch to operation.",
     "about.p2": "On X, I write what I actually think, unpolished. Rather than a curated feed, it's faster to just show you what kind of person I really am. The edges are part of me too — I'd rather work with people who genuinely fit.",
     "footer.copy": "© 2026 ishizakahiroshi — Open to contract work. Feel free to reach out.",
-    "detail.back": "Back to list", "detail.overview": "Overview", "detail.tech": "Tech Stack", "detail.viewRepo": "View on GitHub", "detail.viewStore": "View on Chrome Web Store", "detail.viewLive": "Open dashboard",
+    "detail.back": "Back to list", "detail.overview": "Overview", "detail.tech": "Tech Stack", "detail.viewRepo": "View on GitHub", "detail.viewStore": "View on Chrome Web Store", "detail.viewLive": "Open dashboard", "detail.viewGuide": "See how-to (Japanese only)",
     "detail.screenshots": "Screenshots", "detail.features": "What it does", "detail.usage": "How to use", "detail.articles": "Articles about this",
     "detail.notfound": "Work not found.",
     "works.title": "All works", "works.lead": "Everything I've published. The homepage shows only the highlights.", "works.back": "Back to home", "works.count": "{n} works",
@@ -1617,6 +1646,12 @@ function renderDetail(lang) {
     `<div class="detail-cta"><a class="btn primary" href="${escapeAttr(safeUrl(w.repo))}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("detail.viewRepo", lang))} <span class="arrow">→</span></a>` +
     (w.store ? `<a class="btn ghost" href="${escapeAttr(safeUrl(w.store))}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("detail.viewStore", lang))} <span class="arrow">→</span></a>` : "") +
     (w.live ? `<a class="btn ghost" href="${escapeAttr(safeUrl(w.live))}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("detail.viewLive", lang))} <span class="arrow">→</span></a>` : "") +
+    (w.guide ? (() => {
+      const safe = safeUrl(w.guide);
+      const isInternal = safe.startsWith("articles/") || safe.startsWith("/");
+      const ext = isInternal ? "" : ` target="_blank" rel="noopener noreferrer"`;
+      return `<a class="btn ghost" href="${escapeAttr(safe)}"${ext}>${escapeHtml(t("detail.viewGuide", lang))} <span class="arrow">→</span></a>`;
+    })() : "") +
     `</div>` +
     `</div>`;
 

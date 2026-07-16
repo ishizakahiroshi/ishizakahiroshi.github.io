@@ -7,6 +7,23 @@
     {
       "date": "2026-07-14",
       "title": {
+        "ja": "「工事後に自動で解約されます」と言われたのに、IPoE が残って乗り換え先の v6 プラスが始まらなかった話",
+        "en": "'The IPoE will auto-cancel after the migration,' they said. It didn't, and my new v6 Plus refused to start."
+      },
+      "short": {
+        "ja": "BIGLOBE 解約シリーズの続々編。工事前日にオペレーターから『残存することはございません』と断定された旧IPoEが、工事後もそのまま残った。移転先のv6プラスは『申込中』から動かず、通信経路は依然としてBIGLOBE経由。3日で電話は通算11回、一度もつながらず、返信を送ればセッション切れ。それでも解約してよかったと今も思っている、その理由まで含めた1万7千字の記録。",
+        "en": "Part 3 of the BIGLOBE cancellation series. The day before the migration, the operator flatly said 'there will be no leftover registration.' There was. My new provider's v6 Plus is stuck at 'application pending,' traffic still goes through BIGLOBE, and 11 phone attempts in three days all got cut off at the pre-queue announcement. Still glad I switched — a 17,000-word field report ending on 'peace-of-mind is worth the price difference.'"
+      },
+      "tag": { "ja": "体験談", "en": "Experience report" },
+      "hero": "articles/2026/2026-07-14_biglobe-kaiyaku-zokuzokuhen/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-14_biglobe-kaiyaku-zokuzokuhen/",
+        "youtube": "https://youtu.be/6dC5X66Ab_g"
+      }
+    },
+    {
+      "date": "2026-07-14",
+      "title": {
         "ja": "コマンドパレット足しました",
         "en": "I added a command palette"
       },
