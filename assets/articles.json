@@ -17,7 +17,8 @@
       "tag": { "ja": "ツール紹介", "en": "Tool guide" },
       "hero": "articles/2026/2026-07-16_docsweep-ai-worklog-cleanup/hero.png",
       "links": {
-        "html": "articles/2026/2026-07-16_docsweep-ai-worklog-cleanup/"
+        "html": "articles/2026/2026-07-16_docsweep-ai-worklog-cleanup/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/17bf7a02efcb8c4718ec"
       }
     },
     {
