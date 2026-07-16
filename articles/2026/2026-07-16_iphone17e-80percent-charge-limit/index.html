@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>80%なのに充電マークが消えない。iPhone 17eとAnker PowerWave 10で気づいたこと | 2026-07-16 | ishizakahiroshi</title>
+<meta name="description" content="iPhone 17eの充電上限を80%にして、Anker PowerWave 10につないだまま使っています。80%で数字は止まっているのに充電マークは消えない。その理由と、完全なパススルー給電と言い切れない点を公式情報から整理しました。">
+<meta name="author" content="ishizakahiroshi">
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-07-16_iphone17e-80percent-charge-limit/">
+<meta property="og:title" content="80%なのに充電マークが消えない。iPhone 17eとAnker PowerWave 10で気づいたこと">
+<meta property="og:description" content="80%上限は有効です。ただし、バッテリーが完全に切り離されて負荷ゼロになるところまではApple公式に書かれていません。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-16_iphone17e-80percent-charge-limit/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-16_iphone17e-80percent-charge-limit/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-16_iphone17e-80percent-charge-limit/hero.png">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "80%なのに充電マークが消えない。iPhone 17eとAnker PowerWave 10で気づいたこと",
+  "description": "iPhone 17eの80%充電上限とAnker PowerWave 10の使い方を、AppleとAnkerの公式情報から整理した記録です。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-07-16_iphone17e-80percent-charge-limit/hero.png",
+  "datePublished": "2026-07-16",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-07-16_iphone17e-80percent-charge-limit/"
+}
+</script>
+<style>
+  :root{--bg:#f7f3ea;--ink:#241f1a;--ink-soft:#837a6c;--line:rgba(36,31,26,.12);--accent:#2f6fb0;--card:#fffdf8;--display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;--body:'Zen Maru Gothic',system-ui,sans-serif}
+  *{box-sizing:border-box}html,body{margin:0;padding:0}body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
+  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-.01em}h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}p,li{font-size:1rem}a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}.nav-back:hover{background:var(--accent);color:#fff}
+  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}.stamp,.tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}.tag-accent{background:var(--accent);color:#fff}
+  .hero,.figure{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#eef2f7}.hero img,.figure img{display:block;width:100%;height:auto}.lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch}.info{margin:20px 0;padding:14px 18px;border-left:5px solid var(--accent);background:#eef2f7;border-radius:8px}.footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:.86rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+<div class="head-row"><span class="tag tag-accent">小ネタ</span><span class="stamp">2026-07-16</span></div>
+<h1>80%なのに充電マークが消えない。iPhone 17eとAnker PowerWave 10で気づいたこと</h1>
+<div class="hero"><img src="hero.png" alt="机上のiPhone 17eとワイヤレス充電器を描いたヒーロー画像" width="1280" height="670"></div>
+<p class="lead">iPhone 17eの充電上限を80%にして、Anker PowerWave 10につないだまま使っています。80%で数字は止まっているのに充電マークは消えない。その理由と、完全なパススルー給電と言い切れない点を公式情報から整理しました。</p>
+<div class="info">note投稿予定です。投稿後にnoteへの導線を追記します。</div>
+<!-- <div class="plat-row"><a class="plat-pill plat-note" href="__NOTE_URL_TBD__" target="_blank" rel="noopener">note で読む →</a></div> -->
+<h2>この記事のテーマ</h2>
+<p>Apple公式で確認できるのは、設定した上限に達すると充電が停止することです。一方、80%到達後にバッテリーが完全に切り離され、負荷がゼロになるという説明までは確認できませんでした。</p>
+<div class="figure"><img src="fig1.png" alt="80%上限で確認できることと断定できないことを並べた図" width="1280" height="720"></div>
+<p>PowerWave 10の安全機能も確認しつつ、雷マークだけで判断せず、バッテリー画面と熱をときどき見る使い方に落ち着きました。</p>
+<h2>[PR] 5年くらい使っても、デスクではまだ快適</h2>
+<p>このPowerWave 10 Standは、たしか5年くらい前に買ったものです。今も現役で、デスクではiPhoneをパッと取り、戻すときは置くだけ。充電ケーブルがiPhoneにつながったままの煩わしさがなく、かなり快適です。</p>
+<div class="figure"><img src="2026-07-16_amazon-product-01.jpg" alt="デスクで使用中のAnker PowerWave 10 Standの正面写真"></div>
+<p>使っているPowerWave 10 Standはこちらです。</p>
+<p><a href="https://amzn.to/3T3TE7a" rel="sponsored nofollow noopener">https://amzn.to/3T3TE7a</a></p>
+<p>※ 上記はAmazonアソシエイトのリンクです。</p>
+<p>Amazonのアソシエイトとして、ishizakahiroshiは適格販売により収入を得ています。</p>
+<div class="footer">公開: 2026-07-16 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br><a href="/">トップへ戻る</a></div>
+</div>
+</body>
+</html>

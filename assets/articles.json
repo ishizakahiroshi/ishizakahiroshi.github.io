@@ -7,6 +7,54 @@
     {
       "date": "2026-07-16",
       "title": {
+        "ja": "インデックスを土台に、好きな企業を100株まで育てる。2026年7月の投資方針を整理した",
+        "en": "Building favorite companies toward 100 shares on an index-investing foundation"
+      },
+      "short": {
+        "ja": "オルカン・日経225・S&P500の積立を土台に、NTTとソフトバンクを100株ずつ保有。楽天証券のかぶミニで個別株を少しずつ育てる方針、注文方法の違い、Heatfolioで全体の偏りを見る習慣をまとめた個人的な投資記録です。",
+        "en": "A personal investment journal combining regular index-fund contributions with gradually building selected Japanese stocks toward 100 shares, including Rakuten Securities' Kabu Mini rules and portfolio checks with Heatfolio."
+      },
+      "tag": { "ja": "投資記録", "en": "Investment journal" },
+      "hero": "articles/2026/2026-07-16_index-investing-and-100-share-stocks/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-16_index-investing-and-100-share-stocks/"
+      }
+    },
+    {
+      "date": "2026-07-16",
+      "title": {
+        "ja": "80%なのに充電マークが消えない。iPhone 17eとAnker PowerWave 10で気づいたこと",
+        "en": "Why the charging icon stays on at 80%: what I learned using an iPhone 17e with Anker PowerWave 10"
+      },
+      "short": {
+        "ja": "iPhone 17eを80%充電上限で使うと、残量は止まっても雷マークが残る。完全なパススルー給電や負荷ゼロという断定を避け、AppleとAnkerの公式情報から、確認できることと日常の注意点を整理しました。",
+        "en": "The charge level stops at 80%, yet the lightning icon remains. This note separates what Apple and Anker officially document from unsupported claims about complete battery bypass and zero load."
+      },
+      "tag": { "ja": "小ネタ", "en": "Quick note" },
+      "hero": "articles/2026/2026-07-16_iphone17e-80percent-charge-limit/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-16_iphone17e-80percent-charge-limit/"
+      }
+    },
+    {
+      "date": "2026-07-16",
+      "title": {
+        "ja": "AIに任せて600円。Gemini Webなら、ヒーロー画像までほぼ追加料金なしだった",
+        "en": "After spending 600 yen on the API, I realized an AI agent could make hero images through Gemini Web"
+      },
+      "short": {
+        "ja": "Gemini APIの画像生成が累計600円になってから、AIエージェントならログイン済みのGemini Imagesも操作できると気づいた。Google AI Plus契約内のWeb経路を既定にし、有料APIは確認付きフォールバックへ変えた話。",
+        "en": "After Gemini API image generation reached 600 yen, I switched the default to the signed-in Gemini Web experience included with Google AI Plus, keeping the paid API only as a confirmation-gated fallback."
+      },
+      "tag": { "ja": "小ネタ", "en": "Quick note" },
+      "hero": "articles/2026/2026-07-16_gemini-web-hero/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-16_gemini-web-hero/"
+      }
+    },
+    {
+      "date": "2026-07-16",
+      "title": {
         "ja": "AIが残すplan・bugfixを自動で片付けるdocsweepの始め方",
         "en": "Getting started with docsweep: automatically organizing AI-generated plan and bugfix logs"
       },
@@ -155,6 +203,25 @@
       "links": {
         "html": "articles/2026/2026-07-12_audit-report-only-default/",
         "note": "https://note.com/ishizakahiroshi/n/n24245f2e9e31"
+      }
+    },
+    {
+      "date": "2026-07-11",
+      "title": {
+        "ja": "口座のパスワードを預けずに、保有資産を一枚で見渡す",
+        "en": "See your whole portfolio without linking brokerage accounts"
+      },
+      "short": {
+        "ja": "証券口座のIDやパスワードを外部サービスへ預けず、複数口座の保有資産を一枚で見渡すローカル完結ツールheatfolio。Windowsでサンプルを動かす最短手順と、無理なく続ける日常運用をまとめました。",
+        "en": "A beginner-friendly guide to heatfolio, a local-only dashboard that uses public prices while keeping portfolio holdings on your own PC."
+      },
+      "tag": {
+        "ja": "ツール紹介",
+        "en": "Tool guide"
+      },
+      "hero": "articles/2026/2026-07-11_heatfolio-getting-started/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-11_heatfolio-getting-started/"
       }
     },
     {
