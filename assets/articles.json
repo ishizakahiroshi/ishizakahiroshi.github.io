@@ -7,6 +7,22 @@
     {
       "date": "2026-07-17",
       "title": {
+        "ja": "AIエージェントで27府県を一括処理したら適用候補0件になった。段階展開へ戻した理由",
+        "en": "Why an AI batch run across 27 prefectures produced zero release candidates"
+      },
+      "short": {
+        "ja": "東日本で成功した学校データ整備を西日本27府県へ一括展開したところ、調査工程は完走したのに適用候補は0件。新規データの既存DB照合と一体型ゲートの罠を分解し、1県からの段階展開へ戻した失敗談です。",
+        "en": "A failure story about scaling a school-data workflow from eastern to western Japan: the research completed, but an existing-database gate left zero usable candidates. The rollout was redesigned to start with one prefecture and expand in small reviewed blocks."
+      },
+      "tag": { "ja": "失敗談", "en": "Failure story" },
+      "hero": "articles/2026/2026-07-17_ai-agent-zero-release-candidates/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-17_ai-agent-zero-release-candidates/"
+      }
+    },
+    {
+      "date": "2026-07-17",
+      "title": {
         "ja": "アフィリエイトを始める準備を、一晩で全部やってみた",
         "en": "Setting up affiliate marketing in one night: rules, registrations, and a domain"
       },

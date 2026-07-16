@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AIエージェントで27府県を一括処理したら適用候補0件になった。段階展開へ戻した理由 · 2026-07-17 · ishizakahiroshi</title>
+<meta name="description" content="東日本で成功した学校データ整備を西日本27府県へ一括展開したところ、調査は完走したのに適用候補は0件。既存DB照合と一体型ゲートの罠を分解し、1県からの段階展開へ戻した失敗談です。">
+<meta name="author" content="ishizakahiroshi">
+<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-07-17_ai-agent-zero-release-candidates/">
+<meta property="og:title" content="AIエージェントで27府県を一括処理したら適用候補0件になった">
+<meta property="og:description" content="調査工程100%でも、利用可能な候補行は0件。新規データの照合順序を直し、1県から段階展開へ戻した記録です。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-17_ai-agent-zero-release-candidates/">
+<meta property="og:site_name" content="ishizakahiroshi">
+<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-17_ai-agent-zero-release-candidates/hero.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="670">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-17_ai-agent-zero-release-candidates/hero.png">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "AIエージェントで27府県を一括処理したら適用候補0件になった。段階展開へ戻した理由",
+  "description": "東日本で成功した学校データ整備を西日本27府県へ一括展開したところ、調査は完走したのに適用候補は0件。原因を分解し、1県からの段階展開へ戻した失敗談です。",
+  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-07-17_ai-agent-zero-release-candidates/hero.png",
+  "datePublished": "2026-07-17",
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-07-17_ai-agent-zero-release-candidates/"
+}
+</script>
+<style>
+  :root{--bg:#111a2d;--ink:#f4eee2;--soft:#b9c3d3;--line:rgba(244,238,226,.18);--accent:#e3a94b;--card:#1b2944;--display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;--body:'Zen Maru Gothic',system-ui,sans-serif}
+  *{box-sizing:border-box}html,body{margin:0;padding:0}body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.75;text-wrap:pretty;font-size:16px}.wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-.01em}h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--accent)}p,li{font-size:1rem}a{color:#ffd07d;text-underline-offset:3px}.nav-back{display:inline-flex;margin-bottom:12px;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none;font-family:var(--display);font-weight:700}.head-row{display:flex;gap:10px;align-items:center;margin-bottom:8px}.stamp,.tag{padding:2px 10px;border-radius:999px;border:2px solid var(--ink);font-family:var(--display);font-weight:700;font-size:.78rem}.tag{background:var(--accent);color:#21170b}.hero,.visual{margin:18px 0 28px;border:2px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 rgba(0,0,0,.25);background:var(--card)}.hero img,.visual img{display:block;width:100%;height:auto}.lead{font-size:1.08rem;max-width:68ch}.info{margin:18px 0;padding:14px 18px;border:2px dashed var(--accent);border-radius:12px;color:var(--soft);background:var(--card)}.plat-row{display:flex;gap:8px;margin:14px 0 22px}.plat-pill{padding:7px 16px;border-radius:999px;border:2px solid var(--ink);background:#55c500;color:#fff;font-family:var(--display);font-weight:700;text-decoration:none;box-shadow:3px 3px 0 #000}.footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--soft);font-size:.86rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+<div class="head-row"><span class="tag">失敗談</span><span class="stamp">2026-07-17</span></div>
+<h1>AIエージェントで27府県を一括処理したら適用候補0件になった。段階展開へ戻した理由</h1>
+<div class="hero"><img src="hero.png" alt="適用候補0件。AI一括処理を分割し直した理由" width="1280" height="670"></div>
+<p class="lead">東日本で使えた調査方法と安全策を、西日本27府県へ一括展開しました。工程は完走したのに、適用候補は0件。新規データを既存DBだけで照合した順序の問題と、学校・入試データを一体で止める判定を分解し、1県からの段階展開へ戻しました。</p>
+<div class="info">Qiitaで公開処理中です。公開URLが確定し次第、本文へのリンクを追加します。</div>
+<h2>この記事のテーマ</h2>
+<p>今回の0件は「西日本に学校や公式資料がなかった」という意味ではありません。新しい学校を追加する前に、まだ存在しない本番DBのIDへ照合できることを必須条件にしていたため、追加候補そのものがHOLDへ戻る循環ができていました。</p>
+<p>さらに、一部年度の入試指標が非公表だと、確定済みの学校・学科まで県単位で落としていました。改善後は学校データと入試データを別々に判定し、まず1県を一時DBで最後まで通してから、3〜4県ずつ広げます。</p>
+<div class="visual"><img src="infographic.png" alt="27府県の一括処理が0件になった原因と段階展開への改善" width="2752" height="1536" loading="lazy"></div>
+<div class="visual"><img src="illustration-roadblock.png" alt="一括処理の行き止まりから小さな検問へ切り替える概念図" loading="lazy"></div>
+<div class="visual"><img src="fig1.png" alt="既存DBだけで照合する循環と一時DBを使う改善経路" width="2560" height="1440" loading="lazy"></div>
+<p>関連プロジェクト: <a href="https://github.com/ishizakahiroshi/manabi-map" target="_blank" rel="noopener">manabi-map</a></p>
+<div class="footer">公開: 2026-07-17 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br><a href="/">トップへ戻る</a></div>
+</div>
+</body>
+</html>
