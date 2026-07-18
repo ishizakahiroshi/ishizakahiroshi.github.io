@@ -1,78 +1,13 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AIに任せて600円。Gemini Webなら、ヒーロー画像までほぼ追加料金なしだった | 2026-07-16 | ishizakahiroshi</title>
-<meta name="description" content="Gemini APIの画像生成が累計600円になってから、AIエージェントならログイン済みのGemini Imagesも操作できると気づいた。Google AI Plus契約内のWeb経路を既定にし、有料APIは確認付きフォールバックへ変えた話。">
-<meta name="author" content="ishizakahiroshi">
-
-<link rel="canonical" href="https://ishizakahiroshi.com/articles/2026/2026-07-16_gemini-web-hero/">
-
-<meta property="og:title" content="AIに任せて600円。Gemini Webなら、ヒーロー画像までほぼ追加料金なしだった">
-<meta property="og:description" content="Gemini APIの画像生成が累計600円。AIエージェントがブラウザーを操作できるなら、契約済みのGemini Webを先に使えばよかった。">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://ishizakahiroshi.com/articles/2026/2026-07-16_gemini-web-hero/">
-<meta property="og:site_name" content="ishizakahiroshi">
-<meta property="og:image" content="https://ishizakahiroshi.com/articles/2026/2026-07-16_gemini-web-hero/hero.png">
-<meta property="og:image:width" content="1280">
-<meta property="og:image:height" content="670">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://ishizakahiroshi.com/articles/2026/2026-07-16_gemini-web-hero/hero.png">
-
-<link rel="icon" type="image/png" href="/assets/favicon.png">
-<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "AIに任せて600円。Gemini Webなら、ヒーロー画像までほぼ追加料金なしだった",
-  "description": "Gemini APIの画像生成が累計600円になってから、AIエージェントならログイン済みのGemini Imagesも操作できると気づいた話。",
-  "image": "https://ishizakahiroshi.com/articles/2026/2026-07-16_gemini-web-hero/hero.png",
-  "datePublished": "2026-07-16",
-  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
-  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
-  "mainEntityOfPage": "https://ishizakahiroshi.com/articles/2026/2026-07-16_gemini-web-hero/"
-}
-</script>
-
-<style>
-  :root{--bg:#f7f3ea;--ink:#241f1a;--ink-soft:#837a6c;--line:rgba(36,31,26,.12);--accent:#c2740f;--card:#fffdf8;--display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;--body:'Zen Maru Gothic',system-ui,sans-serif}
-  *{box-sizing:border-box}html,body{margin:0;padding:0}
-  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
-  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
-  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-.01em}
-  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
-  p,li{font-size:1rem}a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
-  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
-  .nav-back:hover{background:var(--accent);color:#fff}.head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
-  .stamp,.tag{font-family:var(--display);font-weight:700;font-size:.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}.tag{color:#fff;background:var(--accent)}
-  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}.hero img{display:block;width:100%;height:auto}
-  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch}.info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:.95rem}
-  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}.plat-pill{display:inline-flex;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;text-decoration:none;border:2px solid var(--ink);color:#fff;background:#2cb696;box-shadow:3px 3px 0 var(--ink)}
-  figure{margin:18px 0;border:2px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:4px 5px 0 var(--line);background:#f7eccb}figure img{display:block;width:100%;height:auto}figcaption{padding:10px 14px;font-size:.9rem;background:var(--card);color:var(--ink-soft)}
-  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:.86rem}.footer a{color:var(--accent)}
-</style>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0;url=https://ishizakahiroshi.com/articles/2026/2026-07-16_gemini-web-hero/">
+  <link rel="canonical" href="https://ishizakahiroshi.com/articles/2026/2026-07-16_gemini-web-hero/">
+  <title>ページを移転しました</title>
 </head>
 <body>
-<div class="wrap">
-<a href="/" class="nav-back">← ishizakahiroshi.com</a>
-<div class="head-row"><span class="tag">小ネタ</span><span class="stamp">2026-07-16</span></div>
-<h1>AIに任せて600円。Gemini Webなら、ヒーロー画像までほぼ追加料金なしだった</h1>
-<div class="hero"><img src="hero.png" alt="API課金の経路からブラウザー経由の画像生成へ切り替える様子を描いた暖色のヒーロー画像" width="1280" height="670"></div>
-<p class="lead">Gemini APIの画像生成が累計600円になっていました。AIエージェントがブラウザーを操作できるなら、Google AI Plusで使えるGemini Imagesを先に使えばよかった。Webを既定にし、有料APIは確認付きフォールバックへ変えた話です。</p>
-<div class="info">note 投稿予定です。投稿後にプラットフォームへの導線を追記します。</div>
-<!-- 各プラットフォーム導線（投稿後ヘルパーで有効化） -->
-<!-- <div class="plat-row"><a class="plat-pill" href="__NOTE_URL_TBD__" target="_blank" rel="noopener">note で読む →</a></div> -->
-<h2>この記事のテーマ</h2>
-<p>APIを使わないと自動化できない、という前提が古くなっていました。ログイン済みブラウザーをAIエージェントが操作できるなら、契約済みWebサービスも自動化の部品になります。</p>
-<figure><img src="fig1.png" alt="Gemini APIの累計600円から、Google AI Plus契約内のGemini Web経路へ切り替えた比較図" loading="lazy"><figcaption>添付の請求画面から、公開できる金額情報だけを再構成した図</figcaption></figure>
-<p>既定はGemini Web。画面が使えないときだけ有料APIを提案し、モデル、枚数、推定料金を見て承認してから実行します。</p>
-<div class="footer">公開準備: 2026-07-16 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br><a href="/">トップへ戻る</a></div>
-</div>
+  <p>このページは移転しました。</p>
+  <p><a href="https://ishizakahiroshi.com/articles/2026/2026-07-16_gemini-web-hero/">新しいページを開く</a></p>
 </body>
 </html>

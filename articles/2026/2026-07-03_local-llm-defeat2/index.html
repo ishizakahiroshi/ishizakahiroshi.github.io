@@ -1,126 +1,13 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>メモリを64GBに増やしても、また全滅した話 — 2026-07-03 — ishizakahiroshi</title>
-<meta name="description" content="8GBのGPU(RTX4060)でローカルLLMにClaude Codeを喋らせる検証の続編。メモリを64GBに増設しても、500エラー・トークン数を数えるAPIの食い違い・21分の応答待ちと、また別の壁にぶつかった記録です。">
-<meta name="author" content="ishizakahiroshi">
-
-<link rel="canonical" href="https://note.com/ishizakahiroshi/n/nebc7b3ee9237">
-
-<meta property="og:title" content="メモリを64GBに増やしても、また全滅した話">
-<meta property="og:description" content="500エラーの正体、トークン数を数えるAPIの食い違い、21分の応答待ち。ローカルLLM検証の続編で分かったこと。">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://ishizakahiroshi.com/articles/2026/2026-07-03_local-llm-defeat2/">
-<meta property="og:site_name" content="ishizakahiroshi">
-<meta property="og:image" content="https://ishizakahiroshi.com/articles/2026/2026-07-03_local-llm-defeat2/hero.png">
-<meta property="og:image:width" content="1280">
-<meta property="og:image:height" content="670">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://ishizakahiroshi.com/articles/2026/2026-07-03_local-llm-defeat2/hero.png">
-
-<link rel="icon" type="image/png" href="/assets/favicon.png">
-<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "メモリを64GBに増やしても、また全滅した話",
-  "description": "8GBのGPUでローカルLLMにClaude Codeを喋らせる検証の続編。メモリ増設後も500エラー・トークン数を数えるAPIの食い違い・21分の応答待ちという新しい壁にぶつかった記録。",
-  "image": "https://ishizakahiroshi.com/articles/2026/2026-07-03_local-llm-defeat2/hero.png",
-  "datePublished": "2026-07-03",
-  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
-  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
-  "mainEntityOfPage": "https://note.com/ishizakahiroshi/n/nebc7b3ee9237"
-}
-</script>
-
-<style>
-  :root {
-    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
-    --accent:#ff7a3d; --card:#fffdf8; --ok:#2e7d4f; --warn:#b8860b; --bad:#b3261e;
-    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
-    --body:'Zen Maru Gothic',system-ui,sans-serif;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;
-       text-wrap:pretty;font-size:16px}
-  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
-  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
-  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;
-     padding-bottom:8px;border-bottom:2px solid var(--ink)}
-  h3{font-family:var(--display);font-weight:700;font-size:1.1rem;margin:28px 0 10px}
-  p,li{font-size:1rem}
-  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
-  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;
-            font-family:var(--display);font-weight:700;font-size:0.86rem;
-            padding:6px 14px;border-radius:999px;border:2px solid var(--ink);
-            background:var(--card);color:var(--ink);text-decoration:none}
-  .nav-back:hover{background:var(--accent);color:#fff}
-  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
-  .stamp{font-family:var(--display);font-weight:700;font-size:0.78rem;padding:2px 10px;
-         border:2px solid var(--ink);border-radius:999px;background:#fff}
-  .tag{display:inline-block;padding:2px 10px;border-radius:999px;
-       font-family:var(--display);font-weight:700;font-size:0.78rem;
-       border:2px solid var(--ink);background:#fff;color:var(--ink)}
-  .tag-accent{background:var(--accent);color:#fff}
-  .hero{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;
-        box-shadow:5px 6px 0 var(--line);background:#f7eccb}
-  .hero img{display:block;width:100%;height:auto}
-  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch;color:var(--ink)}
-  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
-  .plat-pill{display:inline-flex;align-items:center;gap:6px;
-             padding:7px 16px;border-radius:999px;font-family:var(--display);
-             font-weight:700;font-size:0.86rem;text-decoration:none;
-             border:2px solid var(--ink);color:#fff;
-             box-shadow:3px 3px 0 var(--ink);transition:transform .15s,box-shadow .15s}
-  .plat-pill:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
-  .plat-zenn{background:#3ea8ff}
-  .plat-note{background:#2cb696}
-  .plat-qiita{background:#55c500}
-  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);
-          color:var(--ink-soft);font-size:0.86rem}
-  .footer a{color:var(--accent)}
-</style>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0;url=https://ishizakahiroshi.com/articles/2026/2026-07-03_local-llm-defeat2/">
+  <link rel="canonical" href="https://ishizakahiroshi.com/articles/2026/2026-07-03_local-llm-defeat2/">
+  <title>ページを移転しました</title>
 </head>
 <body>
-<div class="wrap">
-
-<a href="/" class="nav-back">← ishizakahiroshi.com</a>
-
-<div class="head-row">
-  <span class="tag tag-accent">失敗談</span>
-  <span class="stamp">2026-07-03</span>
-</div>
-
-<h1>メモリを64GBに増やしても、また全滅した話</h1>
-
-<div class="hero">
-  <img src="hero.png" alt="メモリを64GBに増やしても、また全滅した話 ヒーロー画像" width="1280" height="670">
-</div>
-
-<p class="lead">
-前回の記事の最後に「次は、メモリを増やしてからかな」と書きました。その「次」を試した記録です。8GBのGPUでローカルLLMにClaude Codeを喋らせようとしたら、今度は500エラー・トークン数を数えるAPIの食い違い・21分の応答待ちという、また別の壁にぶつかりました。
-</p>
-
-<div class="plat-row">
-  <a class="plat-pill plat-note" href="https://note.com/ishizakahiroshi/n/nebc7b3ee9237" target="_blank" rel="noopener">note で読む →</a>
-</div>
-
-<h2>この記事のテーマ</h2>
-<p>ローカルLLM検証の続編です。メモリを32GBから64GB超に増設してフリーズ問題は解消したものの、今度は「無反応(500エラー)」「サーバーソフトごとの応答の食い違い」「応答は正しいが21分かかる」という新しい壁が出てきました。原因を追っていくと、遅かったのはモデル自体ではなく、Claude Codeというハーネスが毎回持ち込む巨大なシステムプロンプトの前処理コストだと分かりました。単体でモデルに聞けば10〜30秒で答えが返る、という発見が、次の一手(より軽量なハーネス経由でローカルLLMを使う)につながります。</p>
-
-<div class="footer">
-  公開: 2026-07-03 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
-  <a href="/">トップへ戻る</a>
-</div>
-
-</div>
+  <p>このページは移転しました。</p>
+  <p><a href="https://ishizakahiroshi.com/articles/2026/2026-07-03_local-llm-defeat2/">新しいページを開く</a></p>
 </body>
 </html>

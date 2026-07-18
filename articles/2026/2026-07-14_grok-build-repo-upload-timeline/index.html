@@ -1,117 +1,13 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>gitignore は防御じゃない。Grok Build の repo アップロード事案から、秘密の置き場所を見直す — 2026-07-14 — ishizakahiroshi</title>
-<meta name="description" content="Grok Build（xAI の AI コーディング支援 CLI）が cwd リポを Google Cloud Storage に送っていた事案の時系列と検証。X の一次ソースを 5 日間の時系列で追い、gitignore は防御にならないという設計原則までまとめた記事。">
-<meta name="author" content="ishizakahiroshi">
-
-<link rel="canonical" href="https://zenn.dev/ishizakahiroshi/articles/20260714-grok-build-repo-upload-timeline">
-
-<meta property="og:title" content="gitignore は防御じゃない。Grok Build の repo アップロード事案から、秘密の置き場所を見直す">
-<meta property="og:description" content="Grok Build 事案の X 一次ソースを 5 日間の時系列で追い、gitignore は防御にならないという設計原則までまとめた記事。">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://zenn.dev/ishizakahiroshi/articles/20260714-grok-build-repo-upload-timeline">
-<meta property="og:site_name" content="ishizakahiroshi">
-<meta property="og:image" content="https://zenn.dev/ishizakahiroshi/articles/20260714-grok-build-repo-upload-timelinehero.png">
-<meta property="og:image:width" content="1280">
-<meta property="og:image:height" content="670">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://zenn.dev/ishizakahiroshi/articles/20260714-grok-build-repo-upload-timelinehero.png">
-
-<link rel="icon" type="image/png" href="/assets/favicon.png">
-<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "gitignore は防御じゃない。Grok Build の repo アップロード事案から、秘密の置き場所を見直す",
-  "description": "Grok Build 事案の X 一次ソースを 5 日間の時系列で追い、gitignore は防御にならないという設計原則までまとめた記事。",
-  "image": "https://zenn.dev/ishizakahiroshi/articles/20260714-grok-build-repo-upload-timelinehero.png",
-  "datePublished": "2026-07-14",
-  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
-  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
-  "mainEntityOfPage": "https://zenn.dev/ishizakahiroshi/articles/20260714-grok-build-repo-upload-timeline"
-}
-</script>
-
-<style>
-  :root {
-    --bg:#f7f3ea; --ink:#241f1a; --ink-soft:#837a6c; --line:rgba(36,31,26,0.12);
-    --accent:#ff7a3d; --card:#fffdf8; --ok:#2e7d4f; --warn:#b8860b; --bad:#b3261e;
-    --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
-    --body:'Zen Maru Gothic',system-ui,sans-serif;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;
-       text-wrap:pretty;font-size:16px}
-  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
-  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
-  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;
-     padding-bottom:8px;border-bottom:2px solid var(--ink)}
-  h3{font-family:var(--display);font-weight:700;font-size:1.1rem;margin:28px 0 10px}
-  p,li{font-size:1rem}
-  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
-  .meta{color:var(--ink-soft);font-size:0.9rem}
-  .hero{width:100%;border-radius:14px;margin:16px 0 8px;background:var(--card);border:2px solid var(--ink);box-shadow:4px 5px 0 var(--line)}
-  .card{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:18px 22px;box-shadow:4px 5px 0 var(--line);margin:24px 0}
-  .platforms{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
-  .platforms a{display:inline-block;padding:8px 14px;background:var(--ink);color:var(--card);border-radius:999px;text-decoration:none;font-weight:700;font-family:var(--display)}
-  .platforms a.qiita{background:#55c500}
-  .platforms a.zenn{background:#3ea8ff}
-  .platforms a.note{background:#41c9b4}
-  .platforms a.disabled{background:var(--ink-soft);pointer-events:none;opacity:0.6}
-  ul,ol{padding-left:1.4em}
-  li{margin:4px 0}
-  .fig{width:100%;border-radius:12px;margin:20px 0;background:var(--card);border:1px solid var(--line)}
-  .foot-note{color:var(--ink-soft);font-size:0.86rem;margin-top:40px;padding-top:20px;border-top:1px dashed var(--line)}
-</style>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0;url=https://ishizakahiroshi.com/articles/2026/2026-07-14_grok-build-repo-upload-timeline/">
+  <link rel="canonical" href="https://ishizakahiroshi.com/articles/2026/2026-07-14_grok-build-repo-upload-timeline/">
+  <title>ページを移転しました</title>
 </head>
 <body>
-<div class="wrap">
-
-  <p class="meta">2026-07-14 · ishizakahiroshi</p>
-  <h1>gitignore は防御じゃない。Grok Build の repo アップロード事案から、秘密の置き場所を見直す</h1>
-
-  <img class="hero" src="hero.png" alt="ヒーロー画像">
-
-  <div class="card">
-    <p>
-      Grok Build（xAI の AI コーディング支援 CLI）が cwd リポを Google Cloud Storage に送っていた事案を、X の一次ソースで 5 日間の時系列に整理しました。ローカル環境での実測と、xAI の対応、そして本題の設計原則「gitignore は防御じゃない」まで通して書いています。
-    </p>
-    <p>本編はこちらでどうぞ。</p>
-    <div class="platforms">
-      <a href="https://qiita.com/ishizakahiroshi/items/4982fc3eedc4f17389d6" class="qiita">Qiita で読む</a>
-      <a href="https://zenn.dev/ishizakahiroshi/articles/20260714-grok-build-repo-upload-timeline" class="zenn">Zenn で読む</a>
-    </div>
-  </div>
-
-  <h2>この記事の要約</h2>
-  <img class="fig" src="infographic.png" alt="記事の要約インフォグラフィック">
-
-  <h2>X タイムライン（5 日間）</h2>
-  <img class="fig" src="fig1.png" alt="Grok Build 事案 X タイムライン">
-
-  <h2>ハイライト</h2>
-  <ul>
-    <li>2026-07-12 頃に中国語 IT メディア 蓝点网 が先行報道、7/13 に @XBToshi が英語圏で拡散</li>
-    <li>自環境の <code>~/.grok/logs/unified.jsonl</code> に 245 件の送信履歴が残っていた</li>
-    <li>xAI は 7/13 夜にリモート設定で送信停止、7/14 に <code>/privacy opt-out</code> を発表</li>
-    <li>過去分の削除は xAI 側 GCS を第三者監査する術がなく trust-only</li>
-    <li>本題: gitignore は git の話。AI CLI・tar・rsync・Docker・IDE 同期・バックアップは一切尊重しない</li>
-    <li>正しい設計: 秘密は最初からリポ外へ（<code>~/.config/</code>、sops+age、Vault 等）</li>
-  </ul>
-
-  <div class="foot-note">
-    書いた人: ishizakahiroshi（田舎在宅 SE、実務 18 年） / <a href="https://ishizakahiroshi.com/">Portfolio</a> · <a href="https://github.com/ishizakahiroshi">GitHub</a> · <a href="https://x.com/ishizakahiroshi">X</a>
-  </div>
-
-</div>
+  <p>このページは移転しました。</p>
+  <p><a href="https://ishizakahiroshi.com/articles/2026/2026-07-14_grok-build-repo-upload-timeline/">新しいページを開く</a></p>
 </body>
 </html>

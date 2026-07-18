@@ -1,102 +1,13 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>口座のパスワードを預けずに、保有資産を一枚で見渡す | 2026-07-11 | ishizakahiroshi</title>
-<meta name="description" content="証券口座のIDやパスワードを外部サービスへ預けず、複数口座の保有資産を一枚で見渡すローカル完結ツールheatfolio。Windowsでサンプルを動かす最短手順と、日常で無理なく使う流れをまとめました。">
-<meta name="author" content="ishizakahiroshi">
-
-<link rel="canonical" href="https://ishizakahiroshi.com/articles/2026/2026-07-11_heatfolio-getting-started/">
-
-<meta property="og:title" content="口座のパスワードを預けずに、保有資産を一枚で見渡す">
-<meta property="og:description" content="口座連携なし。公開価格だけを取得し、保有数量は自分のPC内に置く資産管理ダッシュボードheatfolioの始め方。">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://ishizakahiroshi.com/articles/2026/2026-07-11_heatfolio-getting-started/">
-<meta property="og:site_name" content="ishizakahiroshi">
-<meta property="og:image" content="https://ishizakahiroshi.com/articles/2026/2026-07-11_heatfolio-getting-started/hero.png">
-<meta property="og:image:width" content="1280">
-<meta property="og:image:height" content="670">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://ishizakahiroshi.com/articles/2026/2026-07-11_heatfolio-getting-started/hero.png">
-
-<link rel="icon" type="image/png" href="/assets/favicon.png">
-<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "口座のパスワードを預けずに、保有資産を一枚で見渡す",
-  "description": "口座連携なしで、複数口座の保有資産を一枚で俯瞰できるローカル完結ツールheatfolioの始め方をまとめました。",
-  "image": "https://ishizakahiroshi.com/articles/2026/2026-07-11_heatfolio-getting-started/hero.png",
-  "datePublished": "2026-07-11",
-  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
-  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
-  "mainEntityOfPage": "https://ishizakahiroshi.com/articles/2026/2026-07-11_heatfolio-getting-started/"
-}
-</script>
-
-<style>
-  :root{--bg:#f7f3ea;--ink:#2a2117;--ink-soft:#6b5f49;--line:rgba(42,33,23,.14);--accent:#c2740f;--card:#fffaf0;--display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;--body:'Zen Maru Gothic',system-ui,sans-serif}
-  *{box-sizing:border-box}html,body{margin:0;padding:0}
-  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
-  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
-  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-.01em}
-  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
-  p,li{font-size:1rem}a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
-  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
-  .nav-back:hover{background:var(--accent);color:#fff}.head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
-  .stamp,.tag{font-family:var(--display);font-weight:700;font-size:.78rem;padding:2px 10px;border:2px solid var(--ink);border-radius:999px;background:#fff}.tag{color:#fff;background:var(--accent)}
-  .hero,figure{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#f7eccb}
-  .hero img,figure img{display:block;width:100%;height:auto}.lead{font-size:1.05rem;margin:18px 0 24px;max-width:62ch}
-  .info{margin:24px 0;padding:14px 18px;border-left:4px solid var(--accent);background:var(--card);font-size:.95rem}
-  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}.plat-pill{display:inline-flex;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;text-decoration:none;border:2px solid var(--ink);color:#fff;background:#2cb696;box-shadow:3px 3px 0 var(--ink)}
-  figcaption{padding:10px 14px;font-size:.9rem;background:var(--card);color:var(--ink-soft)}
-  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.step{padding:14px;border:2px solid var(--ink);border-radius:14px;background:var(--card);font-weight:700;text-align:center}
-  .repo{display:inline-flex;padding:9px 18px;border:2px solid var(--ink);border-radius:999px;background:var(--accent);color:#fff;font-weight:700;text-decoration:none;box-shadow:3px 3px 0 var(--ink)}
-  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:.86rem}.footer a{color:var(--accent)}
-  @media(max-width:700px){.steps{grid-template-columns:1fr 1fr}.wrap{padding-top:28px}h1{font-size:1.65rem}}
-</style>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0;url=https://ishizakahiroshi.com/articles/2026/2026-07-11_heatfolio-getting-started/">
+  <link rel="canonical" href="https://ishizakahiroshi.com/articles/2026/2026-07-11_heatfolio-getting-started/">
+  <title>ページを移転しました</title>
 </head>
 <body>
-<div class="wrap">
-<a href="/" class="nav-back">← ishizakahiroshi.com</a>
-<div class="head-row"><span class="tag">ツール紹介</span><span class="stamp">2026-07-11</span></div>
-<h1>口座のパスワードを預けずに、保有資産を一枚で見渡す</h1>
-
-<div class="hero"><img src="hero.png" alt="口座連携なしで資産を俯瞰するheatfolioを描いた暖色のヒーロー画像" width="1280" height="670"></div>
-
-<p class="lead">証券口座のIDやパスワードを外部サービスへ預けず、複数口座の保有資産を一枚で見渡したい。そんな中間解として作ったローカル完結ツールheatfolioを、Windowsでまず動かすところから紹介します。</p>
-
-<div class="info">note 投稿予定です。投稿後にnoteへの導線を追記します。</div>
-<!-- 各プラットフォーム導線（投稿後ヘルパーで有効化） -->
-<!-- <div class="plat-row"><a class="plat-pill" href="__NOTE_URL_TBD__" target="_blank" rel="noopener">note で読む →</a></div> -->
-
-<h2>口座につながず、全体だけを見渡す</h2>
-<p>heatfolioが外から取るのは公開価格です。保有数量は自分のPC内に置き、口座へつなぐための認証情報や連携権限を外へ渡しません。全自動ではありませんが、売買した日だけ数量を直せば普段の俯瞰には使えます。</p>
-
-<figure><img src="infographic.png" alt="heatfolioの特徴と使い方を一枚にまとめたインフォグラフィック" width="2752" height="1536" loading="lazy"><figcaption>口座連携なし、ローカル保存、treemap表示というheatfolio全体の概要</figcaption></figure>
-
-<figure><img src="fig1.png" alt="口座連携型とheatfolioでデータの通り道がどう違うかを比較した図" width="1280" height="720" loading="lazy"><figcaption>全自動か全部手作業か。その間に、公開価格だけを取り、保有情報は手元に置く選択肢があります。</figcaption></figure>
-
-<h2>サンプルを動かすところまでなら短い</h2>
-<div class="steps">
-  <div class="step">1. ファイルを置く</div>
-  <div class="step">2. サンプルをコピー</div>
-  <div class="step">3. 価格を取得</div>
-  <div class="step">4. ブラウザーで開く</div>
-</div>
-<p>動いたあとの日常運用は、画面をひらく、気になるタイルに気づく、売買した日だけ数量を直す。この3つです。毎日すべてを入力し直す台帳ではなく、毎日眺めるための画面として使います。</p>
-
-<figure><img src="fig2.png" alt="heatfolioを日常で使う3つの動作を示した図" width="1280" height="720" loading="lazy"><figcaption>普段は見ることが中心。保有数量を直すのは、買った日や売った日だけです。</figcaption></figure>
-
-<p><a class="repo" href="https://github.com/ishizakahiroshi/heatfolio" target="_blank" rel="noopener">heatfolioをGitHubで見る →</a></p>
-
-<div class="footer">公開準備: 2026-07-11 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br><a href="/">トップへ戻る</a></div>
-</div>
+  <p>このページは移転しました。</p>
+  <p><a href="https://ishizakahiroshi.com/articles/2026/2026-07-11_heatfolio-getting-started/">新しいページを開く</a></p>
 </body>
 </html>

@@ -1,114 +1,13 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AIが残すplan・bugfixを自動で片付けるdocsweepの始め方 — 2026-07-16 — ishizakahiroshi</title>
-<meta name="description" content="AIが残すplan・bugfix・pendingのMarkdownを、判断できる状態に保って安全にarchiveするPython CLI、docsweepの導入ガイド。今回見つかったmanual_release記録の取りこぼしと修正内容も紹介します。">
-<meta name="author" content="ishizakahiroshi">
-
-<link rel="canonical" href="https://qiita.com/ishizakahiroshi/items/17bf7a02efcb8c4718ec">
-
-<meta property="og:title" content="AIが残すplan・bugfixを自動で片付けるdocsweepの始め方">
-<meta property="og:description" content="増え続けるAI作業ログを、今日の1件の選定から安全なarchiveまで小さく自動化。インストールと使い方、今回のmanual_release対応をまとめました。">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://ishizakahiroshi.com/articles/2026/2026-07-16_docsweep-ai-worklog-cleanup/">
-<meta property="og:site_name" content="ishizakahiroshi">
-<meta property="og:image" content="https://ishizakahiroshi.com/articles/2026/2026-07-16_docsweep-ai-worklog-cleanup/hero.png">
-<meta property="og:image:width" content="1280">
-<meta property="og:image:height" content="670">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://ishizakahiroshi.com/articles/2026/2026-07-16_docsweep-ai-worklog-cleanup/hero.png">
-
-<link rel="icon" type="image/png" href="/assets/favicon.png">
-<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "AIが残すplan・bugfixを自動で片付けるdocsweepの始め方",
-  "description": "AIが残すplan・bugfix・pendingのMarkdownを、判断できる状態に保って安全にarchiveするPython CLI、docsweepの導入ガイド。今回見つかったmanual_release記録の取りこぼしと修正内容も紹介します。",
-  "image": "https://ishizakahiroshi.com/articles/2026/2026-07-16_docsweep-ai-worklog-cleanup/hero.png",
-  "datePublished": "2026-07-16",
-  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
-  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
-  "mainEntityOfPage": "https://qiita.com/ishizakahiroshi/items/17bf7a02efcb8c4718ec"
-}
-</script>
-
-<style>
-  :root {
-    --bg:#f3f7fb; --ink:#172235; --ink-soft:#65748a; --line:rgba(23,34,53,0.14);
-    --accent:#2878c8; --card:#fff; --display:'Baloo 2','Zen Maru Gothic',system-ui,cursive;
-    --body:'Zen Maru Gothic',system-ui,sans-serif;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.7;text-wrap:pretty;font-size:16px}
-  .wrap{max-width:min(900px,92vw);margin:0 auto;padding:48px 0 80px}
-  h1{font-family:var(--display);font-weight:800;font-size:2rem;margin:0 0 12px;letter-spacing:-0.01em}
-  h2{font-family:var(--display);font-weight:700;font-size:1.4rem;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
-  p,li{font-size:1rem}
-  a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
-  .nav-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--display);font-weight:700;font-size:.86rem;padding:6px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--card);color:var(--ink);text-decoration:none}
-  .nav-back:hover{background:var(--accent);color:#fff}
-  .head-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
-  .stamp,.tag{display:inline-block;padding:2px 10px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:.78rem;border:2px solid var(--ink);background:#fff;color:var(--ink)}
-  .tag-accent{background:var(--accent);color:#fff}
-  .hero,.visual{margin:18px 0 28px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:5px 6px 0 var(--line);background:#fff}
-  .hero img,.visual img{display:block;width:100%;height:auto}
-  .lead{font-size:1.05rem;margin:18px 0 24px;max-width:66ch;color:var(--ink)}
-  .info{margin:14px 0 22px;padding:14px 18px;border:2px dashed var(--ink-soft);border-radius:12px;background:#fff;font-size:.95rem;color:var(--ink-soft)}
-  .plat-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
-  .plat-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-family:var(--display);font-weight:700;font-size:.86rem;text-decoration:none;border:2px solid var(--ink);color:#fff;box-shadow:3px 3px 0 var(--ink)}
-  .plat-qiita{background:#55c500}
-  .footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:.86rem}
-  .footer a{color:var(--accent)}
-</style>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0;url=https://ishizakahiroshi.com/articles/2026/2026-07-16_docsweep-ai-worklog-cleanup/">
+  <link rel="canonical" href="https://ishizakahiroshi.com/articles/2026/2026-07-16_docsweep-ai-worklog-cleanup/">
+  <title>ページを移転しました</title>
 </head>
 <body>
-<div class="wrap">
-
-<a href="/" class="nav-back">← ishizakahiroshi.com</a>
-
-<div class="head-row">
-  <span class="tag tag-accent">ツール紹介</span>
-  <span class="stamp">2026-07-16</span>
-</div>
-
-<h1>AIが残すplan・bugfixを自動で片付けるdocsweepの始め方</h1>
-
-<div class="hero">
-  <img src="hero.png" alt="AI作業ログを片付ける、docsweep はじめの一歩" width="1280" height="670">
-</div>
-
-<p class="lead">
-AIコーディングツールが残すplan・bugfix・pendingのMarkdownを、判断できる状態に保って安全にarchiveするPython CLI、docsweepの導入ガイドです。インストールから最初のコマンド、今回見つかったmanual_release記録の取りこぼしと修正内容までまとめました。
-</p>
-
-<div class="plat-row">
-  <a class="plat-pill plat-qiita" href="https://qiita.com/ishizakahiroshi/items/17bf7a02efcb8c4718ec" target="_blank" rel="noopener">Qiita で読む →</a>
-</div>
-
-<h2>この記事のテーマ</h2>
-<p>docsweepは、作業ログを勝手に削除する道具ではありません。ファイルの種類と状態を別々に読み、完了または廃止と明示されたものだけをarchiveへ移します。まずは設定なしで今日の1件を表示し、必要になったらdry-run、undo、Web UIへ進めます。</p>
-<p>今回の改修では、docsweep自身のリリース記録である<code>manual_release-*.md</code>だけが既定typeから漏れていた問題を修正しました。入口の定義を1行足し、認識・状態判定・実移送まで3段階のテストで固定しています。</p>
-
-<div class="visual">
-  <img src="infographic.png" alt="docsweepの導入方法と安全な片付けの流れをまとめたインフォグラフィック" width="2752" height="1536" loading="lazy">
-</div>
-
-<p>紹介ツール: <a href="https://github.com/ishizakahiroshi/docsweep" target="_blank" rel="noopener">github.com/ishizakahiroshi/docsweep</a> / <a href="https://pypi.org/project/docsweep/" target="_blank" rel="noopener">PyPI: docsweep</a></p>
-
-<div class="footer">
-  公開: 2026-07-16 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br>
-  <a href="/">トップへ戻る</a>
-</div>
-
-</div>
+  <p>このページは移転しました。</p>
+  <p><a href="https://ishizakahiroshi.com/articles/2026/2026-07-16_docsweep-ai-worklog-cleanup/">新しいページを開く</a></p>
 </body>
 </html>
