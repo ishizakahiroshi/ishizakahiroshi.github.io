@@ -269,7 +269,7 @@ const WORKS = [
     },
     tech: ["React", "TypeScript", "Hono", "Cloudflare Workers", "KV", "D1", "Vite", "Tailwind CSS"],
     repo: "https://github.com/ishizakahiroshi/dl-stats",
-    live: "https://dl-stats.ishizakahiroshi.workers.dev",
+    live: "/stats/",
     tagline: {
       ja: "自作 OSS の DL・Star を、Cloudflare 無料枠だけでリアルタイム可視化。",
       en: "Real-time downloads & stars for my OSS — all on Cloudflare's free tier.",
@@ -1433,7 +1433,7 @@ function renderLatestVideoEmbed() {
 
 async function fetchDlStats() {
   try {
-    const res = await fetch("https://dl-stats.ishizakahiroshi.workers.dev/api/stats.json");
+    const res = await fetch("/stats/api/stats.json");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     /** @type {any} */
     const data = await res.json();

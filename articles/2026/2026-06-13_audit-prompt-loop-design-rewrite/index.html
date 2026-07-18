@@ -7,18 +7,18 @@
 <meta name="description" content="Claude Fable 5 向けのAIコード監査プロンプトを、手取り足取り型から「ループ設計」へ全面書き直した記録。検証役を別エージェントに分離し、完了条件を採点表化し、作業メモを学ぶ記憶に変えた、引き算の設計判断の話。">
 <meta name="author" content="ishizakahiroshi">
 
-<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/">
+<link rel="canonical" href="https://ishizakahiroshi.com/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/">
 
 <meta property="og:title" content="指示を、書きすぎていた。AIコード監査プロンプトを「ループ設計」でやり直した話">
 <meta property="og:description" content="手順を丁寧に書き込むほど、賢いモデルは縛られる。検証役の分離・採点表ゲート・学ぶメモの3点で、Fable 5 向け監査プロンプトを書き直した記録。">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/">
+<meta property="og:url" content="https://ishizakahiroshi.com/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/">
 <meta property="og:site_name" content="ishizakahiroshi">
-<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/hero.png">
+<meta property="og:image" content="https://ishizakahiroshi.com/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/hero.png">
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="670">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/hero.png">
+<meta name="twitter:image" content="https://ishizakahiroshi.com/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/hero.png">
 
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -32,11 +32,11 @@
   "@type": "Article",
   "headline": "指示を、書きすぎていた。AIコード監査プロンプトを「ループ設計」でやり直した話",
   "description": "手順を丁寧に書き込むほど、賢いモデルは縛られる。検証役の分離・採点表ゲート・学ぶメモの3点で、Fable 5 向け監査プロンプトを書き直した記録。",
-  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/hero.png",
+  "image": "https://ishizakahiroshi.com/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/hero.png",
   "datePublished": "2026-06-13",
-  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
-  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
-  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/"
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.com/articles/2026/2026-06-13_audit-prompt-loop-design-rewrite/"
 }
 </script>
 
@@ -82,7 +82,7 @@
 <body>
 <div class="wrap">
 
-<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+<a href="/" class="nav-back">← ishizakahiroshi.com</a>
 
 <div class="head-row">
   <span class="tag">設計判断</span>

@@ -7,18 +7,18 @@
 <meta name="description" content="Claude Fable 5 も 30% でコンテキスト汚染を起こしました。応答末尾に「私の口調」の偽ユーザー発言が混じった事件を jsonl 検証で追い、なぜ起きるかを 5 つの仕組みで整理し、Anthropic 公式 issue 群と Chroma 論文で裏を取り、実運用の指針まで書いた続編記録です。">
 <meta name="author" content="ishizakahiroshi">
 
-<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-07-08_fable5-context-pollution-sequel/">
+<link rel="canonical" href="https://ishizakahiroshi.com/articles/2026/2026-07-08_fable5-context-pollution-sequel/">
 
 <meta property="og:title" content="Claude Fable 5 でも 30% でコンテキスト汚染は起きた">
 <meta property="og:description" content="Fable 5 の応答末尾に「私の口調」が混じった事件を jsonl で追い、なぜ起きるかを 5 つの仕組みで整理し、Anthropic 公式 issue と Chroma 論文で裏を取った続編記録です。">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-08_fable5-context-pollution-sequel/">
+<meta property="og:url" content="https://ishizakahiroshi.com/articles/2026/2026-07-08_fable5-context-pollution-sequel/">
 <meta property="og:site_name" content="ishizakahiroshi">
-<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-08_fable5-context-pollution-sequel/hero.png">
+<meta property="og:image" content="https://ishizakahiroshi.com/articles/2026/2026-07-08_fable5-context-pollution-sequel/hero.png">
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="670">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-07-08_fable5-context-pollution-sequel/hero.png">
+<meta name="twitter:image" content="https://ishizakahiroshi.com/articles/2026/2026-07-08_fable5-context-pollution-sequel/hero.png">
 
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -32,11 +32,11 @@
   "@type": "Article",
   "headline": "Claude Fable 5 でも 30% でコンテキスト汚染は起きた",
   "description": "Fable 5 の応答末尾に「私の口調」が混じった事件を jsonl で追い、Anthropic 公式 issue と Chroma 論文で裏を取った続編記録です。",
-  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-07-08_fable5-context-pollution-sequel/hero.png",
+  "image": "https://ishizakahiroshi.com/articles/2026/2026-07-08_fable5-context-pollution-sequel/hero.png",
   "datePublished": "2026-07-08",
-  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
-  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
-  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-07-08_fable5-context-pollution-sequel/"
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.com/articles/2026/2026-07-08_fable5-context-pollution-sequel/"
 }
 </script>
 
@@ -94,7 +94,7 @@
 <body>
 <div class="wrap">
 
-<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+<a href="/" class="nav-back">← ishizakahiroshi.com</a>
 
 <div class="head-row">
   <span class="tag tag-accent">失敗談</span>

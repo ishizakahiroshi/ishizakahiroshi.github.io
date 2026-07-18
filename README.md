@@ -9,7 +9,7 @@ ishizakahiroshi のポートフォリオサイト。実務18年のシステム�
 フレームワークもバンドラも入れず、素の **HTML + CSS + JavaScript** で構成しています。これは「枯れているから」ではなく、要件に対する意図的な選定です。
 
 - 中身は静的な紹介ページで、複雑な状態管理もルーティングも不要 → React / Next を入れると規模に対して過剰になる
-- 依存ゼロなので、`git push` するだけで GitHub Pages にそのまま乗る（ビルド・CI 不要）
+- 依存ゼロなので、`git push` するだけで Cloudflare Workers（Workers Builds の Git 連携）にそのまま乗る（ビルド・CI 不要）
 - 配信物 = ソース。ブラウザの「ソース表示」がそのまま読める透明性
 
 その上で、**ビルドは挟まずに型の恩恵だけ**得るため、`assets/app.js` は `// @ts-check` + JSDoc 型注釈で型付けしています（`Lang` / `L10n` / `Work` などを定義）。データ定義のタイプミスや言語キーの取りこぼしを、配信物を一切変えずにエディタ／CI で検出できます。
@@ -57,11 +57,14 @@ python -m http.server 8000
 # → http://localhost:8000/
 ```
 
-## GitHub Pages 公開（後で）
+## 公開（Cloudflare Workers）
 
-1. リポジトリを作成して push
-2. Settings → Pages → Source: `main` ブランチ / `/ (root)`
-3. 数分後に `https://<user>.github.io/<repo>/` で公開
+`https://ishizakahiroshi.com` で公開（Cloudflare Workers 静的アセット・`wrangler.toml` の `[assets]` 配信）。
+Workers & Pages で本リポと Git 連携（Workers Builds）し、`main` への push で自動デプロイされる。
+配信対象外は `.assetsignore` で除外（`docs/` `scripts/` `*.md` 等）。
+
+旧 `https://ishizakahiroshi.github.io/` は GitHub Pages のカスタムドメイン設定による 301 リダイレクトで
+新ドメインへ引き継ぐ（NG の場合は `pages-stub` ブランチの軽量スタブへ切替）。
 
 ## 掲載方針メモ
 

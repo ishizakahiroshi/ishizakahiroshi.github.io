@@ -7,18 +7,18 @@
 <meta name="description" content="Hyper-V ゲスト Windows でローカル LLM を回そうとして 4 回失敗。最終的に GPU を持つホスト側で Ollama を動かし、ゲストからは HTTP API で借りる構成に切り替えた話。localhost の罠と base_url 設計の覚書。">
 <meta name="author" content="ishizakahiroshi">
 
-<link rel="canonical" href="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/">
+<link rel="canonical" href="https://ishizakahiroshi.com/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/">
 
 <meta property="og:title" content="Hyper-VゲストでローカルLLMを4回失敗して、ホストWindowsのOllamaに逃がした話">
 <meta property="og:description" content="ゲストの中で全部やろうとして詰まり、推論はホスト GPU・開発はゲストに分け、HTTP API でつなぎ直した記録。">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/">
+<meta property="og:url" content="https://ishizakahiroshi.com/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/">
 <meta property="og:site_name" content="ishizakahiroshi">
-<meta property="og:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/hero.png">
+<meta property="og:image" content="https://ishizakahiroshi.com/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/hero.png">
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="670">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://ishizakahiroshi.github.io/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/hero.png">
+<meta name="twitter:image" content="https://ishizakahiroshi.com/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/hero.png">
 
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -32,11 +32,11 @@
   "@type": "Article",
   "headline": "Hyper-VゲストでローカルLLMを4回失敗して、ホストWindowsのOllamaに逃がした話",
   "description": "ゲストの中で全部やろうとして詰まり、推論はホスト GPU・開発はゲストに分け、HTTP API でつなぎ直した記録。",
-  "image": "https://ishizakahiroshi.github.io/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/hero.png",
+  "image": "https://ishizakahiroshi.com/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/hero.png",
   "datePublished": "2026-06-19",
-  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
-  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.github.io/" },
-  "mainEntityOfPage": "https://ishizakahiroshi.github.io/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/"
+  "author": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
+  "publisher": { "@type": "Person", "name": "ishizakahiroshi", "url": "https://ishizakahiroshi.com/" },
+  "mainEntityOfPage": "https://ishizakahiroshi.com/articles/2026/2026-06-19_hyperv-guest-ollama-fail-host-win/"
 }
 </script>
 
@@ -82,7 +82,7 @@
 <body>
 <div class="wrap">
 
-<a href="/" class="nav-back">← ishizakahiroshi.github.io</a>
+<a href="/" class="nav-back">← ishizakahiroshi.com</a>
 
 <div class="head-row">
   <span class="tag tag-accent">失敗談</span>
