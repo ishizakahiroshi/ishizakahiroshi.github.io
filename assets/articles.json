@@ -7,6 +7,24 @@
     {
       "date": "2026-07-17",
       "title": {
+        "ja": "「登録は残存することはございません」の解除メールは、その日の午後4時28分に届いた。33分後、乗り換え先ISPの回線がひらいた話【最終編】",
+        "en": "The removal email arrived at 4:28 p.m. — 33 minutes later, the new ISP line finally opened (final part)"
+      },
+      "short": {
+        "ja": "工事は完了、マイページは「利用開始」。それでも接続先は旧プロバイダーのまま。旧IPoE登録が残ると乗り換え先のv6プラスは始まらない。VNE・設備側までの確認を依頼した日の16時28分に解除メールが届き、33分後に新回線がひらいたBIGLOBE解約シリーズ最終編。",
+        "en": "Final part of the BIGLOBE cancellation series. Even after the line migration completed, the old IPoE registration kept the new ISP's v6 Plus stuck at 'application pending.' The removal email arrived at 4:28 p.m., and 33 minutes later the new line opened."
+      },
+      "tag": { "ja": "体験談", "en": "Experience report" },
+      "hero": "articles/2026/2026-07-17_biglobe-kaiyaku-saishuhen/hero.png",
+      "links": {
+        "html": "articles/2026/2026-07-17_biglobe-kaiyaku-saishuhen/",
+        "note": "https://note.com/ishizakahiroshi/n/nf08fb1ca0939",
+        "youtube": "https://youtu.be/_H_ei_8K44c"
+      }
+    },
+    {
+      "date": "2026-07-17",
+      "title": {
         "ja": "AIエージェントで27府県を一括処理したら適用候補0件になった。段階展開へ戻した理由",
         "en": "Why an AI batch run across 27 prefectures produced zero release candidates"
       },
@@ -17,7 +35,8 @@
       "tag": { "ja": "失敗談", "en": "Failure story" },
       "hero": "articles/2026/2026-07-17_ai-agent-zero-release-candidates/hero.png",
       "links": {
-        "html": "articles/2026/2026-07-17_ai-agent-zero-release-candidates/"
+        "html": "articles/2026/2026-07-17_ai-agent-zero-release-candidates/",
+        "qiita": "https://qiita.com/ishizakahiroshi/items/8b5d57a9df4c678299b1"
       }
     },
     {
@@ -116,6 +135,7 @@
       "hero": "articles/2026/2026-07-14_biglobe-kaiyaku-zokuzokuhen/hero.png",
       "links": {
         "html": "articles/2026/2026-07-14_biglobe-kaiyaku-zokuzokuhen/",
+        "note": "https://note.com/ishizakahiroshi/n/nf9fc3f8e87c6"
         "youtube": "https://youtu.be/6dC5X66Ab_g"
       }
     },
@@ -374,7 +394,8 @@
       },
       "hero": "articles/2026/2026-07-11_biglobe-kaiyaku-zokuhen/hero.png",
       "links": {
-        "html": "articles/2026/2026-07-11_biglobe-kaiyaku-zokuhen/"
+        "html": "articles/2026/2026-07-11_biglobe-kaiyaku-zokuhen/",
+        "note": "https://note.com/ishizakahiroshi/n/n8eece30f8ca8"
       }
     },
     {

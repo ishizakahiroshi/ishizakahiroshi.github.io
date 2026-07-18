@@ -47,13 +47,14 @@
 <h1>AIエージェントで27府県を一括処理したら適用候補0件になった。段階展開へ戻した理由</h1>
 <div class="hero"><img src="hero.png" alt="適用候補0件。AI一括処理を分割し直した理由" width="1280" height="670"></div>
 <p class="lead">東日本で使えた調査方法と安全策を、西日本27府県へ一括展開しました。工程は完走したのに、適用候補は0件。新規データを既存DBだけで照合した順序の問題と、学校・入試データを一体で止める判定を分解し、1県からの段階展開へ戻しました。</p>
-<div class="info">Qiitaで公開処理中です。公開URLが確定し次第、本文へのリンクを追加します。</div>
+<div class="plat-row"><a class="plat-pill" href="https://qiita.com/ishizakahiroshi/items/8b5d57a9df4c678299b1" target="_blank" rel="noopener">Qiitaで読む</a></div>
 <h2>この記事のテーマ</h2>
 <p>今回の0件は「西日本に学校や公式資料がなかった」という意味ではありません。新しい学校を追加する前に、まだ存在しない本番DBのIDへ照合できることを必須条件にしていたため、追加候補そのものがHOLDへ戻る循環ができていました。</p>
 <p>さらに、一部年度の入試指標が非公表だと、確定済みの学校・学科まで県単位で落としていました。改善後は学校データと入試データを別々に判定し、まず1県を一時DBで最後まで通してから、3〜4県ずつ広げます。</p>
 <div class="visual"><img src="infographic.png" alt="27府県の一括処理が0件になった原因と段階展開への改善" width="2752" height="1536" loading="lazy"></div>
 <div class="visual"><img src="illustration-roadblock.png" alt="一括処理の行き止まりから小さな検問へ切り替える概念図" loading="lazy"></div>
 <div class="visual"><img src="fig1.png" alt="既存DBだけで照合する循環と一時DBを使う改善経路" width="2560" height="1440" loading="lazy"></div>
+<div class="visual"><img src="fig2.png" alt="調査完了率と成果完成率を分けて数える対比図" width="1280" height="720" loading="lazy"></div>
 <p>関連プロジェクト: <a href="https://github.com/ishizakahiroshi/manabi-map" target="_blank" rel="noopener">manabi-map</a></p>
 <div class="footer">公開: 2026-07-17 / 著者: ishizakahiroshi（田舎在宅エンジニア）<br><a href="/">トップへ戻る</a></div>
 </div>
